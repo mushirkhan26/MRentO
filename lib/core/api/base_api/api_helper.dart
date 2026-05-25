@@ -9,12 +9,11 @@ import '../../services/secure_storage_service.dart';
 import 'api_response.dart';
 
 class ApiHelper {
-  static const String _defaultBaseUrl = "http://192.168.1.186:5000/";
-  // static String baseUrl2 = "https://hrms-socket.onrender.com";
+  static const String _defaultBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://localhost:5000/',
+  );
 
-
-  static const String otherBaseUrl =
-      "https://hrms-socket.onrender.com/"; // Replace with your mail service base URL
   final LoggingService _logger = LoggingService.instance;
   final SecureStorageService _secureStorage = SecureStorageService();
 
@@ -33,49 +32,49 @@ class ApiHelper {
   }
 
   Future<ApiResponse<T>> post<T>(
-    String endpoint,
-    dynamic body, {
-    Map<String, String>? headers,
-  }) async {
+      String endpoint,
+      dynamic body, {
+        Map<String, String>? headers,
+      }) async {
     return _request<T>('POST', endpoint, body: body, headers: headers);
   }
 
   Future<ApiResponse<T>> put<T>(
-    String endpoint,
-    dynamic body, {
-    Map<String, String>? headers,
-  }) async {
+      String endpoint,
+      dynamic body, {
+        Map<String, String>? headers,
+      }) async {
     return _request<T>('PUT', endpoint, body: body, headers: headers);
   }
 
   Future<ApiResponse<T>> patch<T>(
-    String endpoint,
-    dynamic body, {
-    Map<String, String>? headers,
-  }) async {
+      String endpoint,
+      dynamic body, {
+        Map<String, String>? headers,
+      }) async {
     return _request<T>('PATCH', endpoint, body: body, headers: headers);
   }
 
   Future<ApiResponse<T>> delete<T>(
-  String endpoint, {
-  dynamic body,
-  Map<String, String>? headers,
-}) async {
-  return _request<T>(
-    'DELETE',
-    endpoint,
-    body: body,
-    headers: headers,
-  );
-}
-  
+      String endpoint, {
+        dynamic body,
+        Map<String, String>? headers,
+      }) async {
+    return _request<T>(
+      'DELETE',
+      endpoint,
+      body: body,
+      headers: headers,
+    );
+  }
+
 
   Future<ApiResponse<T>> _request<T>(
-    String method,
-    String endpoint, {
-    dynamic body,
-    Map<String, String>? headers,
-  }) async {
+      String method,
+      String endpoint, {
+        dynamic body,
+        Map<String, String>? headers,
+      }) async {
     final url = Uri.parse('$_currentBaseUrl$endpoint');
     http.Response response;
     final sanitizedBody = body != null ? _sanitizeRequestBody(jsonEncode(body)) : null;
@@ -96,10 +95,10 @@ class ApiHelper {
         case 'POST':
           response = await http
               .post(
-                url,
-                headers: defaultHeaders,
-                body: jsonEncode(body),
-              )
+            url,
+            headers: defaultHeaders,
+            body: jsonEncode(body),
+          )
               .timeout(_timeout);
           break;
         case 'PUT':
@@ -110,19 +109,19 @@ class ApiHelper {
         case 'PATCH':
           response = await http
               .patch(
-                url,
-                headers: defaultHeaders,
-                body: jsonEncode(body),
-              )
+            url,
+            headers: defaultHeaders,
+            body: jsonEncode(body),
+          )
               .timeout(_timeout);
           break;
         case 'DELETE':
           response = await http
               .delete(
-                url,
-                headers: defaultHeaders,
-                body: body != null ? jsonEncode(body) : null,
-              )
+            url,
+            headers: defaultHeaders,
+            body: body != null ? jsonEncode(body) : null,
+          )
               .timeout(_timeout);
           break;
         default:
@@ -202,42 +201,42 @@ class ApiHelper {
   }
 
   ApiResponse<T> _handleResponse<T>(http.Response response) {
-  final statusCode = response.statusCode;
-  dynamic body;
+    final statusCode = response.statusCode;
+    dynamic body;
 
-  try {
-    body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
-  } catch (_) {
-    body = response.body;
-  }
+    try {
+      body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
+    } catch (_) {
+      body = response.body;
+    }
 
-  // ✅ SUCCESS
-  if (statusCode >= 200 && statusCode < 300) {
-    return ApiResponse.success(body as T, statusCode: statusCode);
-  }
+    // ✅ SUCCESS
+    if (statusCode >= 200 && statusCode < 300) {
+      return ApiResponse.success(body as T, statusCode: statusCode);
+    }
 
-  // ✅ SAFE error message extraction
-  String message = 'Something went wrong';
+    // ✅ SAFE error message extraction
+    String message = 'Something went wrong';
 
-  if (body is Map<String, dynamic>) {
-    message = body['message']?.toString() ?? message;
-  } else if (body is String) {
-    message = body;
-  }
+    if (body is Map<String, dynamic>) {
+      message = body['message']?.toString() ?? message;
+    } else if (body is String) {
+      message = body;
+    }
 
-  switch (statusCode) {
-    case 400:
-      throw BadRequestException(message);
-    case 401:
-      throw UnauthorizedException(message);
-    case 403:
-      throw ForbiddenException(message);
-    case 404:
-      throw NotFoundException(message);
-    case 500:
-      throw ServerException(message);
-    default:
-      throw FetchDataException('Error occurred with StatusCode: $statusCode');
-  }
+    switch (statusCode) {
+      case 400:
+        throw BadRequestException(message);
+      case 401:
+        throw UnauthorizedException(message);
+      case 403:
+        throw ForbiddenException(message);
+      case 404:
+        throw NotFoundException(message);
+      case 500:
+        throw ServerException(message);
+      default:
+        throw FetchDataException('Error occurred with StatusCode: $statusCode');
+    }
   }
 }

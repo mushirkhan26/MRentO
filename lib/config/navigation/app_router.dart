@@ -8,6 +8,7 @@ import '../../features/profile/screens/profile_screen.dart';
 import '../../features/cart/screens/cart_screen.dart';
 import '../../features/checkout/screens/checkout_screen.dart';
 import '../../features/orders/screens/orders_screen.dart';
+import '../../features/orders/screens/order_detail_screen.dart';
 import '../../features/wishlist/screens/wishlist_screen.dart';
 import '../../features/search/screens/search_screen.dart';
 import '../../features/tracking/screens/order_tracking_screen.dart';
@@ -21,7 +22,6 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: AppRoutes.homeRoute,
-  // initialLocation: AppRoutes.splashRoute,
   routes: [
     GoRoute(
       path: AppRoutes.splashRoute,
@@ -97,6 +97,14 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final orderId = state.extra as String?;
         return OrderTrackingScreen(orderId: orderId ?? "#FD29847");
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.orderDetailRoute,
+      name: 'order-detail',
+      builder: (context, state) {
+        final orderId = state.extra as String?;
+        return OrderDetailScreen(orderId: orderId ?? "#FD28341");
       },
     ),
   ],

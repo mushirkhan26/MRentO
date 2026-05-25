@@ -19,7 +19,7 @@ class PushNotificationService {
 
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   static final FlutterLocalNotificationsPlugin _localNotifications =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
 
   final LoggingService _logger = LoggingService.instance;
 
@@ -141,7 +141,7 @@ class PushNotificationService {
 
     try {
       final userData = await storage.getUserData();
-      if (userData == null || userData['employeeId'] == null) {
+      if (userData == null || userData['userId'] == null) {
         logger.logNetwork("⚠️ Not logged in → skipping token update");
         return;
       }
@@ -164,9 +164,9 @@ class PushNotificationService {
 
       final saved = await storage.getAppToken();
       if (saved != currentToken) {
-        final empId = userData['employeeId'];
+        final userId = userData['userId'];
         logger.logNetwork("🔁 Updating new FCM token → $currentToken");
-        final response = await auth.updateFCMToken(userId: empId, appToken: currentToken);
+        final response = await auth.updateFCMToken(userId: userId, appToken: currentToken);
 
         if (response.success) {
           await storage.saveAppToken(currentToken);
@@ -228,59 +228,13 @@ class PushNotificationService {
 
       final data = jsonDecode(payload);
 
-      // 🧩 Normalize payload keys for both Message and GroupMessage types
+      // Order tracking notification
       final type = data['type'];
-      Map<String, dynamic> mappedData = {};
-      if (type == 'Message') {
-        // 💬 Individual Chat Notification
-        mappedData = {
-          'currentUserId': data['receiver'], // current user
-          'currentUserName': data['reciverName'], // current user's name
-          'otherUserId': data['sender'], // sender ID
-          'otherUserName': data['senderName'], // sender name
-          'type': 'Message',
-        };
-      } else if (type == 'GroupMessage') {
-        // 👥 Group Chat Notification
-        mappedData = {
-          'groupId': data['groupId'],
-          'groupName': data['groupName'] ?? 'Group Chat',
-          'currentUserId': data['employeeId'] ?? data['receiver'],
-          'currentUserName': data['reciverName'] ?? 'You',
-          'type': 'GroupMessage',
-        };
+      if (type == 'order_update' || data.containsKey('orderId')) {
+        final orderId = data['orderId']?.toString() ?? '';
+        context.push(AppRoutes.trackOrderRoute, extra: orderId);
       } else {
-        logger.logNetwork("🚫 Unknown notification type → ${data['type']}");
-        return;
-      }
-
-      // 🧾 Log normalized result
-      logger.logNetwork("📦 Normalized Notification Data → $mappedData");
-
-      // 🧭 Route navigation based on type
-      if (mappedData['type'] == 'Message') {
-        logger.logNetwork("🚀 Navigating to Individual Chat Screen...");
-        context.push(
-          '${AppRoutes.chatRoute}/${mappedData['otherUserId']}',
-          extra: {
-            'otherUserName': mappedData['otherUserName'],
-            'currentUserData': {
-              'employeeId': mappedData['currentUserId'],
-              'username': mappedData['currentUserName'],
-            },
-          },
-        );
-      } else if (mappedData['type'] == 'GroupMessage') {
-        logger.logNetwork("🚀 Navigating to Group Chat Screen...");
-        context.push(
-          '${AppRoutes.chatRoute}/group/${mappedData['groupId']}',
-          extra: {
-            'groupName': mappedData['groupName'],
-            'currentUserId': mappedData['currentUserId'],
-            'currentUserName': mappedData['currentUserName'],
-            'groupModel': null, // can be fetched later if needed
-          },
-        );
+        logger.logNetwork("🚫 Unknown notification type → $type");
       }
     } catch (e, s) {
       logger.logNetwork("❌ Exception in handleNotificationTap: $e");

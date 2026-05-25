@@ -63,9 +63,9 @@ dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/images/logo.jpg
+  image: assets/images/logo.png
   color_dark: "#FFFFFF"
-  image_dark: assets/images/logo.jpg
+  image_dark: assets/images/logo.png
   android: true
   ios: true
   android_gravity: center
@@ -74,12 +74,11 @@ flutter_native_splash:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo.jpg"
+  image_path: "assets/images/logo.png"
   remove_alpha_ios: true
-  adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/images/logo.jpg"
-  adaptive_icon_foreground_inset: 24
-
+  adaptive_icon_background: "#156b50"
+  adaptive_icon_foreground: "assets/images/logo.png"
+  adaptive_icon_foreground_inset: 16
 
 
 dev_dependencies:

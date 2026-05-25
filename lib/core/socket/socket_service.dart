@@ -11,10 +11,24 @@ class SocketService {
   bool _isConnected = false;
   bool get isConnected => _isConnected;
   bool get isDisconnected => !_isConnected;
-  Future<void> waitForConnection() async {
-    while (!isDisconnected) {
+
+  /// Wait until socket is connected, with a timeout fallback.
+  /// Returns true if connected, false if timed out.
+  Future<bool> waitForConnection({
+    Duration timeout = const Duration(seconds: 5),
+  }) async {
+    final deadline = DateTime.now().add(timeout);
+    while (!_isConnected) {
+      if (DateTime.now().isAfter(deadline)) {
+        LoggingService.instance.warning(
+          'SocketService',
+          'waitForConnection timed out after ${timeout.inSeconds}s',
+        );
+        return false;
+      }
       await Future.delayed(const Duration(milliseconds: 300));
     }
+    return true;
   }
 
   /// Initialize socket connection

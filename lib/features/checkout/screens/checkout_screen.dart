@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../config/navigation/app_routes.dart';
 import '../../../config/theme/app_colors.dart';
 import '../widgets/checkout_step_indicator.dart';
 import '../widgets/checkout_address_selector.dart';
@@ -115,8 +116,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  context.go('/home');
-                  context.push('/orders');
+                  context.go(AppRoutes.homeRoute); // Go to shell
+                  context.push(AppRoutes.trackOrderRoute, extra: '#FD29847');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.black121212,

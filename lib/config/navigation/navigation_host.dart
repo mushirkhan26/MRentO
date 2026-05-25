@@ -104,8 +104,8 @@ class _NavigationHostState extends State<NavigationHost> {
               ),
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(_selectedIndex == 0 ? Icons.home_rounded : Icons.home_outlined),
-                  label: 'Home',
+                  icon: Icon(_selectedIndex == 0 ? Icons.explore : Icons.explore_outlined),
+                  label: 'Explore',
                 ),
                 const BottomNavigationBarItem(
                   icon: _CartIconWithBadge(),
@@ -120,7 +120,7 @@ class _NavigationHostState extends State<NavigationHost> {
                   label: 'Wishlist',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(_selectedIndex == 4 ? Icons.person_rounded : Icons.person_outline),
+                  icon: Icon(_selectedIndex == 4 ? Icons.person : Icons.person_2_outlined),
                   label: 'Profile',
                 ),
               ],
@@ -162,7 +162,7 @@ class _NavigationHostState extends State<NavigationHost> {
     AppRoutes.cartRoute,
     AppRoutes.ordersRoute,
     AppRoutes.wishlistRoute,
-    AppRoutes.userProfile,
+    AppRoutes.userProfile
   ];
 
   void _navigateTo(int index) {

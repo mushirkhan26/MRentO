@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../config/navigation/app_routes.dart';
 import '../../../config/theme/app_colors.dart';
 
 class BaseOrderCard extends StatelessWidget {
@@ -23,48 +25,53 @@ class BaseOrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.greyOutline.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(orderId, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                  Text('$date • $itemsCount items',
-                      style: const TextStyle(color: AppColors.grey707070, fontSize: 10)),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: statusBg, borderRadius: BorderRadius.circular(4)),
-                child: Row(
+    return InkWell(
+      onTap: () {
+        context.push(AppRoutes.orderDetailRoute, extra: orderId);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.greyOutline.withValues(alpha: 0.3)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(color: statusColor, shape: BoxShape.circle)),
-                    const SizedBox(width: 6),
-                    Text(status,
-                        style: TextStyle(
-                            color: statusColor, fontSize: 10, fontWeight: FontWeight.bold)),
+                    Text(orderId, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                    Text('$date • $itemsCount items',
+                        style: const TextStyle(color: AppColors.grey707070, fontSize: 10)),
                   ],
                 ),
-              ),
-            ],
-          ),
-          const Divider(height: 24, color: AppColors.dividerColor),
-          child,
-        ],
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(color: statusBg, borderRadius: BorderRadius.circular(4)),
+                  child: Row(
+                    children: [
+                      Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(color: statusColor, shape: BoxShape.circle)),
+                      const SizedBox(width: 6),
+                      Text(status,
+                          style: TextStyle(
+                              color: statusColor, fontSize: 10, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const Divider(height: 24, color: AppColors.dividerColor),
+            child,
+          ],
+        ),
       ),
     );
   }
@@ -128,7 +135,7 @@ class ItemThumbnails extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.gray50,
+              color: AppColors.greyOutline.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(4),
               border: Border.all(color: AppColors.greyOutline.withValues(alpha: 0.3)),
             ),
@@ -152,6 +159,7 @@ class ItemThumbnails extends StatelessWidget {
     );
   }
 }
+
 extension ColorExtension on Color {
   String toHexString() {
     return '#${toARGB32().toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';

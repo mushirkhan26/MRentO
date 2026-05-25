@@ -9,7 +9,10 @@ class AppConstants {
   static const double freeDeliveryThreshold = 500.0;
 
   //urls
-  static const String socketbaseurl = "https://hrms-socket.onrender.com";
+  static const String socketbaseurl = String.fromEnvironment(
+    'SOCKET_URL',
+    defaultValue: 'http://localhost:5000',
+  );
 
   //Images
   static const String baseImg = "assets/images";

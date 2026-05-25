@@ -31,7 +31,11 @@ class AiTryOnBanner extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('AI Try-On Loading...')),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.categoryLocalText,
               foregroundColor: Colors.white,

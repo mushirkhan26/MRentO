@@ -11,10 +11,10 @@ class SecureStorageService {
   // 🔑 Keys
   static const String _keyToken = 'auth_token';
   static const String _keyUserId = 'user_id';
-  static const String _keyName = 'name'; // username -> name
+  static const String _keyName = 'name';
   static const String _keyEmail = 'email';
   static const String _keyRole = 'role';
-  static const String _keyPhone = 'phone'; // phone field added
+  static const String _keyPhone = 'phone';
   static const String _keyAppToken = 'app_token'; 
 
   // 📄 Profile Keys
@@ -71,6 +71,15 @@ class SecureStorageService {
 
   // Get current name
   Future<String?> getName() async => _secureStorage.read(key: _keyName);
+
+  // Get email
+  Future<String?> getEmail() async => _secureStorage.read(key: _keyEmail);
+
+  // Get phone
+  Future<String?> getPhone() async => _secureStorage.read(key: _keyPhone);
+
+  // Get role
+  Future<String?> getRole() async => _secureStorage.read(key: _keyRole);
 
   // 🔥 FCM Token Methods
   Future<void> saveAppToken(String token) async =>

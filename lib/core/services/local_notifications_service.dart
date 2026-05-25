@@ -3,13 +3,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
-
 import '../../config/navigation/app_router.dart';
 import '../../config/navigation/app_routes.dart';
 import 'logger_service.dart';
 
 class LocalNotificationService {
-  // Singleton pattern
   static final LocalNotificationService _instance = LocalNotificationService._internal();
   factory LocalNotificationService() => _instance;
   LocalNotificationService._internal();
@@ -19,103 +17,52 @@ class LocalNotificationService {
 
   /// Initialize notification plugin
   Future<void> init() async {
-    // Android Initialization settings
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    // iOS Initialization settings
     const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: false, // We handle iOS permission separately
+      requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
     );
 
-    final initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+    final initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
 
     await _plugin.initialize(
       initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
-        //     if (response.payload != null) {
-        //       _logger.logNetwork("[NotificationService] Notification tapped: ${response.payload}");
-        //       try {
-        //         final data = jsonDecode(response.payload!);
-        //         final path = '${AppRoutes.chatRoute}/${data['otherUserId']}';
-
-        //         // ✅ Navigate using root navigator key
-        //         rootNavigatorKey.currentState!.context.push(
-        //           path,
-        //           extra: {
-        //             'currentUserData': {
-        //               'employeeId': data['currentUserId'],
-        //               'username': data['currentUserName'],
-        //             },
-        //             'otherUserName': data['otherUserName'],
-        //           },
-        //         );
-        //       } catch (e) {
-        //         _logger.logNetwork("[NotificationService] ❌ Failed to navigate on tap: $e");
-        //       }
-        //     }
-        //   },
-        // );
         if (response.payload != null) {
           _logger.logNetwork("[NotificationService] Notification tapped: ${response.payload}");
           try {
             final data = jsonDecode(response.payload!);
-
-            // Check if the notification is for a group chat
-            if (data.containsKey('groupId')) {
-              // Group chat notification tapped
-              final path = '${AppRoutes.chatRoute}/group/${data['groupId']}';
-              rootNavigatorKey.currentState!.context.push(
-                path,
-                extra: {
-                  'groupName': data['groupName'],
-                  'currentUserData': {
-                    'employeeId': data['currentUserId'],
-                    'username': data['currentUserName'],
-                  },
-                },
-              );
-            }
-            // Individual chat notification tapped
-            else if (data.containsKey('otherUserId')) {
-              final path = '${AppRoutes.chatRoute}/${data['otherUserId']}';
-              rootNavigatorKey.currentState!.context.push(
-                path,
-                extra: {
-                  'currentUserData': {
-                    'employeeId': data['currentUserId'],
-                    'username': data['currentUserName'],
-                  },
-                  'otherUserName': data['otherUserName'],
-                },
-              );
-            }
+            final orderId = data['orderId']?.toString() ?? '';
+            rootNavigatorKey.currentState!.context.push(
+              AppRoutes.trackOrderRoute,
+              extra: orderId,
+            );
           } catch (e) {
-            _logger.logNetwork("[NotificationService] ❌ Failed to navigate on tap: $e");
+            _logger.logNetwork("[NotificationService] Failed to navigate on tap: $e");
           }
         }
       },
     );
-    _logger.logNetwork("[NotificationService] ✅ Local Notification Service initialized");
 
+    _logger.logNetwork("[NotificationService] Local Notification Service initialized");
     await _requestPermissions();
   }
 
-  /// Requests notification permissions for iOS and Android 13+
+  /// Requests notification permissions
   Future<void> _requestPermissions() async {
     if (Platform.isAndroid) {
-      // Android 13+ runtime permission using permission_handler
       try {
         final status = await Permission.notification.status;
         if (status.isDenied) {
           final result = await Permission.notification.request();
-          _logger.logNetwork(
-            "[NotificationService] Android notification permission granted: $result",
-          );
+          _logger.logNetwork("[NotificationService] Android permission result: $result");
         }
       } catch (e) {
-        _logger.logNetwork("[NotificationService] ❌ Error requesting Android permission: $e");
+        _logger.logNetwork("[NotificationService] Error requesting Android permission: $e");
       }
     } else if (Platform.isIOS) {
       await requestIOSPermissions();
@@ -132,93 +79,22 @@ class LocalNotificationService {
     }
   }
 
-  /// Show or update consolidated notification
-  Future<void> showConsolidatedNotification({
-    required int totalUnreadCount,
-    required int totalUsers,
-    Map<String, dynamic>? currentUserData,
-    String? singleUserId,
-    String? singleUserName,
+  /// Show order status notification
+  Future<void> showOrderNotification({
+    required String orderId,
+    required String title,
+    required String body,
   }) async {
     try {
-      String title;
-      String body;
-      String? payload;
-
-      if (totalUsers == 1 && singleUserName != null) {
-        // Single user → show sender name
-        title = "📩 New message";
-        body = "New message from $singleUserName";
-        // Payload includes full chat info
-        payload = jsonEncode({
-          'currentUserId': currentUserData?['employeeId'] ?? '',
-          'currentUserName': currentUserData?['username'] ?? '',
-          'otherUserId': singleUserId,
-          'otherUserName': singleUserName,
-        });
-      } else {
-        // Multiple users → show aggregated info
-        title = "💬 New messages";
-        body = "$totalUnreadCount new messages from $totalUsers users";
-      }
-
-      // Android notification details
-      final androidDetails = AndroidNotificationDetails(
-        'chat_channel',
-        'Chat Notifications',
-        channelDescription: 'Shows incoming chat notifications',
-        importance: Importance.high,
-        priority: Priority.high,
-        ongoing: false,
-        styleInformation: BigTextStyleInformation(''),
-        icon: '@mipmap/ic_launcher',
-      );
-
-      // iOS notification details
-      final iosDetails = DarwinNotificationDetails();
-
-      final notificationDetails = NotificationDetails(android: androidDetails, iOS: iosDetails);
-
-      // Show notification with **fixed ID** to update instead of stacking
-      await _plugin.show(1001, title, body, notificationDetails, payload: payload);
-
-      _logger.logNetwork(
-        "[NotificationService] Showed notification → $title | $body | payload: $payload",
-      );
-    } catch (e) {
-      _logger.logNetwork("[NotificationService] ❌ Failed to show notification: $e");
-    }
-  }
-
-  /// Clear consolidated notification
-  Future<void> clearNotifications() async {
-    await _plugin.cancel(1001);
-    _logger.logNetwork("[NotificationService] Cleared notifications");
-  }
-
-  /// Show notification for a group message
-  /// Show notification for a group message
-  Future<void> showGroupNotification({
-    required String groupId,
-    required String groupName,
-    required String senderName,
-    Map<String, dynamic>? currentUserData,
-  }) async {
-    try {
-      final title = "💬 New message in $groupName";
-      final body = "New message from $senderName";
       final payload = jsonEncode({
-        'currentUserId': currentUserData?['employeeId'] ?? '',
-        'currentUserName': currentUserData?['username'] ?? '',
-        'groupId': groupId,
-        'groupName': groupName,
+        'orderId': orderId,
+        'type': 'order_update',
       });
 
-      // Android notification details
       final androidDetails = AndroidNotificationDetails(
-        'group_chat_channel',
-        'Group Chat Notifications',
-        channelDescription: 'Shows incoming group chat notifications',
+        'order_channel',
+        'Order Notifications',
+        channelDescription: 'Shows order status updates',
         importance: Importance.high,
         priority: Priority.high,
         ongoing: false,
@@ -226,24 +102,21 @@ class LocalNotificationService {
         icon: '@mipmap/ic_launcher',
       );
 
-      // iOS notification details
-      final iosDetails = DarwinNotificationDetails();
-      final notificationDetails = NotificationDetails(android: androidDetails, iOS: iosDetails);
-
-      // Show notification with a unique ID for group notifications
-      await _plugin.show(
-        2001, // Unique ID for group notifications
-        title,
-        body,
-        notificationDetails,
-        payload: payload,
+      final notificationDetails = NotificationDetails(
+        android: androidDetails,
+        iOS: const DarwinNotificationDetails(),
       );
 
-      _logger.logNetwork(
-        "[NotificationService] Showed group notification → $title | $body | payload: $payload",
-      );
+      await _plugin.show(1001, title, body, notificationDetails, payload: payload);
+      _logger.logNetwork("[NotificationService] Order notification shown: $title");
     } catch (e) {
-      _logger.logNetwork("[NotificationService] ❌ Failed to show group notification: $e");
+      _logger.logNetwork("[NotificationService] Failed to show order notification: $e");
     }
+  }
+
+  /// Clear all notifications
+  Future<void> clearNotifications() async {
+    await _plugin.cancelAll();
+    _logger.logNetwork("[NotificationService] All notifications cleared");
   }
 }

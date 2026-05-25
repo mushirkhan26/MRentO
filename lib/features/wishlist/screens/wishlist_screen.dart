@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../profile/screens/profile_screen.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../config/navigation/app_routes.dart';
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
@@ -18,26 +21,69 @@ class WishlistScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        // actions: [
+        //   IconButton(icon: const Icon(Icons.search, color: AppColors.black121212), onPressed: () {}),
+        //   GestureDetector(
+        //     onTap: () => context.push(AppRoutes.userProfile),
+        //     child: _circleBadgeIcon(Icons.person_outline),
+        //   ),
+        //   const SizedBox(width: 8),
+        // ],
       ),
-      body: Column(
-        children: [
-          _buildSubHeader(),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _buildPriceDropBanner(),
-                  const SizedBox(height: 16),
-                  _buildWishlistGrid(context),
-                  const SizedBox(height: 24),
-                  _buildMoreItemsCard(),
-                  const SizedBox(height: 40),
-                ],
-              ),
+      body: _buildBody(context),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    bool isEmpty = false; // Isse true karke empty state dekh sakte hain
+
+    if (isEmpty) {
+      return _buildEmptyWishlist(context);
+    }
+
+    return Column(
+      children: [
+        _buildSubHeader(),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _buildPriceDropBanner(),
+                const SizedBox(height: 16),
+                _buildWishlistGrid(context),
+                const SizedBox(height: 24),
+                _buildMoreItemsCard(),
+                const SizedBox(height: 40),
+              ],
             ),
           ),
-          _buildStickyBottomAction(context),
+        ),
+        _buildStickyBottomAction(context),
+      ],
+    );
+  }
+
+  Widget _buildEmptyWishlist(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(30),
+            decoration: BoxDecoration(color: AppColors.categoryWomenBg, shape: BoxShape.circle),
+            child: const Icon(Icons.favorite_border, size: 60, color: AppColors.categoryWomenText),
+          ),
+          const SizedBox(height: 24),
+          const Text('Wishlist khali hai', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          const Text('Apne manpasand items yahan save karein', style: TextStyle(color: AppColors.grey707070)),
+          const SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () => context.go(AppRoutes.homeRoute),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryDarkGreen, foregroundColor: Colors.white),
+            child: const Text('Explore Now'),
+          ),
         ],
       ),
     );

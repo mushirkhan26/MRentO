@@ -65,7 +65,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthUnauthenticated());
           return;
         }
-        
+
         // Reload userData after refresh
         final newUserData = await _secureStorage.getUserData();
         if (newUserData == null) {
@@ -129,7 +129,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
 
     final response =
-        await _authService.verifyOtp(userId: event.mobile, otp: otpInt);
+    await _authService.verifyOtp(userId: event.mobile, otp: otpInt);
 
     if (!response.success || response.data == null) {
       emit(AuthError(response.message ?? 'Verification failed'));
@@ -141,7 +141,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // ✅ Consistent field naming for customer app
     final userData = {
       'token': data['token'] ?? '',
-      'userId': data['userId']?.toString() ?? data['employeeId']?.toString() ?? event.mobile,
+      'userId': data['userId']?.toString() ?? event.mobile,
       'name': data['name'] ?? data['username'] ?? 'User',
       'email': data['email'] ?? '',
       'phone': event.mobile,
@@ -231,7 +231,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       while (payload.length % 4 != 0) {
         payload += '=';
       }
-      
+
       final decodedBytes = base64Url.decode(payload);
       final decodedString = utf8.decode(decodedBytes);
       final Map<String, dynamic> claims = json.decode(decodedString);

@@ -1,3 +1,4 @@
+import 'package:delivery_90/features/onboarding/widgets/onboarding_pages.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   late AnimationController _pulseController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _pulseAnimation;
+
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+  bool _showOnboarding = false;
 
   bool _isVideoInitialized = false;
   bool _isVideoControllerCreated = false;
@@ -80,8 +85,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       setState(() {
         _safetyTimerTriggered = true;
         _videoEnded = true;
+        _showOnboarding = true; // Show new UI
       });
-      _runGatekeeperLogic();
+      // We don't run gatekeeper logic automatically anymore, 
+      // it will be triggered by "Get started"
     }
   }
 
@@ -100,8 +107,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     } catch (e) {
       debugPrint("Splash: Video init error: $e");
       if (!_hasStartedLogicCheck && mounted) {
-        setState(() => _videoEnded = true);
-        _runGatekeeperLogic();
+        setState(() {
+          _videoEnded = true;
+          _showOnboarding = true;
+        });
       }
     }
   }
@@ -114,8 +123,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       setState(() {
         _videoListenerFired = true;
         _videoEnded = true;
+        _showOnboarding = true; // Show new UI after video
       });
-      _runGatekeeperLogic();
     }
   }
 
@@ -138,8 +147,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
     // 2. App Version Check
     try {
-      // NOTE: Version check is non-blocking to ensure app functionality 
-      // even if the backend version check service is temporarily unavailable.
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = packageInfo.version;
       final versionResponse = await _authService.checkAppVersion();
@@ -160,12 +167,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     // 3. Location Permission Check
     try {
       final permission = await _handleLocationPermission();
-      if (!permission) {
-        // Option A: If location is MANDATORY, stop here.
-        // Option B: If optional, proceed.
-        // For delivery apps, it's usually mandatory.
-        return; 
-      }
+      if (!permission) return; 
     } catch (e) {
       debugPrint("Splash: Location check error: $e");
     }
@@ -176,52 +178,26 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   Future<bool> _handleLocationPermission() async {
     final locationService = LocationService.instance;
-    
-    // 1. Check if service is enabled
     if (!await locationService.isServiceEnabled()) {
-      _showLocationDialog(
-        "Location Disabled",
-        "Please enable location services to continue.",
-        isSettings: false,
-      );
+      _showLocationDialog("Location Disabled", "Please enable location services to continue.", isSettings: false);
       return false;
     }
-
-    // 2. Handle Permissions
     final permission = await locationService.handlePermission();
-    
     if (permission == LocationPermission.denied) {
-      _showLocationDialog(
-        "Location Required",
-        "This app needs location access to show nearby services. Please grant permission to continue.",
-        isSettings: false,
-      );
+      _showLocationDialog("Location Required", "This app needs location access to show nearby services.", isSettings: false);
       return false;
     }
-
     if (permission == LocationPermission.deniedForever) {
-      _showLocationDialog(
-        "Location Required",
-        "Location permission is permanently denied. Please enable it in app settings to continue.",
-        isSettings: true,
-      );
+      _showLocationDialog("Location Required", "Location permission is permanently denied.", isSettings: true);
       return false;
     }
-    
-    // 3. ✅ Last-known se fast return, background mein fresh fetch
-    final position = await locationService.getCurrentLocation();
-    if (position != null) {
-      debugPrint("Splash: Got location ${position.latitude}, ${position.longitude}");
-      // Store in app state / bloc for home screen if needed
-    }
-    
+    await locationService.getCurrentLocation();
     return true;
   }
 
   void _showLocationDialog(String title, String message, {required bool isSettings}) {
     if (!mounted) return;
     setState(() => _isLoading = false);
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -229,26 +205,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         title: Text(title),
         content: Text(message),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              SystemNavigator.pop();
-            },
-            child: const Text("Cancel"),
-          ),
+          TextButton(onPressed: () => SystemNavigator.pop(), child: const Text("Cancel")),
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
               if (isSettings) {
                 _waitingForSettingsReturn = true;
-                final opened = await LocationService.instance.openSettings();
-                debugPrint("Splash: Settings opened: $opened");
+                await LocationService.instance.openSettings();
               } else {
-                // Add a small delay for retry
-                await Future.delayed(const Duration(milliseconds: 800));
-                if (!mounted) return;
                 _hasStartedLogicCheck = false;
-                _videoListenerFired = false;
                 _runGatekeeperLogic();
               }
             },
@@ -262,15 +227,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   bool _isVersionOlder(String current, String min) {
     List<int> currentParts = current.split('.').map((e) => int.tryParse(e) ?? 0).toList();
     List<int> minParts = min.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-
-    // Pad to same length (minimum 3 parts)
-    while (currentParts.length < 3) {
-      currentParts.add(0);
-    }
-    while (minParts.length < 3) {
-      minParts.add(0);
-    }
-
+    while (currentParts.length < 3)currentParts.add(0);
+    while (minParts.length < 3) minParts.add(0);
     for (int i = 0; i < 3; i++) {
       if (currentParts[i] < minParts[i]) return true;
       if (currentParts[i] > minParts[i]) return false;
@@ -280,25 +238,17 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   void _finalizeRouting() {
     if (!mounted) return;
-
     final authBloc = context.read<AuthBloc>();
-
-    // Safety check for AuthInitial (Race condition fix)
     if (authBloc.state is AuthInitial) {
       if (_authRetryCount >= 5) {
-        debugPrint("Splash: Auth timeout, defaulting to login");
         context.go(AppRoutes.loginRoute);
         return;
       }
-      debugPrint("Splash: Auth state is Initial, waiting... ($_authRetryCount)");
       _authRetryCount++;
       Future.delayed(const Duration(milliseconds: 500), _finalizeRouting);
       return;
     }
-
     final currentState = authBloc.state;
-    debugPrint("Splash: Final Routing. State: $currentState");
-
     if (currentState is AuthAuthenticated) {
       context.go(AppRoutes.homeRoute);
     } else {
@@ -309,7 +259,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   void _showErrorDialog(String title, String message) {
     if (!mounted) return;
     setState(() => _isLoading = false);
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -320,10 +269,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              await Future.delayed(const Duration(milliseconds: 300));
-              if (!mounted) return;
               _hasStartedLogicCheck = false;
-              _videoListenerFired = false;
               _runGatekeeperLogic();
             },
             child: const Text("Retry"),
@@ -340,21 +286,14 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: const Text("Update Required"),
-        content: const Text("A new version of the app is available. Please update to continue."),
+        content: const Text("A new version of the app is available."),
         actions: [
-          TextButton(
-            onPressed: () => SystemNavigator.pop(),
-            child: const Text("Exit App"),
-          ),
+          TextButton(onPressed: () => SystemNavigator.pop(), child: const Text("Exit App")),
           TextButton(
             onPressed: () async {
               if (url != null) {
                 final uri = Uri.parse(url);
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                } else {
-                  debugPrint("Splash: Could not launch $url");
-                }
+                if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
               }
             },
             child: const Text("Update Now"),
@@ -373,6 +312,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     }
     _fadeController.dispose();
     _pulseController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -381,8 +321,34 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     final width = Utils().width(context);
     final height = Utils().height(context);
 
+    if (_showOnboarding) {
+      return Scaffold(
+        backgroundColor: AppColors.primaryDarkGreen,
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          onPageChanged: (i) => setState(() => _currentPage = i),
+          children: [
+            WelcomePage(onContinue: () => _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut)),
+            StatsPage(
+              onBack: () => _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
+              onNext: () => _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
+            ),
+            FeaturesPage(
+              onBack: () => _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
+              onNext: () => _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
+            ),
+            CityPage(
+              onBack: () => _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
+              onFinish: _runGatekeeperLogic, // Start original technical checks
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.primaryDarkGreen,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -416,7 +382,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
                 ],
               ),
             ),

@@ -38,10 +38,18 @@ class AuthHeader extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(
-              Icons.shopping_bag_outlined,
-              color: Colors.white,
-              size: screenWidth * 0.1,
+            child:  CircleAvatar(
+              radius:35,
+              backgroundColor: Colors.white.withValues(alpha: 0.5),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 16),

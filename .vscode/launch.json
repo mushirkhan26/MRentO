@@ -5,20 +5,21 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
-            "name": "HrZ-app(debug)",
+            "name": "90-Minutes-app(debug)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug"
         },
         {
-            "name": "HrZ-app (profile mode)",
+            "name": "90-Minutes-app(profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "HrZ-app (release mode)",
+            "name": "90-Minutes-app(release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
