@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/models/cart_model.dart';
+import '../../../core/constants/app_constants.dart'; // ← constants use karo
 import '../../../core/services/local_storage_service.dart';
 import 'cart_event.dart';
 import 'cart_state.dart';
@@ -27,52 +28,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       } else {
         cart = CartModel.empty();
       }
-
-      // If cart is empty, add dummy items for demonstration
-      if (cart.items.isEmpty) {
-        // Commenting out dummy items to test Empty Cart UI
-        /*
-        final dummyItems = [
-          CartItem(
-            productId: '1',
-            productName: 'Classic Kurta Set',
-            brand: 'Manyavar',
-            size: 'M',
-            color: 'Ivory',
-            productImage: 'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=500',
-            quantity: 1,
-            price: 2299.0,
-            originalPrice: 2999.0,
-            badges: ['AI Try-On available'],
-          ),
-          CartItem(
-            productId: '2',
-            productName: 'Floral Summer Dress',
-            brand: 'Biba',
-            size: 'S',
-            color: 'Pink',
-            productImage: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500',
-            quantity: 1,
-            price: 1499.0,
-            originalPrice: 1899.0,
-            badges: ['AI Try-On available'],
-          ),
-        ];
-
-        cart = CartModel(
-          items: dummyItems,
-          subtotal: 3798.0,
-          deliveryFee: 0.0,
-          tax: 0.0,
-          discount: 1100.0, 
-        );
-        await _saveCart(cart);
-        */
-      }
-      
       emit(CartLoaded(cart));
     } catch (e) {
-      emit(CartError('Failed to load cart: $e'));
+      emit(CartError('Cart load nahi hui: $e'));
     }
   }
 
@@ -80,21 +38,31 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (state is CartLoaded) {
       final currentCart = (state as CartLoaded).cart;
       final List<CartItem> updatedItems = List.from(currentCart.items);
-      
-      final index = updatedItems.indexWhere((i) => i.productId == event.item.productId);
+
+      // Same product + same duration → quantity badhao
+      final index = updatedItems.indexWhere(
+            (i) =>
+        i.productId == event.item.productId &&
+            i.rentalDurationLabel == event.item.rentalDurationLabel,
+      );
+
       if (index != -1) {
-        final existingItem = updatedItems[index];
+        final existing = updatedItems[index];
         updatedItems[index] = CartItem(
-          productId: existingItem.productId,
-          productName: existingItem.productName,
-          brand: existingItem.brand,
-          size: existingItem.size,
-          color: existingItem.color,
-          productImage: existingItem.productImage,
-          quantity: existingItem.quantity + event.item.quantity,
-          price: existingItem.price,
-          originalPrice: existingItem.originalPrice,
-          badges: existingItem.badges,
+          productId: existing.productId,
+          productName: existing.productName,
+          brand: existing.brand,
+          productImage: existing.productImage,
+          quantity: existing.quantity + event.item.quantity,
+          price: existing.price,
+          originalPrice: existing.originalPrice,
+          badges: existing.badges,
+          vendorName: existing.vendorName,
+          rentalDurationLabel: existing.rentalDurationLabel,
+          rentalDays: existing.rentalDays,
+          startDate: existing.startDate,
+          endDate: existing.endDate,
+          securityDeposit: existing.securityDeposit,
         );
       } else {
         updatedItems.add(event.item);
@@ -106,37 +74,52 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-  Future<void> _onRemoveFromCart(RemoveFromCart event, Emitter<CartState> emit) async {
+  Future<void> _onRemoveFromCart(
+      RemoveFromCart event,
+      Emitter<CartState> emit,
+      ) async {
     if (state is CartLoaded) {
       final currentCart = (state as CartLoaded).cart;
-      final updatedItems = currentCart.items.where((i) => i.productId != event.productId).toList();
-      
+      final updatedItems = currentCart.items
+          .where((i) => i.productId != event.productId)
+          .toList();
+
       final updatedCart = _calculateCart(updatedItems);
       await _saveCart(updatedCart);
       emit(CartLoaded(updatedCart));
     }
   }
 
-  Future<void> _onUpdateQuantity(UpdateQuantity event, Emitter<CartState> emit) async {
+  Future<void> _onUpdateQuantity(
+      UpdateQuantity event,
+      Emitter<CartState> emit,
+      ) async {
     if (state is CartLoaded) {
       final currentCart = (state as CartLoaded).cart;
-      final updatedItems = currentCart.items.map((i) {
+      final updatedItems = currentCart.items
+          .map((i) {
         if (i.productId == event.productId) {
           return CartItem(
             productId: i.productId,
             productName: i.productName,
             brand: i.brand,
-            size: i.size,
-            color: i.color,
             productImage: i.productImage,
             quantity: event.quantity,
             price: i.price,
             originalPrice: i.originalPrice,
             badges: i.badges,
+            vendorName: i.vendorName,
+            rentalDurationLabel: i.rentalDurationLabel,
+            rentalDays: i.rentalDays,
+            startDate: i.startDate,
+            endDate: i.endDate,
+            securityDeposit: i.securityDeposit,
           );
         }
         return i;
-      }).where((i) => i.quantity > 0).toList();
+      })
+          .where((i) => i.quantity > 0)
+          .toList();
 
       final updatedCart = _calculateCart(updatedItems);
       await _saveCart(updatedCart);
@@ -150,13 +133,17 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     emit(CartLoaded(emptyCart));
   }
 
+  /// Cart totals calculate — AppConstants se consistent values use karo
   CartModel _calculateCart(List<CartItem> items) {
-    double subtotal = 0;
-    for (var item in items) {
-      subtotal += item.total;
-    }
-    double deliveryFee = subtotal > 500 ? 0 : 40;
-    double tax = subtotal * 0.12; // 12% GST example
+    double subtotal = items.fold(0, (sum, item) => sum + item.total);
+
+    // ✅ AppConstants.freeDeliveryThreshold = 999.0, baseDeliveryFee = 49.0
+    double deliveryFee = subtotal >= AppConstants.freeDeliveryThreshold
+        ? 0
+        : AppConstants.baseDeliveryFee;
+
+    // 18% GST on rental equipment
+    double tax = subtotal * 0.18;
 
     return CartModel(
       items: items,
@@ -164,6 +151,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       deliveryFee: deliveryFee,
       tax: tax,
     );
+    // Note: securityDeposit cart.totalSecurityDeposit se alag track hota hai
+    // cart_price_breakdown.dart me use `cart.totalSecurityDeposit` to display it
   }
 
   Future<void> _saveCart(CartModel cart) async {

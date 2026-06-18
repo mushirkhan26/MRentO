@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_colors.dart';
-import '../../../core/models/product_model.dart';
+import '../../../core/models/rental_product_model.dart';
 
 class ProductCard extends StatelessWidget {
-  final ProductModel product;
+  final RentalProductModel product;
   const ProductCard({super.key, required this.product});
 
   @override
@@ -106,7 +106,7 @@ class ProductCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '₹${product.price.toInt()}',
+                        '₹${product.buyPrice}',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

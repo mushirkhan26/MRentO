@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../profile/screens/profile_screen.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../config/navigation/app_routes.dart';
 

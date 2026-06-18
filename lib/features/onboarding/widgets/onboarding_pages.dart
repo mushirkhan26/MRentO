@@ -8,70 +8,102 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primaryDarkGreen,
+      color: AppColors.primaryBlack,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.white.withValues(alpha: 0.5),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
+          // Logo
+          Container(
+            width: 110,
+            height: 110,
+            decoration: BoxDecoration(
+              color: AppColors.primaryYellow,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryYellow.withValues(alpha: 0.4),
+                  blurRadius: 30,
+                  spreadRadius: 5,
                 ),
+              ],
+            ),
+            child: ClipOval(
+              child: Image.asset(
+                'assets/images/logo.png',
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
+          // App Name
           const Text(
-            '90-Minutes',
-            style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+            'MRentO',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
           ),
           const SizedBox(height: 8),
           const Text(
-            'Fashion at the speed of life',
-            style: TextStyle(color: Colors.white70, fontSize: 16),
+            'Machinery, 90 min mein',
+            style: TextStyle(
+              color: Colors.white60,
+              fontSize: 16,
+            ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 32),
+          // Badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
+              color: AppColors.primaryYellow.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppColors.primaryYellow.withValues(alpha: 0.4),
+              ),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.timer_outlined, color: Colors.white, size: 16),
+                Icon(Icons.timer_outlined, color: AppColors.primaryYellow, size: 16),
                 SizedBox(width: 8),
-                Text('90-min delivery guarantee',
-                    style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+                Text(
+                  '90-min delivery guarantee',
+                  style: TextStyle(
+                    color: AppColors.primaryYellow,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),
           const Spacer(),
+          // Continue Button
           GestureDetector(
             onTap: onContinue,
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryAmber,
+                  padding: const EdgeInsets.all(14),
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryYellow,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                   ),
-                  child: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: AppColors.primaryBlack,
+                    size: 24,
+                  ),
                 ),
-                const SizedBox(height: 12),
-                const Text('Tap to continue', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                const SizedBox(height: 10),
+                const Text(
+                  'Tap to continue',
+                  style: TextStyle(color: Colors.white38, fontSize: 12),
+                ),
               ],
             ),
           ),
@@ -82,6 +114,9 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────
+// PAGE 2 — Stats
+// ─────────────────────────────────────────
 class StatsPage extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -90,7 +125,7 @@ class StatsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primaryDarkGreen,
+      color: AppColors.primaryBlack,
       child: SafeArea(
         child: Column(
           children: [
@@ -100,33 +135,41 @@ class StatsPage extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 40),
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white.withValues(alpha: 0.5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(
-                            'assets/images/logo.png',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
+                    // Logo small
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primaryYellow,
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 28),
                     const Text(
-                      '90 minutes mein\nfashion ghar pe!',
+                      '90 min mein\nMachinery ghar pe!',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        height: 1.3,
+                      ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     const Text(
-                      'Order karo — ghar pe aayega. India ka sabse\nfast fashion delivery.',
+                      'Drill se lekar Concrete Mixer tak —\nsab kuch rent pe, 90 min mein.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white70, fontSize: 14, height: 1.5),
+                      style: TextStyle(
+                        color: Colors.white60,
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
                     ),
                     const SizedBox(height: 40),
                     GridView.count(
@@ -138,9 +181,9 @@ class StatsPage extends StatelessWidget {
                       childAspectRatio: 1.4,
                       children: [
                         _statCard('90', 'Min\ndelivery'),
-                        _statCard('500+', 'Brands'),
-                        _statCard('48+', 'Local\nshops'),
-                        _statCard('Free', 'Returns'),
+                        _statCard('50+', 'Tools\navailable'),
+                        _statCard('5', 'Local\nvendors'),
+                        _statCard('Zero', 'Purchase\ncost'),
                       ],
                     ),
                   ],
@@ -157,22 +200,38 @@ class StatsPage extends StatelessWidget {
   Widget _statCard(String value, String label) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: AppColors.primaryYellow.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: AppColors.primaryYellow.withValues(alpha: 0.2),
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: const TextStyle(
+              color: AppColors.primaryYellow,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(label, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white60, fontSize: 11),
+          ),
         ],
       ),
     );
   }
 }
 
+// ─────────────────────────────────────────
+// PAGE 3 — Features
+// ─────────────────────────────────────────
 class FeaturesPage extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -181,7 +240,7 @@ class FeaturesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primaryDarkGreen,
+      color: AppColors.primaryBlack,
       child: SafeArea(
         child: Column(
           children: [
@@ -191,37 +250,55 @@ class FeaturesPage extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 40),
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white.withValues(alpha: 0.5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(
-                            'assets/images/logo.png',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primaryYellow,
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 28),
                     const Text(
-                      'Sirf 90-Minutes mein',
-                      style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                      'Rent karo, tension nahi',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Features jo koi nahi deta',
-                      style: TextStyle(color: Colors.white70, fontSize: 15),
+                      'Jo features koi nahi deta',
+                      style: TextStyle(color: Colors.white60, fontSize: 15),
                     ),
-                    const SizedBox(height: 40),
-                    _featureRow(Icons.auto_awesome_outlined, 'AI Virtual Try-On', 'Photo upload karo — virtually pehno'),
-                    _featureRow(Icons.assignment_return_outlined, 'Try & Return — free', 'Pasand na aaye — rider le jaayega'),
-                    _featureRow(Icons.group_outlined, 'Style Squad', 'Dosto ke saath live shopping'),
-                    _featureRow(Icons.storefront_outlined, 'Local designers', 'Jodhpur ke 48+ boutiques'),
+                    const SizedBox(height: 32),
+                    _featureRow(
+                      Icons.timer_outlined,
+                      '90-Min Delivery',
+                      'Order karo — 90 min mein machine ghar pe',
+                    ),
+                    _featureRow(
+                      Icons.currency_rupee,
+                      'Sirf Rent Karo',
+                      'Lakh ki machine, sirf ₹149/din mein',
+                    ),
+                    _featureRow(
+                      Icons.verified_outlined,
+                      'Verified Vendors',
+                      'Jodhpur ke trusted hardware shops',
+                    ),
+                    _featureRow(
+                      Icons.assignment_return_outlined,
+                      'Easy Return',
+                      'Kaam khatam — rider le jaayega',
+                    ),
                   ],
                 ),
               ),
@@ -238,24 +315,39 @@ class FeaturesPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: AppColors.primaryYellow.withValues(alpha: 0.15),
+        ),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-            child: Icon(icon, color: Colors.white, size: 20),
+            decoration: BoxDecoration(
+              color: AppColors.primaryYellow.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: AppColors.primaryYellow, size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
-                Text(subtitle, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: const TextStyle(color: Colors.white60, fontSize: 11),
+                ),
               ],
             ),
           ),
@@ -265,6 +357,9 @@ class FeaturesPage extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────
+// PAGE 4 — City
+// ─────────────────────────────────────────
 class CityPage extends StatelessWidget {
   final VoidCallback onFinish;
   final VoidCallback onBack;
@@ -273,7 +368,7 @@ class CityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primaryDarkGreen,
+      color: AppColors.primaryBlack,
       child: SafeArea(
         child: Column(
           children: [
@@ -283,26 +378,37 @@ class CityPage extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    const CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white12,
-                      child: Icon(Icons.location_on_outlined, color: Colors.white, size: 40),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryYellow.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.location_on_outlined,
+                        color: AppColors.primaryYellow,
+                        size: 40,
+                      ),
                     ),
                     const SizedBox(height: 24),
                     const Text(
                       'Apna shehar chuniye',
-                      style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
                       '90-min delivery aapke ghar tak',
-                      style: TextStyle(color: Colors.white70, fontSize: 15),
+                      style: TextStyle(color: Colors.white60, fontSize: 15),
                     ),
                     const SizedBox(height: 32),
-                    _cityTile('Jodhpur', '48 local designers', true, isLive: true),
-                    _cityTile('Jaipur', '120+ stores', false, isLive: true),
-                    _cityTile('Udaipur', '35 stores', false, isLive: true),
-                    _cityTile('Delhi NCR', '250+ stores', false, isLive: true),
+                    _cityTile('Jodhpur', '5 verified vendors', true, isLive: true),
+                    _cityTile('Jaipur', '12+ vendors', false, isLive: true),
+                    _cityTile('Udaipur', '8 vendors', false, isLive: true),
+                    _cityTile('Delhi NCR', '25+ vendors', false, isLive: true),
                     _cityTile('Mumbai', 'Coming soon', false, isLive: false),
                   ],
                 ),
@@ -315,20 +421,26 @@ class CityPage extends StatelessWidget {
     );
   }
 
-  Widget _cityTile(String name, String region, bool isSelected, {required bool isLive}) {
+  Widget _cityTile(String name, String info, bool isSelected, {required bool isLive}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: isSelected ? 0.15 : 0.05),
+        color: isSelected
+            ? AppColors.primaryYellow.withValues(alpha: 0.15)
+            : Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isSelected ? Colors.white.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: isSelected
+              ? AppColors.primaryYellow.withValues(alpha: 0.5)
+              : Colors.white.withValues(alpha: 0.1),
+        ),
       ),
       child: Row(
         children: [
           Icon(
             isSelected ? Icons.check_circle : Icons.circle_outlined,
-            color: isSelected ? AppColors.primaryAmber : Colors.white,
+            color: isSelected ? AppColors.primaryYellow : Colors.white38,
             size: 24,
           ),
           const SizedBox(width: 16),
@@ -336,21 +448,33 @@ class CityPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-                Text(region, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  info,
+                  style: const TextStyle(color: Colors.white60, fontSize: 11),
+                ),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: isLive ? AppColors.primaryAmber.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.1),
+              color: isLive
+                  ? AppColors.primaryYellow.withValues(alpha: 0.2)
+                  : Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               isLive ? 'Live' : 'Soon',
               style: TextStyle(
-                color: isLive ? AppColors.primaryAmber : Colors.white70,
+                color: isLive ? AppColors.primaryYellow : Colors.white38,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),
@@ -362,46 +486,59 @@ class CityPage extends StatelessWidget {
   }
 }
 
-Widget _buildStickyFooter(int pageIndex, VoidCallback onBack, VoidCallback onNext, String nextLabel) {
+// ─────────────────────────────────────────
+// SHARED FOOTER WIDGETS
+// ─────────────────────────────────────────
+Widget _buildStickyFooter(
+    int pageIndex,
+    VoidCallback onBack,
+    VoidCallback onNext,
+    String nextLabel,
+    ) {
   return Container(
-    padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+    padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
     decoration: BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          AppColors.primaryDarkGreen.withValues(alpha: 0),
-          AppColors.primaryDarkGreen,
+          AppColors.primaryBlack.withValues(alpha: 0),
+          AppColors.primaryBlack,
         ],
         stops: const [0.0, 0.3],
       ),
     ),
-
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         _pageIndicator(pageIndex),
-        const SizedBox(height: 32),
+        const SizedBox(height: 24),
         _navigationButtons(onBack, onNext, nextLabel),
       ],
     ),
   );
 }
 
-Widget _navigationButtons(VoidCallback onBack, VoidCallback onNext, String nextLabel) {
+Widget _navigationButtons(
+    VoidCallback onBack,
+    VoidCallback onNext,
+    String nextLabel,
+    ) {
   return Row(
     children: [
       GestureDetector(
         onTap: onBack,
         child: Container(
-          width: 100,
+          width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
+            color: Colors.white.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
           ),
-          child: const Center(child: Icon(Icons.arrow_back, color: Colors.white)),
+          child: const Center(
+            child: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+          ),
         ),
       ),
       const SizedBox(width: 16),
@@ -411,15 +548,26 @@ Widget _navigationButtons(VoidCallback onBack, VoidCallback onNext, String nextL
           child: Container(
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.primaryAmber,
+              color: AppColors.primaryYellow,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(nextLabel, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  nextLabel,
+                  style: const TextStyle(
+                    color: AppColors.primaryBlack,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(width: 8),
-                const Icon(Icons.arrow_forward, color: Colors.white),
+                const Icon(
+                  Icons.arrow_forward,
+                  color: AppColors.primaryBlack,
+                  size: 18,
+                ),
               ],
             ),
           ),
@@ -433,7 +581,7 @@ Widget _pageIndicator(int activePage) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: List.generate(3, (index) {
-      int pageIndex = index + 1; // Indicator starts from page 1 (StatsPage)
+      final pageIndex = index + 1;
       return AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         width: pageIndex == activePage ? 24 : 8,
@@ -441,7 +589,9 @@ Widget _pageIndicator(int activePage) {
         margin: const EdgeInsets.symmetric(horizontal: 3),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(3),
-          color: pageIndex == activePage ? Colors.white : Colors.white.withValues(alpha: 0.3),
+          color: pageIndex == activePage
+              ? AppColors.primaryYellow
+              : Colors.white.withValues(alpha: 0.3),
         ),
       );
     }),

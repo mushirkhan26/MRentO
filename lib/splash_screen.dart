@@ -11,7 +11,6 @@ import 'package:video_player/video_player.dart';
 import 'config/navigation/app_routes.dart';
 import 'config/theme/app_colors.dart';
 import 'core/api/network/auth_service.dart';
-import 'core/constants/app_constants.dart';
 import 'core/services/location_service.dart';
 import 'core/utils/utils.dart';
 import 'features/auth/bloc/auth_bloc.dart';
@@ -24,7 +23,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin, WidgetsBindingObserver {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late VideoPlayerController _videoController;
   late AnimationController _fadeController;
   late AnimationController _pulseController;
@@ -54,17 +54,22 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _initVideo();
     _startSafetyTimer();
 
-    _fadeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
-    _fadeAnimation = CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut);
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOut,
+    );
 
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
     );
-    _pulseAnimation = Tween<double>(
-      begin: 0.92,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
+    _pulseAnimation = Tween<double>(begin: 0.92, end: 1.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -79,16 +84,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 
   Future<void> _startSafetyTimer() async {
-    await Future.delayed(const Duration(seconds: 4));
-    if (mounted && !_hasStartedLogicCheck) {
-      debugPrint("Splash: Safety timer triggered");
+    await Future.delayed(const Duration(seconds: 10));
+    if (mounted && !_hasStartedLogicCheck && !_videoListenerFired) {
       setState(() {
         _safetyTimerTriggered = true;
         _videoEnded = true;
-        _showOnboarding = true; // Show new UI
+        _showOnboarding = true;
       });
-      // We don't run gatekeeper logic automatically anymore, 
-      // it will be triggered by "Get started"
     }
   }
 
@@ -98,15 +100,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       _isVideoControllerCreated = true;
       await _videoController.initialize();
       if (!mounted) return;
-      setState(() => _isVideoInitialized = true);
-
-      _videoController.play();
+      setState(() {
+        _isVideoInitialized = true;
+        _videoController.play();
+      });
       _videoController.setLooping(false);
-
       _videoController.addListener(_onVideoUpdate);
     } catch (e) {
       debugPrint("Splash: Video init error: $e");
-      if (!_hasStartedLogicCheck && mounted) {
+      if (mounted) {
         setState(() {
           _videoEnded = true;
           _showOnboarding = true;
@@ -117,13 +119,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   void _onVideoUpdate() {
     if (!mounted || _videoListenerFired) return;
-    final isCompleted = _videoController.value.position >= _videoController.value.duration - const Duration(milliseconds: 100);
+    final isCompleted = _videoController.value.position >=
+        _videoController.value.duration - const Duration(milliseconds: 10);
     if (isCompleted && !_hasStartedLogicCheck && !_safetyTimerTriggered) {
-      debugPrint("Splash: Video completed");
       setState(() {
         _videoListenerFired = true;
         _videoEnded = true;
-        _showOnboarding = true; // Show new UI after video
+        _showOnboarding = true;
       });
     }
   }
@@ -150,11 +152,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = packageInfo.version;
       final versionResponse = await _authService.checkAppVersion();
-      
       if (versionResponse.success && versionResponse.data != null) {
         final minVersion = versionResponse.data!['minVersion'] ?? "1.0.0";
         final forceUpdate = versionResponse.data!['forceUpdate'] ?? false;
-        
         if (forceUpdate && _isVersionOlder(currentVersion, minVersion)) {
           _showUpdateDialog(versionResponse.data!['updateUrl']);
           return;
@@ -164,31 +164,43 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       debugPrint("Splash: Version check error: $e");
     }
 
-    // 3. Location Permission Check
+    // 3. Location Check
     try {
       final permission = await _handleLocationPermission();
-      if (!permission) return; 
+      if (!permission) return;
     } catch (e) {
       debugPrint("Splash: Location check error: $e");
     }
 
-    // 4. Auth & Routing Check
+    // 4. Auth Routing
     _finalizeRouting();
   }
 
   Future<bool> _handleLocationPermission() async {
     final locationService = LocationService.instance;
     if (!await locationService.isServiceEnabled()) {
-      _showLocationDialog("Location Disabled", "Please enable location services to continue.", isSettings: false);
+      _showLocationDialog(
+        "Location Disabled",
+        "Please enable location services to continue.",
+        isSettings: false,
+      );
       return false;
     }
     final permission = await locationService.handlePermission();
     if (permission == LocationPermission.denied) {
-      _showLocationDialog("Location Required", "This app needs location access to show nearby services.", isSettings: false);
+      _showLocationDialog(
+        "Location Required",
+        "MRentO ko aapki location chahiye nearby vendors dikhane ke liye.",
+        isSettings: false,
+      );
       return false;
     }
     if (permission == LocationPermission.deniedForever) {
-      _showLocationDialog("Location Required", "Location permission is permanently denied.", isSettings: true);
+      _showLocationDialog(
+        "Location Required",
+        "Location permission permanently denied hai.",
+        isSettings: true,
+      );
       return false;
     }
     await locationService.getCurrentLocation();
@@ -202,10 +214,21 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        backgroundColor: AppColors.primaryBlack,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Center(
+          child: Column(
+            children: [
+              Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+        content: Text(message, style: const TextStyle(color: Colors.white60)),
         actions: [
-          TextButton(onPressed: () => SystemNavigator.pop(), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () => SystemNavigator.pop(),
+            child: const Text("Cancel", style: TextStyle(color: Colors.white38)),
+          ),
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
@@ -217,7 +240,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                 _runGatekeeperLogic();
               }
             },
-            child: Text(isSettings ? "Open Settings" : "Retry"),
+            child: Text(
+              isSettings ? "Open Settings" : "Retry",
+              style: const TextStyle(
+                color: AppColors.primaryYellow,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -225,13 +254,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 
   bool _isVersionOlder(String current, String min) {
-    List<int> currentParts = current.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-    List<int> minParts = min.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-    while (currentParts.length < 3)currentParts.add(0);
-    while (minParts.length < 3) minParts.add(0);
+    List<int> c = current.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    List<int> m = min.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    while (c.length < 3) c.add(0);
+    while (m.length < 3) m.add(0);
     for (int i = 0; i < 3; i++) {
-      if (currentParts[i] < minParts[i]) return true;
-      if (currentParts[i] > minParts[i]) return false;
+      if (c[i] < m[i]) return true;
+      if (c[i] > m[i]) return false;
     }
     return false;
   }
@@ -263,8 +292,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        backgroundColor: AppColors.primaryBlack,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        content: Text(message, style: const TextStyle(color: Colors.white60)),
         actions: [
           TextButton(
             onPressed: () async {
@@ -272,7 +303,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               _hasStartedLogicCheck = false;
               _runGatekeeperLogic();
             },
-            child: const Text("Retry"),
+            child: const Text(
+              "Retry",
+              style: TextStyle(color: AppColors.primaryYellow, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -285,18 +319,34 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text("Update Required"),
-        content: const Text("A new version of the app is available."),
+        backgroundColor: AppColors.primaryBlack,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          "Update Required",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          "MRentO ka naya version available hai.",
+          style: TextStyle(color: Colors.white60),
+        ),
         actions: [
-          TextButton(onPressed: () => SystemNavigator.pop(), child: const Text("Exit App")),
+          TextButton(
+            onPressed: () => SystemNavigator.pop(),
+            child: const Text("Exit App", style: TextStyle(color: Colors.white38)),
+          ),
           TextButton(
             onPressed: () async {
               if (url != null) {
                 final uri = Uri.parse(url);
-                if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
               }
             },
-            child: const Text("Update Now"),
+            child: const Text(
+              "Update Now",
+              style: TextStyle(color: AppColors.primaryYellow, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -321,63 +371,116 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     final width = Utils().width(context);
     final height = Utils().height(context);
 
+    // Onboarding pages
     if (_showOnboarding) {
       return Scaffold(
-        backgroundColor: AppColors.primaryDarkGreen,
+        backgroundColor: AppColors.primaryBlack,
         body: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           onPageChanged: (i) => setState(() => _currentPage = i),
           children: [
-            WelcomePage(onContinue: () => _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut)),
+            WelcomePage(
+              onContinue: () => _pageController.nextPage(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              ),
+            ),
             StatsPage(
-              onBack: () => _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
-              onNext: () => _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
+              onBack: () => _pageController.previousPage(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              ),
+              onNext: () => _pageController.nextPage(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              ),
             ),
             FeaturesPage(
-              onBack: () => _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
-              onNext: () => _pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
+              onBack: () => _pageController.previousPage(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              ),
+              onNext: () => _pageController.nextPage(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              ),
             ),
             CityPage(
-              onBack: () => _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut),
-              onFinish: _runGatekeeperLogic, // Start original technical checks
+              onBack: () => _pageController.previousPage(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              ),
+              onFinish: _runGatekeeperLogic,
             ),
           ],
         ),
       );
     }
 
+    // Video Splash
     return Scaffold(
-      backgroundColor: AppColors.primaryDarkGreen,
+      backgroundColor: AppColors.primaryBlack,
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // Video
           if (!_videoEnded && _isVideoInitialized && !_isLoading)
-            Center(
+            SizedBox.expand(
               child: FittedBox(
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
                 child: SizedBox(
-                  width: width * 0.8,
-                  height: height * 0.3,
+                  width: _videoController.value.size.width,
+                  height: _videoController.value.size.height,
                   child: VideoPlayer(_videoController),
                 ),
               ),
             ),
+
+          // Fallback — agar video load na ho
           if (_videoEnded || (!_isVideoInitialized && _safetyTimerTriggered))
             Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset(AppConstants.logo, width: width * 0.55, height: height * 0.22),
-                  const SizedBox(height: 22),
+                  Container(
+                    width: width * 0.35,
+                    height: width * 0.35,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryYellow,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryYellow.withValues(alpha: 0.3),
+                          blurRadius: 30,
+                        ),
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'MRentO',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   ScaleTransition(
                     scale: _pulseAnimation,
                     child: const Text(
                       "Loading...",
                       style: TextStyle(
-                        color: AppColors.primaryDarkGreen,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryYellow,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                         letterSpacing: 1.1,
                       ),
                     ),
@@ -385,10 +488,19 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                 ],
               ),
             ),
+
+          // Loading overlay
           if (_isLoading)
             FadeTransition(
               opacity: _fadeAnimation,
-              child: Container(color: Colors.white.withValues(alpha: 0.9)),
+              child: Container(
+                color: AppColors.primaryBlack.withValues(alpha: 0.9),
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.primaryYellow,
+                  ),
+                ),
+              ),
             ),
         ],
       ),

@@ -98,7 +98,7 @@ class LocalNotificationService {
         importance: Importance.high,
         priority: Priority.high,
         ongoing: false,
-        styleInformation: BigTextStyleInformation(''),
+        styleInformation: BigTextStyleInformation(body),
         icon: '@mipmap/ic_launcher',
       );
 

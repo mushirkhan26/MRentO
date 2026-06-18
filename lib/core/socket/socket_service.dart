@@ -34,7 +34,7 @@ class SocketService {
   /// Initialize socket connection
   void init() {
     socket = io.io(
-      AppConstants.socketbaseurl,
+      AppConstants.socketBaseUrl,
       io.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()

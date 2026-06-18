@@ -1,21 +1,36 @@
-import 'package:delivery_90/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'app_colors.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: AppColors.background,
     fontFamily: 'Poppins',
-    colorScheme: ColorScheme.fromSeed(seedColor:  AppColors.primaryDarkGreen),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primaryYellow,
+      primary: AppColors.primaryYellow,
+      secondary: AppColors.primaryBlack,
+    ),
     useMaterial3: true,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.primaryBlack,
       elevation: 0,
       centerTitle: false,
+      foregroundColor: Colors.white,
       titleTextStyle: TextStyle(
         fontFamily: 'Poppins',
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: Colors.white,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primaryYellow,
+        foregroundColor: AppColors.primaryBlack,
+        textStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.bold,
+        ),
       ),
     ),
   );

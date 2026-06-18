@@ -13,7 +13,7 @@ import 'package:delivery_90/core/socket/socket_service.dart';
 import 'package:delivery_90/features/auth/bloc/auth_bloc.dart';
 import 'package:delivery_90/features/auth/bloc/auth_event.dart';
 import 'package:delivery_90/core/services/secure_storage_service.dart';
-import 'package:delivery_90/core/api/network/auth_service.dart';
+import 'package:delivery_90/core/services/firebase_auth_service.dart';
 import 'package:delivery_90/features/cart/bloc/cart_bloc.dart';
 import 'package:delivery_90/features/cart/bloc/cart_event.dart';
 import 'package:delivery_90/features/home/bloc/product_bloc.dart';
@@ -21,6 +21,8 @@ import 'package:delivery_90/features/search/bloc/search_bloc.dart';
 import 'package:delivery_90/features/wishlist/bloc/wishlist_bloc.dart';
 import 'package:delivery_90/features/tracking/bloc/tracking_bloc.dart';
 import 'package:delivery_90/firebase_options.dart';
+
+import 'features/home/bloc/category_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,8 +52,10 @@ void main() async {
           create: (_) => AuthBloc(
             secureStorage: SecureStorageService(),
             localStorage: LocalStorageService(),
-            authService: AuthService(),
+            authService: FirebaseAuthService(),
           )..add(AppStarted()),
+        ),BlocProvider<CategoryBloc>(
+          create: (context) => CategoryBloc(), // Agar dependency deni ho toh brackets me dein
         ),
         BlocProvider(create: (_) => CartBloc()..add(LoadCart())),
         BlocProvider(create: (_) => ProductBloc()),
@@ -70,7 +74,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: '90-min Fashion',
+      title: 'MRentO',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       routerConfig: appRouter,

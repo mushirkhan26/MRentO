@@ -22,7 +22,7 @@ class ProfileAvatar extends StatelessWidget {
             height: 10,
             width: 10,
             decoration: BoxDecoration(
-              color: isActive ? AppColors.activeGreen : AppColors.inActiveRed,
+              color: isActive ? AppColors.activeGreen : AppColors.buttonRed,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(

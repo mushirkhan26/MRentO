@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/api/network/auth_service.dart';
+import '../../../core/services/firebase_auth_service.dart';
 import '../../../core/services/local_storage_service.dart';
 import '../../../core/services/secure_storage_service.dart';
-import '../../../core/socket/socket_manager.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/constants/app_constants.dart';
 import 'auth_event.dart';
@@ -13,15 +12,15 @@ import 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SecureStorageService _secureStorage;
   final LocalStorageService _localStorage;
-  final AuthService _authService;
+  final FirebaseAuthService _authService;
 
   AuthBloc({
     required SecureStorageService secureStorage,
     required LocalStorageService localStorage,
-    required AuthService authService,
+    FirebaseAuthService? authService,
   })  : _secureStorage = secureStorage,
         _localStorage = localStorage,
-        _authService = authService,
+        _authService = authService ?? FirebaseAuthService(),
         super(AuthInitial()) {
     on<AppStarted>(_onAppStarted);
     on<LoginRequested>(_onLoginRequested);
@@ -32,9 +31,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   // ─────────────────────────────────────────
   // APP STARTED — Token validity check
   // ─────────────────────────────────────────
-  Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
+  Future<void> _onAppStarted(
+      AppStarted event, Emitter<AuthState> emit) async {
     try {
       emit(const AuthLoading(action: 'appStart'));
+
       final loggedIn = await _localStorage.isLoggedIn();
       if (!loggedIn) {
         emit(AuthUnauthenticated());
@@ -47,51 +48,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return;
       }
 
-      // ✅ Token expiry check
       final token = userData['token'] as String?;
       if (token == null || token.isEmpty) {
-        debugPrint("AuthBloc: Token missing, clearing session");
         await _clearSession();
         emit(AuthUnauthenticated());
         return;
       }
 
+      // Firebase token expired check
       if (_isTokenExpired(token)) {
-        debugPrint("AuthBloc: Token expired, attempting refresh");
+        debugPrint("AuthBloc: Token expired, refreshing...");
         final refreshed = await _refreshToken();
         if (!refreshed) {
-          debugPrint("AuthBloc: Token refresh failed, clearing session");
           await _clearSession();
           emit(AuthUnauthenticated());
           return;
         }
 
-        // Reload userData after refresh
         final newUserData = await _secureStorage.getUserData();
         if (newUserData == null) {
           emit(AuthUnauthenticated());
           return;
         }
 
-        emit(AuthAuthenticated(UserModel(
-          id: newUserData['userId']?.toString() ?? '',
-          name: newUserData['name'] ?? 'User',
-          userId: newUserData['userId']?.toString() ?? '',
-          email: newUserData['email'],
-          mobile: newUserData['phone'],
-          role: newUserData['role'] ?? 'customer',
-        )));
+        emit(AuthAuthenticated(_userFromMap(newUserData)));
         return;
       }
 
-      emit(AuthAuthenticated(UserModel(
-        id: userData['userId']?.toString() ?? '',
-        name: userData['name'] ?? 'User',
-        userId: userData['userId']?.toString() ?? '',
-        email: userData['email'],
-        mobile: userData['phone'], // SecureStorage uses 'phone'
-        role: userData['role'] ?? 'customer',
-      )));
+      emit(AuthAuthenticated(_userFromMap(userData)));
     } catch (e) {
       debugPrint("AuthBloc: AppStarted error: $e");
       emit(AuthUnauthenticated());
@@ -99,65 +83,46 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   // ─────────────────────────────────────────
-  // LOGIN — Send OTP
+  // LOGIN — Send OTP via Firebase
   // ─────────────────────────────────────────
   Future<void> _onLoginRequested(
       LoginRequested event, Emitter<AuthState> emit) async {
     emit(const AuthLoading(action: 'login'));
 
-    final response = await _authService.getOtp(userId: event.mobile);
+    final response = await _authService.sendOtp(event.mobile);
 
     if (response.success) {
       emit(AuthOtpSent(event.mobile));
     } else {
-      emit(AuthError(response.message ?? 'Failed to send OTP'));
+      emit(AuthError(response.message ?? 'OTP bhejne mein problem hui'));
     }
   }
 
   // ─────────────────────────────────────────
-  // OTP VERIFY — Smart new/existing user routing
+  // OTP VERIFY — Firebase se verify karo
   // ─────────────────────────────────────────
   Future<void> _onOtpVerificationRequested(
       OtpVerificationRequested event, Emitter<AuthState> emit) async {
     emit(const AuthLoading(action: 'verify'));
 
-    // ✅ OTP format validation using Constant
-    final otpInt = int.tryParse(event.otp);
-    if (otpInt == null || event.otp.length != AppConstants.otpLength) {
-      emit(const AuthError('Invalid OTP format'));
+    if (event.otp.length != AppConstants.otpLength) {
+      emit(const AuthError('OTP sahi nahi hai'));
       return;
     }
 
-    final response =
-    await _authService.verifyOtp(userId: event.mobile, otp: otpInt);
+    final response = await _authService.verifyOtp(
+      mobile: event.mobile,
+      otp: event.otp,
+    );
 
     if (!response.success || response.data == null) {
-      emit(AuthError(response.message ?? 'Verification failed'));
+      emit(AuthError(response.message ?? 'Verification fail hua'));
       return;
     }
 
     final data = response.data!;
-
-    // ✅ Consistent field naming for customer app
-    final userData = {
-      'token': data['token'] ?? '',
-      'userId': data['userId']?.toString() ?? event.mobile,
-      'name': data['name'] ?? data['username'] ?? 'User',
-      'email': data['email'] ?? '',
-      'phone': event.mobile,
-      'role': data['role'] ?? 'customer',
-    };
-
-    await _saveAuthData(userData);
-
-    emit(AuthAuthenticated(UserModel(
-      id: userData['userId']!,
-      name: userData['name']!,
-      userId: userData['userId']!,
-      email: userData['email'],
-      mobile: userData['phone'],
-      role: userData['role']!,
-    )));
+    await _saveAuthData(data);
+    emit(AuthAuthenticated(_userFromMap(data)));
   }
 
   // ─────────────────────────────────────────
@@ -165,7 +130,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   // ─────────────────────────────────────────
   Future<void> _onLogoutRequested(
       LogoutRequested event, Emitter<AuthState> emit) async {
-    await SocketManager.instance.leave();
+    await _authService.logout();
     await _clearSession();
     emit(AuthUnauthenticated());
   }
@@ -173,21 +138,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   // ─────────────────────────────────────────
   // HELPERS
   // ─────────────────────────────────────────
+  UserModel _userFromMap(Map<String, dynamic> data) {
+    return UserModel(
+      id: data['userId']?.toString() ?? '',
+      name: data['name'] ?? 'User',
+      userId: data['userId']?.toString() ?? '',
+      email: data['email'],
+      mobile: data['phone'],
+      role: data['role'] ?? 'customer',
+    );
+  }
+
   Future<bool> _refreshToken() async {
     try {
       final response = await _authService.refreshToken();
       if (response.success && response.data != null) {
-        final data = response.data!;
-        // Note: Ensure _saveAuthData logic handles what's returned here
-        // Usually refresh gives a new token and maybe updated user info
-        await _saveAuthData({
-          'token': data['token'] ?? '',
-          'userId': data['userId']?.toString() ?? '',
-          'name': data['name'] ?? '',
-          'email': data['email'] ?? '',
-          'phone': data['phone'] ?? '',
-          'role': data['role'] ?? 'customer',
-        });
+        await _saveAuthData(response.data!);
         return true;
       }
       return false;
@@ -198,12 +164,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _saveAuthData(Map<String, dynamic> data) async {
     await _secureStorage.saveUserData(
-      token: data['token'],
-      userId: data['userId'],
-      name: data['name'],
-      email: data['email'],
-      phone: data['phone'],
-      role: data['role'],
+      token: data['token'] ?? '',
+      userId: data['userId'] ?? '',
+      name: data['name'] ?? 'User',
+      email: data['email'] ?? '',
+      phone: data['phone'] ?? '',
+      role: data['role'] ?? 'customer',
     );
     await _localStorage.saveLoggedInUser(
       userId: data['userId'].toString(),
@@ -219,30 +185,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     await _localStorage.clearLoggedInUser();
   }
 
-  // ✅ JWT expiry check (without external package)
   bool _isTokenExpired(String token) {
     try {
       final parts = token.split('.');
       if (parts.length != 3) return true;
-
-      // Decode base64 payload
       String payload = parts[1];
-      // Pad base64 string if needed
-      while (payload.length % 4 != 0) {
-        payload += '=';
-      }
-
-      final decodedBytes = base64Url.decode(payload);
-      final decodedString = utf8.decode(decodedBytes);
-      final Map<String, dynamic> claims = json.decode(decodedString);
-
-      final exp = claims['exp'];
+      while (payload.length % 4 != 0) payload += '=';
+      final decoded = json.decode(utf8.decode(base64Url.decode(payload)));
+      final exp = decoded['exp'];
       if (exp == null) return false;
-
-      final expiry = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
-      return DateTime.now().isAfter(expiry);
+      return DateTime.now().isAfter(
+        DateTime.fromMillisecondsSinceEpoch(exp * 1000),
+      );
     } catch (_) {
-      return true; // Parse fail = treat as expired
+      return true;
     }
   }
 }

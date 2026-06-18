@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBIf3iGlrbhjygX6yL6EQbrSm21iyoKIdc',
-    appId: '1:874341343370:android:2978b593111ece72b2cd73',
-    messagingSenderId: '874341343370',
-    projectId: 'hrms-39d49',
-    storageBucket: 'hrms-39d49.firebasestorage.app',
+    apiKey: 'AIzaSyAmWz_TA5s7We_VsKEkGxBGS2wRp__EZLE',
+    appId: '1:18998557987:android:6c37cbde08c1969235e096',
+    messagingSenderId: '18998557987',
+    projectId: 'minutes-1b3fb',
+    storageBucket: 'minutes-1b3fb.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDTAndr_4U4D0f4N5xMFO1FTmh59Nxf2Gs',
-    appId: '1:874341343370:ios:9087136983f2ee3eb2cd73',
-    messagingSenderId: '874341343370',
-    projectId: 'hrms-39d49',
-    storageBucket: 'hrms-39d49.firebasestorage.app',
-    iosBundleId: 'com.example.hrtzHrms',
+    apiKey: 'AIzaSyCY5S8_FEHnPUSquPz24_3me4BoWPe4XYc',
+    appId: '1:18998557987:ios:96b0bb20f71adf5a35e096',
+    messagingSenderId: '18998557987',
+    projectId: 'minutes-1b3fb',
+    storageBucket: 'minutes-1b3fb.firebasestorage.app',
+    iosBundleId: 'com.delivery90.customer',
   );
+
 }

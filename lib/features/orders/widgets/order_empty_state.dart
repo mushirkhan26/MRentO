@@ -24,7 +24,7 @@ class OrderEmptyState extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  const Icon(Icons.receipt_long_outlined, size: 60, color: AppColors.bluePrimary),
+                  const Icon(Icons.receipt_long_outlined, size: 60, color: AppColors.primaryBlack),
                   Positioned(
                     bottom: 35,
                     left: 30,

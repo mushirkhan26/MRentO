@@ -1,36 +1,108 @@
 import 'package:flutter/material.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../core/models/rental_product_model.dart'; // ← RentalProductModel
 import 'product_badge.dart';
 
 class ProductHeaderSection extends StatelessWidget {
-  const ProductHeaderSection({super.key});
+  final RentalProductModel product; // ← updated
+  const ProductHeaderSection({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Vendor name + rating
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Jodhpur Couture', style: TextStyle(color: AppColors.grey707070, fontSize: 13)),
-            ProductBadge(label: '★ 4.8 · 342 reviews', bgColor: AppColors.lightGreenBadge, textColor: AppColors.primaryDarkGreen),
+            Row(
+              children: [
+                const Icon(
+                  Icons.storefront_outlined,
+                  size: 14,
+                  color: AppColors.grey707070,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  product.vendorName,
+                  style: const TextStyle(
+                    color: AppColors.grey707070,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+            if (product.reviewCount > 0)
+              ProductBadge(
+                label: '★ ${product.rating} · ${product.reviewCount} reviews',
+                bgColor: AppColors.primaryYellow.withValues(alpha: 0.2),
+                textColor: AppColors.primaryDarkYellow,
+              ),
           ],
         ),
         const SizedBox(height: 8),
-        const Text(
-          'Bandhani Silk Kurta Set',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.black121212),
+
+        // Product name
+        Text(
+          product.name,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryBlack,
+          ),
         ),
         const SizedBox(height: 10),
+
+        // Rental pricing row
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const Text('₹2,499', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.black121212)),
-            const SizedBox(width: 10),
-            const Text('₹3,299', style: TextStyle(fontSize: 15, color: AppColors.grey707070, decoration: TextDecoration.lineThrough)),
-            const SizedBox(width: 10),
-            ProductBadge(label: '24% off', bgColor: AppColors.lightGreenBadge, textColor: AppColors.successColor),
+            if (product.rentPerDay != null) ...[
+              Text(
+                '₹${product.rentPerDay!.toInt()}',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryBlack,
+                ),
+              ),
+              const Text(
+                '/din',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.grey707070,
+                ),
+              ),
+            ],
+            if (product.rentFor3Days != null) ...[
+              const SizedBox(width: 12),
+              ProductBadge(
+                label: '3 din: ₹${product.rentFor3Days!.toInt()}',
+                bgColor: AppColors.primaryYellow.withValues(alpha: 0.15),
+                textColor: AppColors.primaryBlack,
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 8),
+
+        // Security deposit info
+        Row(
+          children: [
+            const Icon(
+              Icons.security_outlined,
+              size: 14,
+              color: AppColors.grey707070,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              'Security deposit: ₹${product.securityDeposit.toInt()} (refundable)',
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.grey707070,
+              ),
+            ),
           ],
         ),
       ],

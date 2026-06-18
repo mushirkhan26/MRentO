@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
-import '../../../core/models/product_model.dart';
+import '../../../core/models/rental_product_model.dart'; // ← RentalProductModel
 
 abstract class WishlistState extends Equatable {
   const WishlistState();
-
   @override
   List<Object?> get props => [];
 }
@@ -13,19 +12,15 @@ class WishlistInitial extends WishlistState {}
 class WishlistLoading extends WishlistState {}
 
 class WishlistLoaded extends WishlistState {
-  final List<ProductModel> items;
-
+  final List<RentalProductModel> items; // ← updated
   const WishlistLoaded(this.items);
-
   @override
   List<Object?> get props => [items];
 }
 
 class WishlistError extends WishlistState {
   final String message;
-
   const WishlistError(this.message);
-
   @override
   List<Object?> get props => [message];
 }

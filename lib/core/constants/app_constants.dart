@@ -1,56 +1,66 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppConstants {
   // App Info
-  static const String appName = '90-Min Delivery';
+  static const String appName = 'MRentO';
   static const String appVersion = '1.0.0';
+  static const String appTagline = 'Machinery, 90 min mein';
 
-  // Delivery Constants
+  // Rental Constants
   static const int deliveryTimeMinutes = 90;
-  static const double baseDeliveryFee = 40.0;
-  static const double freeDeliveryThreshold = 500.0;
+  static const double baseDeliveryFee = 49.0;
+  static const double freeDeliveryThreshold = 999.0;
+  static const double defaultSecurityDeposit = 500.0;
 
-  //urls
-  static const String socketbaseurl = String.fromEnvironment(
-    'SOCKET_URL',
-    defaultValue: 'http://localhost:5000',
-  );
+  // URLs
+  static String get socketBaseUrl =>
+      dotenv.env['SOCKET_URL'] ?? 'http://localhost:5000';
 
-  //Images
-  static const String baseImg = "assets/images";
-  static const String logo = "$baseImg/logo.jpg";
+  // Logging
+  static bool get enableLogging => kDebugMode;
+  static const bool enableConsoleLogging = true;
+  static const bool enableColoredConsoleOutput = true;
 
-  // Icons
-  static const String baseIcon = "assets/icons";
-  static const String deleteIcon = "$baseIcon/delete.png";
-  static const String scheduleIcon = "$baseIcon/schedule.png";
-  static const String updateIcon = "$baseIcon/updated.png";
+  // Log Levels
+  static const String logLevelDebug = 'DEBUG';
+  static const String logLevelInfo = 'INFO';
+  static const String logLevelWarning = 'WARNING';
+  static const String logLevelError = 'ERROR';
+  static const String defaultLogLevel = logLevelDebug;
+
+  // Log Categories
+  static const String logCategoryApi = 'API';
+  static const String logCategoryAuth = 'AUTH';
+  static const String logCategoryUI = 'UI';
+  static const String logCategoryStorage = 'STORAGE';
+  static const String logCategoryNetwork = 'NETWORK';
+  static const String logCategoryGeneral = 'GENERAL';
+  static const bool showTimestamp = true;
+  static const bool showLogLevel = true;
+  static const bool showSourceInfo = true;
 
   // UI Constants
   static const double defaultPadding = 16.0;
   static const double smallPadding = 8.0;
   static const double largePadding = 24.0;
-  static const double borderRadius = 8.0;
-  static const double cardElevation = 2.0;
 
-  // Padding Constants
+  // Padding
   static const double paddingXSmall = 4.0;
   static const double paddingSmall = 8.0;
   static const double paddingLSmall = 12.0;
   static const double paddingMedium = 16.0;
-  static const double paddingLMedium = 15.0;
   static const double paddingLarge = 24.0;
   static const double paddingXLarge = 32.0;
 
-  // Spacing Constants
+  // Spacing
   static const double spacingXSmall = 4.0;
   static const double spacingSmall = 8.0;
   static const double spacingMedium = 16.0;
   static const double spacingLarge = 24.0;
   static const double spacingXLarge = 32.0;
 
-  // Auth Constants
-  static const int otpLength = 4;
-
-  // Border Radius Constants
+  // Border Radius
   static const double borderRadiusSmall = 4.0;
   static const double borderRadiusMedium = 8.0;
   static const double borderRadiusLarge = 12.0;
@@ -66,37 +76,21 @@ class AppConstants {
   static const double buttonHeightMedium = 48.0;
   static const double buttonHeightLarge = 56.0;
 
-  // Animation Durations
+  // OTP
+  static const int otpLength = 6;
+
+  // Animation
   static const Duration shortAnimation = Duration(milliseconds: 200);
   static const Duration mediumAnimation = Duration(milliseconds: 400);
   static const Duration longAnimation = Duration(milliseconds: 600);
 
-  // Logging Configuration
-  static const bool enableLogging = true;
-  static const bool enableConsoleLogging = true;
-  static const bool enableColoredConsoleOutput = true;
-
-  // Log Levels
-  static const String logLevelDebug = 'DEBUG';
-  static const String logLevelInfo = 'INFO';
-  static const String logLevelWarning = 'WARNING';
-  static const String logLevelError = 'ERROR';
-  static const String logLevelFatal = 'FATAL';
-
-  // Default log level (DEBUG, INFO, WARNING, ERROR, FATAL)
-  static const String defaultLogLevel = logLevelDebug;
-
-  // Console Logging Configuration
-  static const bool showTimestamp = true;
-  static const bool showLogLevel = true;
-  static const bool showSourceInfo = true;
-  static const String timestampFormat = 'yyyy-MM-dd HH:mm:ss.SSS';
-
-  // Log Categories
-  static const String logCategoryApi = 'API';
-  static const String logCategoryAuth = 'AUTH';
-  static const String logCategoryUI = 'UI';
-  static const String logCategoryStorage = 'STORAGE';
-  static const String logCategoryNetwork = 'NETWORK';
-  static const String logCategoryGeneral = 'GENERAL';
+  // Hardware Categories
+  static const List<Map<String, String>> hardwareCategories = [
+    {'id': 'power-tools', 'name': 'Power Tools', 'icon': 'drill'},
+    {'id': 'construction', 'name': 'Construction', 'icon': 'construction'},
+    {'id': 'lifting', 'name': 'Lifting', 'icon': 'lifting'},
+    {'id': 'cleaning', 'name': 'Cleaning', 'icon': 'cleaning'},
+    {'id': 'measurement', 'name': 'Measurement', 'icon': 'measurement'},
+    {'id': 'gardening', 'name': 'Gardening', 'icon': 'gardening'},
+  ];
 }

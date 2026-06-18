@@ -1,92 +1,125 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const searchBarBgColor = Color(0xffECE6F0);
-  static const surfaceVariant = Color(0xff49454F);
-  // static const primary = Color(0xff009990);
-  static var shadowColor25 = Color(0xff000000).withValues(alpha: 0.25);
-  static const teal = Color(0xff009990);
-  static const facebookBlue = Color(0xff1877F2);
-  static const bottomNavColor = Color(0xffFFFAF6);
-  static const bottomNavIconColor = Color(0xff121212);
-  static const greyA8B5CB = Color(0xffA8B5CB);
-  static const grey808080 = Color(0xff808080);
-  static const grey707070 = Color(0xff707070);
-  static const greyDFDFDF = Color(0xffDFDFDF);
-  static const borderColor = Color(0xffC7C7C7);
-  static const black121212 = Color(0xff121212);
-  static const black151515 = Color(0xff151515);
-  static const black354055 = Color(0xff354055);
-  static const drawerBackground = Color(0xff363846);
-  static const blue699BF7 = Color(0xff699BF7);
-  static const blue02A6A6 = Color(0xff02A6A6);
-  static const beigeFFAF6 = Color(0xffFFFAF6);
-  static var salarySlipTileColor = Color(0xff02A6A6).withValues(alpha: 0.05);
-  static const gray50 = Color(0xffEBECEE);
-  static const gray475467 = Color(0xff475467);
-  static const dividerColor = Color(0xffEAECF0);
-  static var buttonRed = Color(0xffff2323).withValues(alpha: 0.72);
-  static const buttonTeal = Color(0xff62b6b1);
-  static const guardList = Color(0xffd9d9d9);
-  static const messageBox = Color(0xfff0eaf6);
-  static const messageText = Color(0xff363636);
-  static const acceptButton = Color(0xff33d250);
-  static const rejectButton = Color(0xffef5c5c);
-  static const formFields = Color(0xffebebeb);
+  // ─────────────────────────────────────────
+  // MRentO Primary Colors
+  // ─────────────────────────────────────────
+  static const Color primaryYellow = Color(0xFFFFD000);
+  static const Color primaryDarkYellow = Color(0xFFF5A800);
+  static const Color primaryBlack = Color(0xFF1A1A1A);
+  static const Color primaryDarkBlack = Color(0xFF0D0D0D);
+
+  // ─────────────────────────────────────────
+  // Fashion app legacy aliases
+  // (purani files compile hone ke liye — baad mein hata sakte ho)
+  // ─────────────────────────────────────────
+  static const Color primaryDarkGreen = Color(0xFF1A1A1A);   // black se map
+  static const Color primaryAmber = Color(0xFFFFD000);        // yellow se map
+  static const Color lightGreenBadge = Color(0xFFFFF9C4);     // light yellow
+  static const Color darkGreenText = Color(0xFF856404);
+  static const Color successColor = Color(0xFF22C55E);
+
+  // ─────────────────────────────────────────
+  // Background Colors
+  // ─────────────────────────────────────────
+  static const Color background = Color(0xFFF5F5F5);
+  static const Color exploreBackground = Color(0xFFF9F9F7);
+  static const Color cardBackground = Color(0xFFFFFFFF);
+
+  // ─────────────────────────────────────────
   // Status Colors
-  static const Color successColor = Color(0xFF10B981);
+  // ─────────────────────────────────────────
   static const Color warningColor = Color(0xFFF59E0B);
+  static const Color errorRed = Color(0xFFEF4444);
   static const Color infoColor = Color(0xFF3B82F6);
 
-  static const Color primaryAmber = Color(0xFFFDB022);
-  static const Color primaryDarkGreen = Color(0xFF064E3B);
-  static const Color lightGreenBadge = Color(0xFFC6F6D5);
-  static const Color darkGreenText = Color(0xFF22543D);
+  // ─────────────────────────────────────────
+  // Grey Shades
+  // ─────────────────────────────────────────
+  static const Color grey100 = Color(0xFFF3F4F6);
+  static const Color grey200 = Color(0xFFE5E7EB);
+  static const Color grey300 = Color(0xFFD1D5DB);
+  static const Color grey400 = Color(0xFF9CA3AF);
+  static const Color grey500 = Color(0xFF6B7280);
+  static const Color grey600 = Color(0xFF4B5563);
+  static const Color grey707070 = Color(0xFF707070);
+  static const Color grey808080 = Color(0xFF808080);
+  static const Color grey7B7B7B = Color(0xFF7B7B7B);
+  static const Color grey5C5C5C = Color(0xFF5C5C5C);
   static const Color greyOutline = Color(0xFFD0D5DD);
+  static const Color greyE5E7EB = Color(0xFFE5E7EB);
+  static const Color greyDFDFDF = Color(0xFFDFDFDF);
+  static const Color greyAAAAAA = Color(0xFFAAAAAA);
+  static const Color greyDBDDE1 = Color(0xFFDBDDE1);
+  static const Color greyD9D9D9 = Color(0xFFD9D9D9);
+  static const Color dividerD9D9D9 = Color(0xFFD9D9D9);
 
-  static const blue = Color(0xff2F82EF);
-  static const blue00ABE9 = Color(0xff00ABE9);
-  static const background = Color(0xffF0F4FF);
-  static const backgroundDCEBFF = Color(0xffDCEBFF);
-  static const activeGreen = Color(0xff12DD1B);
-  static const inActiveRed = Color(0xffF31111);
+  // ─────────────────────────────────────────
+  // Category Colors — Hardware
+  // ─────────────────────────────────────────
+  static const Color categoryPowerBg = Color(0xFFFFF3CD);
+  static const Color categoryPowerText = Color(0xFF856404);
+  static const Color categoryConstructionBg = Color(0xFFFFE0B2);
+  static const Color categoryConstructionText = Color(0xFFE65100);
+  static const Color categoryLiftingBg = Color(0xFFE3F2FD);
+  static const Color categoryLiftingText = Color(0xFF1565C0);
+  static const Color categoryCleaningBg = Color(0xFFE8F5E9);
+  static const Color categoryCleaningText = Color(0xFF2E7D32);
+  static const Color categoryMeasurementBg = Color(0xFFF3E5F5);
+  static const Color categoryMeasurementText = Color(0xFF6A1B9A);
 
-  static var shadowColor = Colors.black.withValues(alpha: 0.25);
-  static const errorRed = Color(0xffF31111);
-  static const marketingNavBarColor = Color(0xff0058CC);
+  // ─────────────────────────────────────────
+  // Legacy Category Colors (fashion se)
+  // ─────────────────────────────────────────
+  static const Color categoryWomenBg = Color(0xFFFFE5EC);
+  static const Color categoryWomenText = Color(0xFFD63384);
+  static const Color categoryMenBg = Color(0xFFE2F0D9);
+  static const Color categoryMenText = Color(0xFF388E3C);
+  static const Color categoryBridalBg = Color(0xFFFFF4E5);
+  static const Color categoryBridalText = Color(0xFFE67E22);
+  static const Color categoryLocalBg = Color(0xFFE8EAF6);
+  static const Color categoryLocalText = Color(0xFF3F51B5);
 
-  static const dividerD9D9D9 = Color(0xffD9D9D9);
-  static const grey5C5C5C = Color(0xff5C5C5C);
-  static const blue4A76CD = Color(0xff4A76CD);
-  static const grey525252 = Color(0xff525252);
-  static const greyDBDDE1 = Color(0xffDBDDE1);
-  static var foregroundMutedGrey = Color(0xffAAAAAA);
-  static var helperOrange = Color(0xffDF6D14);
-  static const redF11515 = Color(0xffF11515);
-  static const senderMessageBubbleColor = Color(0xff00ABE9);
-  static const bluePrimary = Color(0xff1976D2);
-  static const grey7B7B7B = Color(0xff7B7B7B);
-  static const greyAAAAAA = Color(0xffAAAAAA);
-  static const greyD9D9D9 = Color(0xffD9D9D9);
-  static const greyE5E7EB = Color(0xffE5E7EB);
-  static const green22C55E = Color(0xff22C55E);
-  static var black60opac = Color(0xff000000).withValues(alpha: 0.60);
-  static var backgroundEEEDED = Color(0xffEEEDED).withValues(alpha: 0.46);
-  static const blue0056FB = Color(0xff0056FB);
-  static const greyB2BACD = Color(0xffB2BACD);
-  static const grey474747 = Color(0xff474747);
-  static const black2E2E2E = Color(0xff2E2E2E);
-  static const recieverMessageBubble = Color(0xffF2F2F2);
+  // ─────────────────────────────────────────
+  // Badge Colors
+  // ─────────────────────────────────────────
+  static const Color lightYellowBadge = Color(0xFFFFF9C4);
+  static const Color darkYellowText = Color(0xFF856404);
 
-  // Explore Screen Colors
-  static const categoryWomenBg = Color(0xFFFFE5EC);
-  static const categoryWomenText = Color(0xFFD63384);
-  static const categoryMenBg = Color(0xFFE2F0D9);
-  static const categoryMenText = Color(0xFF388E3C);
-  static const categoryBridalBg = Color(0xFFFFF4E5);
-  static const categoryBridalText = Color(0xFFE67E22);
-  static const categoryLocalBg = Color(0xFFE8EAF6);
-  static const categoryLocalText = Color(0xFF3F51B5);
-  static const trendingChipBg = Colors.white;
-  static const exploreBackground = Color(0xFFF9F9F7);
+  // ─────────────────────────────────────────
+  // Misc
+  // ─────────────────────────────────────────
+  static const Color dividerColor = Color(0xFFEAECF0);
+  static const Color black121212 = Color(0xFF121212);
+  static const Color black151515 = Color(0xFF151515);
+  static const Color black2E2E2E = Color(0xFF2E2E2E);
+  static const Color black354055 = Color(0xFF354055);
+  static const Color bottomNavIconColor = Color(0xFF121212);
+  static const Color bottomNavColor = Color(0xFFFFFAF6);
+  static const Color blue0056FB = Color(0xFF0056FB);
+  static const Color blue4A76CD = Color(0xFF4A76CD);
+  static const Color blue699BF7 = Color(0xFF699BF7);
+  static const Color blue = Color(0xFF2F82EF);
+  static const Color blue00ABE9 = Color(0xFF00ABE9);
+  static const Color activeGreen = Color(0xFF12DD1B);
+  static const Color green22C55E = Color(0xFF22C55E);
+  static const Color gray50 = Color(0xFFEBECEE);
+  static const Color gray475467 = Color(0xFF475467);
+  static const Color trendingChipBg = Colors.white;
+  static const Color searchBarBgColor = Color(0xFFECE6F0);
+  static const Color formFields = Color(0xFFEBEBEB);
+  static const Color borderColor = Color(0xFFC7C7C7);
+  static const Color redF11515 = Color(0xFFF11515);
+  static const Color greyB2BACD = Color(0xFFB2BACD);
+  static const Color grey474747 = Color(0xFF474747);
+  static const Color greyA8B5CB = Color(0xFFA8B5CB);
+
+  static var shadowColor = Colors.black.withValues(alpha: 0.15);
+  static var shadowColor25 = Colors.black.withValues(alpha: 0.25);
+  static var black60opac = Colors.black.withValues(alpha: 0.60);
+  static var foregroundMutedGrey = const Color(0xFFAAAAAA);
+  static var helperOrange = const Color(0xFFDF6D14);
+  static var salarySlipTileColor = const Color(0xFF02A6A6).withValues(alpha: 0.05);
+  static var backgroundEEEDED = const Color(0xFFEEEDED).withValues(alpha: 0.46);
+  static var buttonRed = const Color(0xFFFF2323).withValues(alpha: 0.72);
 }

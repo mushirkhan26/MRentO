@@ -1,32 +1,13 @@
 {
   "project_info": {
-    "project_number": "874341343370",
-    "project_id": "hrms-39d49",
-    "storage_bucket": "hrms-39d49.firebasestorage.app"
+    "project_number": "18998557987",
+    "project_id": "minutes-1b3fb",
+    "storage_bucket": "minutes-1b3fb.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:874341343370:android:2978b593111ece72b2cd73",
-        "android_client_info": {
-          "package_name": "com.example.hrtz_hrms"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBIf3iGlrbhjygX6yL6EQbrSm21iyoKIdc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:874341343370:android:562ecdf0edb2fbf4b2cd73",
+        "mobilesdk_app_id": "1:18998557987:android:6c37cbde08c1969235e096",
         "android_client_info": {
           "package_name": "com.delivery90.customer"
         }
@@ -34,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBIf3iGlrbhjygX6yL6EQbrSm21iyoKIdc"
+          "current_key": "AIzaSyAmWz_TA5s7We_VsKEkGxBGS2wRp__EZLE"
         }
       ],
       "services": {

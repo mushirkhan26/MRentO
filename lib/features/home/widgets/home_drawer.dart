@@ -54,7 +54,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        '90-min Delivery',
+                        'MRentO',
                         style: TextStyle(
                           color: Colors.white70,
                           fontSize: 14,

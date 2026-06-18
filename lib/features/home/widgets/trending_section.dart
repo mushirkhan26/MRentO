@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../config/theme/app_colors.dart';
-import '../../../core/models/product_model.dart';
+import '../../../core/models/rental_product_model.dart';
 import 'product_card.dart';
 
 class TrendingSection extends StatelessWidget {
-  final List<ProductModel> products;
+  final List<RentalProductModel> products;
   const TrendingSection({super.key, required this.products});
 
   @override

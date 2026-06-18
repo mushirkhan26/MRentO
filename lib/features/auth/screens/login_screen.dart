@@ -24,7 +24,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _mobileController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  
+
   // Track recognizers for disposal to prevent memory leaks
   final List<TapGestureRecognizer> _gestureRecognizers = [];
   String? _mobileError;
@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const AuthHeader(
                                     title: '90-Minutes',
                                     subtitle:
-                                        'Your Wardrobe, Delivered in\n90 Mins',
+                                    'Your Wardrobe, Delivered in\n90 Mins',
                                   ),
                                   MobileNumberInput(
                                     controller: _mobileController,
