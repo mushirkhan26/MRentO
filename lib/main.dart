@@ -34,6 +34,8 @@ import 'package:MRentO/firebase_options.dart';
 import 'features/home/bloc/category_bloc.dart';
 import 'features/home/bloc/banner_bloc.dart';
 import 'features/home/bloc/banner_event.dart';
+import 'features/home/bloc/location_bloc.dart';
+import 'features/home/bloc/location_event.dart';
 import 'features/notification/bloc/notification_bloc.dart';
 import 'features/notification/bloc/notification_event.dart';
 
@@ -83,6 +85,9 @@ void main() async {
         ),
         BlocProvider<CategoryBloc>(
           create: (context) => CategoryBloc(),
+        ),
+        BlocProvider(
+          create: (_) => LocationBloc()..add(const FetchLocation()),
         ),
         BlocProvider(create: (_) => BannerBloc()..add(FetchBanners())),
         BlocProvider(create: (_) => NotificationBloc()),

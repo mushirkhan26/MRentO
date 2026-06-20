@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../config/theme/app_colors.dart';
+import '../bloc/tracking_bloc.dart';
+import '../bloc/tracking_state.dart';
 import '../screens/order_tracking_screen.dart';
 
 class LiveMapViewer extends StatefulWidget {
@@ -74,29 +77,39 @@ class _LiveMapViewerState extends State<LiveMapViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final riderPos = _getRiderPosition();
+    return BlocBuilder<TrackingBloc, TrackingState>(
+      builder: (context, state) {
+        LatLng riderPos = _getRiderPosition();
 
-    // Add/Update rider marker
-    _markers.add(
-      Marker(
-        markerId: const MarkerId('rider'),
-        position: riderPos,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-        infoWindow: const InfoWindow(title: 'Rider'),
-      ),
-    );
+        if (state is TrackingActive && state.latitude != 0 && state.longitude != 0) {
+          riderPos = LatLng(state.latitude, state.longitude);
+          // Optional: Animate camera to rider position
+          _controller.animateCamera(CameraUpdate.newLatLng(riderPos));
+        }
 
-    return GoogleMap(
-      initialCameraPosition: const CameraPosition(
-        target: _storeLocation,
-        zoom: 13,
-      ),
-      markers: _markers,
-      polylines: _polylines,
-      onMapCreated: (controller) => _controller = controller,
-      myLocationButtonEnabled: false,
-      zoomControlsEnabled: false,
-      mapToolbarEnabled: false,
+        // Add/Update rider marker
+        _markers.add(
+          Marker(
+            markerId: const MarkerId('rider'),
+            position: riderPos,
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+            infoWindow: const InfoWindow(title: 'Rider'),
+          ),
+        );
+
+        return GoogleMap(
+          initialCameraPosition: const CameraPosition(
+            target: _storeLocation,
+            zoom: 13,
+          ),
+          markers: _markers,
+          polylines: _polylines,
+          onMapCreated: (controller) => _controller = controller,
+          myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
+          mapToolbarEnabled: false,
+        );
+      },
     );
   }
 }

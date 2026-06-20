@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../core/models/order_model.dart';
 import '../../../core/services/firestore_order_service.dart';
+import '../bloc/tracking_bloc.dart';
+import '../bloc/tracking_event.dart';
 import '../widgets/live_map_viewer.dart';
 import '../widgets/tracking_status_sheet.dart';
 
@@ -19,11 +22,22 @@ class OrderTrackingScreen extends StatefulWidget {
 class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   final FirestoreOrderService _orderService = FirestoreOrderService();
 
+  @override
+  void initState() {
+    super.initState();
+    context.read<TrackingBloc>().add(StartTracking(widget.orderId));
+  }
+
+  @override
+  void dispose() {
+    context.read<TrackingBloc>().add(StopTracking());
+    super.dispose();
+  }
+
   DeliveryStage _mapStage(OrderStatus? status) {
     switch (status) {
       case OrderStatus.pending:
       case OrderStatus.confirmed:
-      case OrderStatus.dispatched:
         return DeliveryStage.preparing;
       case OrderStatus.dispatched:
         return DeliveryStage.eightMin;

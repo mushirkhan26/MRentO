@@ -10,8 +10,12 @@ import '../bloc/product_event.dart';
 import '../bloc/product_state.dart';
 import '../bloc/banner_bloc.dart';
 import '../bloc/banner_state.dart';
+import '../bloc/location_bloc.dart';
+import '../bloc/location_state.dart';
 import '../../search/bloc/search_bloc.dart';
 import '../../search/bloc/search_event.dart';
+
+import '../widgets/location_picker_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +26,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategoryIndex = 0;
-  String _currentLocation = 'Jodhpur, Rajasthan';
 
   @override
   void initState() {
@@ -68,87 +71,105 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-      color: AppColors.primaryBlack,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<LocationBloc, LocationState>(
+      builder: (context, state) {
+        String displayLocation = 'Detecting...';
+        if (state is LocationLoaded) {
+          displayLocation = state.address;
+        } else if (state is LocationError) {
+          displayLocation = 'Tap to set';
+        }
+
+        return Container(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          color: AppColors.primaryBlack,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () => _showLocationPicker(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Deliver karein',
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _showLocationPicker(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Deliver karein',
+                            style: TextStyle(
+                              color: Colors.white60,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  displayLocation,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.keyboard_arrow_down,
+                                color: AppColors.primaryYellow,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          _currentLocation,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Icon(
-                          Icons.keyboard_arrow_down,
-                          color: AppColors.primaryYellow,
-                          size: 20,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryYellow,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.timer_outlined,
-                            size: 14, color: AppColors.primaryBlack),
-                        SizedBox(width: 4),
-                        Text(
-                          '90 Min',
-                          style: TextStyle(
-                            color: AppColors.primaryBlack,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.notifications_outlined,
-                        color: Colors.white),
-                    onPressed: () => context.push(AppRoutes.notifications),
+                  const SizedBox(width: 12),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryYellow,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.timer_outlined,
+                                size: 14, color: AppColors.primaryBlack),
+                            SizedBox(width: 4),
+                            Text(
+                              '90 Min',
+                              style: TextStyle(
+                                color: AppColors.primaryBlack,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Icons.notifications_outlined,
+                            color: Colors.white),
+                        onPressed: () => context.push(AppRoutes.notifications),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -312,40 +333,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showLocationPicker() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Apni Location Chunein',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              ListTile(
-                leading: const Icon(Icons.my_location, color: AppColors.primaryYellow),
-                title: const Text('Current Location use karein'),
-                onTap: () {
-                  // TODO: Integration with Geolocator
-                  Navigator.pop(context);
-                },
-              ),
-              const Divider(),
-              ...['Jodhpur', 'Jaipur', 'Udaipur', 'Ajmer'].map((city) => ListTile(
-                title: Text(city),
-                onTap: () {
-                  setState(() => _currentLocation = '$city, Rajasthan');
-                  Navigator.pop(context);
-                },
-              )),
-            ],
-          ),
-        ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const FractionallySizedBox(
+        heightFactor: 0.85,
+        child: LocationPickerSheet(),
       ),
     );
   }

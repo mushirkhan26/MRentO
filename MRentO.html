@@ -98,6 +98,7 @@
     <li>Feature Modules</li>
     <li>Key Packages Summary</li>
     <li>Architecture Diagram</li>
+    <li>Pending Tasks & Roadmap</li>
   </ol>
 </div>
 
@@ -276,6 +277,34 @@
 
 <div class="info-box">
   <strong>Note:</strong> The app is optimized for a 90-minute machinery delivery window. Real-time features are crucial for customer satisfaction in the on-demand machinery rental space.
+</div>
+
+<!-- 15. PENDING TASKS -->
+<h2><span class="num">15</span> Pending Tasks & Roadmap</h2>
+<p>The following tasks are identified as critical for the production-ready release of the MRentO application.</p>
+
+<div class="grid-2">
+  <div class="card">
+    <h4>📱 Frontend (Flutter)</h4>
+    <ul>
+      <li><strong>Geolocator Integration:</strong> Connect home screen to device GPS for auto-location detection.</li>
+      <li><strong>Live Map Sync:</strong> Replace simulated movements in <code>LiveMapViewer</code> with real <code>TrackingBloc</code> data.</li>
+      <li><strong>Algolia Search:</strong> Finalize <code>AlgoliaSearchService</code> for high-performance equipment discovery.</li>
+      <li><strong>Address Book:</strong> Implement "Edit Address" dialog and backend sync.</li>
+      <li><strong>Payment Gateway:</strong> Integrate Razorpay/Stripe for security deposits and rent payments.</li>
+      <li><strong>Push Deep-linking:</strong> Navigate to order tracking screen directly from FCM notifications.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>⚙️ Backend (Node.js/Socket)</h4>
+    <ul>
+      <li><strong>Production Hosting:</strong> Move from <code>localhost</code> to AWS/DigitalOcean deployment.</li>
+      <li><strong>Socket Relay logic:</strong> Implement <code>driverLocationUpdate</code> event logic to broadcast rider positions.</li>
+      <li><strong>Order Lifecycle API:</strong> Endpoints for transitions (Dispatched → Delivered → Return Picked).</li>
+      <li><strong>Algolia Sync:</strong> Firestore triggers to update search index on product changes.</li>
+      <li><strong>Admin Dashboard:</strong> Web interface for machinery inventory and delivery partner onboarding.</li>
+    </ul>
+  </div>
 </div>
 
 </div><!-- end container -->

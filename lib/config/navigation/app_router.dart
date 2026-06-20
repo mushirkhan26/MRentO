@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/models/address_model.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/verify_otp_screen.dart';
 import '../../features/home/screens/mrento_home_screen.dart';
@@ -14,6 +15,7 @@ import '../../features/search/screens/search_screen.dart';
 import '../../features/tracking/screens/order_tracking_screen.dart';
 import '../../features/notification/screens/notification_screen.dart';
 import '../../features/settings/screens/address_book_screen.dart';
+import '../../features/settings/screens/edit_address_screen.dart';
 import '../../core/models/rental_product_model.dart'; // ← RentalProductModel
 import '../../splash_screen.dart';
 import 'app_routes.dart';
@@ -116,6 +118,14 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.addressBook,
       name: 'address-book',
       builder: (context, state) => const AddressBookScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.editAddress,
+      name: 'edit-address',
+      builder: (context, state) {
+        final address = state.extra as AddressModel;
+        return EditAddressScreen(address: address);
+      },
     ),
   ],
 );
