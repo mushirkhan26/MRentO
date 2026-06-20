@@ -8,6 +8,10 @@ import '../bloc/category_bloc.dart';
 import '../bloc/product_bloc.dart';
 import '../bloc/product_event.dart';
 import '../bloc/product_state.dart';
+import '../bloc/banner_bloc.dart';
+import '../bloc/banner_state.dart';
+import '../../search/bloc/search_bloc.dart';
+import '../../search/bloc/search_event.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategoryIndex = 0;
+  String _currentLocation = 'Jodhpur, Rajasthan';
 
   @override
   void initState() {
@@ -31,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
+      value: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: AppColors.primaryDarkGreen,
       ),
       child: Scaffold(
         backgroundColor: AppColors.background,
@@ -72,35 +77,38 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Deliver karein',
-                    style: TextStyle(
-                      color: Colors.white60,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+              GestureDetector(
+                onTap: () => _showLocationPicker(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Deliver karein',
+                      style: TextStyle(
+                        color: Colors.white60,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        'Jodhpur, Rajasthan',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      children: [
+                        Text(
+                          _currentLocation,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: AppColors.primaryYellow,
-                        size: 20,
-                      ),
-                    ],
-                  ),
-                ],
+                        const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: AppColors.primaryYellow,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               Row(
                 children: [
@@ -115,7 +123,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: const Row(
                       children: [
-                        Icon(Icons.timer_outlined, size: 14, color: AppColors.primaryBlack),
+                        Icon(Icons.timer_outlined,
+                            size: 14, color: AppColors.primaryBlack),
                         SizedBox(width: 4),
                         Text(
                           '90 Min',
@@ -130,8 +139,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                    onPressed: () {},
+                    icon: const Icon(Icons.notifications_outlined,
+                        color: Colors.white),
+                    onPressed: () => context.push(AppRoutes.notifications),
                   ),
                 ],
               ),
@@ -191,71 +201,151 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPromoBanner() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: const LinearGradient(
-          colors: [AppColors.primaryBlack, Color(0xFF2D2D2D)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryYellow,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'PEHLA ORDER',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryBlack,
+    return BlocBuilder<BannerBloc, BannerState>(
+      builder: (context, state) {
+        if (state is BannerLoading) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            height: 150,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (state is BannerLoaded && state.banners.isNotEmpty) {
+          return SizedBox(
+            height: 160,
+            child: PageView.builder(
+              itemCount: state.banners.length,
+              itemBuilder: (context, index) {
+                final banner = state.banners[index];
+                return GestureDetector(
+                  onTap: () {
+                    // Logic to handle redirection
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: DecorationImage(
+                        image: NetworkImage(banner.imageUrl),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'FREE Delivery\nPehle order pe!',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                GestureDetector(
-                  onTap: () {},
-                  child: const Text(
-                    'Abhi rent karo →',
-                    style: TextStyle(
-                      color: AppColors.primaryYellow,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+                );
+              },
+            ),
+          );
+        }
+
+        // Fallback banner if Firestore is empty
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          height: 150,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              colors: [AppColors.primaryBlack, Color(0xFF2D2D2D)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
-          const Icon(
-            Icons.construction,
-            size: 80,
-            color: AppColors.primaryYellow,
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryYellow,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        'PEHLA ORDER',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryBlack,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'FREE Delivery\nPehle order pe!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.construction,
+                size: 80,
+                color: AppColors.primaryYellow,
+              ),
+            ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  void _showLocationPicker() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Apni Location Chunein',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              ListTile(
+                leading: const Icon(Icons.my_location, color: AppColors.primaryYellow),
+                title: const Text('Current Location use karein'),
+                onTap: () {
+                  // TODO: Integration with Geolocator
+                  Navigator.pop(context);
+                },
+              ),
+              const Divider(),
+              ...['Jodhpur', 'Jaipur', 'Udaipur', 'Ajmer'].map((city) => ListTile(
+                title: Text(city),
+                onTap: () {
+                  setState(() => _currentLocation = '$city, Rajasthan');
+                  Navigator.pop(context);
+                },
+              )),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -306,9 +396,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   return GestureDetector(
                     onTap: () {
                       setState(() => _selectedCategoryIndex = index);
-                      context.read<ProductBloc>().add(
-                        FetchProductsByCategory(category.id),
-                      );
+                      // Feature: Navigate to search with category filter
+                      context.read<SearchBloc>().add(SearchQueryChanged(category.name));
+                      context.push(AppRoutes.searchRoute);
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),

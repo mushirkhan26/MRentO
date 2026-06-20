@@ -5,6 +5,8 @@ import '../../../config/theme/app_colors.dart';
 import '../../../core/models/rental_product_model.dart'; // ← RentalProductModel
 import '../../../core/models/cart_model.dart';
 import '../../../core/utils/alert_utils.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_state.dart';
 import '../../cart/bloc/cart_bloc.dart';
 import '../../cart/bloc/cart_event.dart';
 import '../../wishlist/bloc/wishlist_bloc.dart';
@@ -89,25 +91,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
         centerTitle: true,
         actions: [
-          BlocBuilder<WishlistBloc, WishlistState>(
-            builder: (context, state) {
-              final isWishlisted = state is WishlistLoaded &&
-                  state.items.any((i) => i.id == widget.product.id);
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, authState) {
+              final String? userId = authState is AuthAuthenticated ? authState.user.id : null;
+              
+              return BlocBuilder<WishlistBloc, WishlistState>(
+                builder: (context, state) {
+                  final isWishlisted = state is WishlistLoaded &&
+                      state.items.any((i) => i.id == widget.product.id);
 
-              return _circleIconButton(
-                isWishlisted ? Icons.favorite : Icons.favorite_border,
+                  return _circleIconButton(
+                    isWishlisted ? Icons.favorite : Icons.favorite_border,
                     () {
-                  context
-                      .read<WishlistBloc>()
-                      .add(ToggleWishlist(widget.product));
-                  AlertHelper.snackBarSuccess(
-                    context,
-                    isWishlisted
-                        ? 'Wishlist se hataya'
-                        : 'Wishlist mein add kiya',
+                      if (userId == null) {
+                        AlertHelper.snackBarWarning(context, 'Pehle login karein');
+                        return;
+                      }
+                      context
+                          .read<WishlistBloc>()
+                          .add(ToggleWishlist(userId: userId, product: widget.product));
+                      AlertHelper.snackBarSuccess(
+                        context,
+                        isWishlisted
+                            ? 'Wishlist se hataya'
+                            : 'Wishlist mein add kiya',
+                      );
+                    },
+                    iconColor: isWishlisted ? Colors.red : AppColors.primaryBlack,
                   );
                 },
-                iconColor: isWishlisted ? Colors.red : AppColors.primaryBlack,
               );
             },
           ),
@@ -159,7 +171,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ProductDetailsInfo(product: widget.product),
                         const SizedBox(height: 32),
 
-                        const ReviewSection(),
+                        ReviewSection(productId: widget.product.id),
                         const SizedBox(height: 40),
                       ],
                     ),

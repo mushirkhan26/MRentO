@@ -24,8 +24,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _mobileController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  // Track recognizers for disposal to prevent memory leaks
   final List<TapGestureRecognizer> _gestureRecognizers = [];
   String? _mobileError;
 
@@ -41,11 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleLogin() {
     final mobile = _mobileController.text.trim();
     final error = Validators.validatePhone(mobile);
-
-    setState(() {
-      _mobileError = error;
-    });
-
+    setState(() => _mobileError = error);
     if (error == null) {
       context.read<AuthBloc>().add(LoginRequested(mobile));
     }
@@ -55,9 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await UrlLauncherHelper.launchUrlString(url);
     } catch (e) {
-      if (mounted) {
-        AlertHelper.snackBarError(context, 'Could not open link');
-      }
+      if (mounted) AlertHelper.snackBarError(context, 'Could not open link');
     }
   }
 
@@ -94,19 +86,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             Expanded(
                               child: Column(
                                 children: [
+                                  // ✅ Updated title & subtitle
                                   const AuthHeader(
-                                    title: '90-Minutes',
+                                    title: 'MRentO',
                                     subtitle:
-                                    'Your Wardrobe, Delivered in\n90 Mins',
+                                    'Tools & Machines\nRent Karo Aasani Se',
                                   ),
                                   MobileNumberInput(
                                     controller: _mobileController,
                                     errorText: _mobileError,
                                     onChanged: (value) {
                                       if (_mobileError != null) {
-                                        setState(() {
-                                          _mobileError = null;
-                                        });
+                                        setState(() => _mobileError = null);
                                       }
                                     },
                                   ),
@@ -156,16 +147,13 @@ class _LoginScreenState extends State<LoginScreen> {
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-            height: 1.5,
-          ),
+          style: const TextStyle(fontSize: 12, color: Colors.grey, height: 1.5),
           children: [
             const TextSpan(text: 'By continuing, you agree to our\n'),
-            _linkText('Terms & Conditions', 'https://luxedrop.in/terms'),
+            // ✅ Updated links
+            _linkText('Terms & Conditions', 'https://mrento.in/terms'),
             const TextSpan(text: ' and '),
-            _linkText('Privacy Policy', 'https://luxedrop.in/privacy'),
+            _linkText('Privacy Policy', 'https://mrento.in/privacy'),
           ],
         ),
       ),
@@ -176,7 +164,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final recognizer = TapGestureRecognizer()
       ..onTap = () => _launchUrl(url);
     _gestureRecognizers.add(recognizer);
-
     return TextSpan(
       text: text,
       style: const TextStyle(

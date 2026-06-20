@@ -1,15 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/models/rental_product_model.dart'; // ← RentalProductModel
-import '../../../core/services/local_storage_service.dart';
+import '../../../core/models/rental_product_model.dart';
+import '../../../core/services/firestore_wishlist_service.dart';
 import 'wishlist_event.dart';
 import 'wishlist_state.dart';
-import 'dart:convert';
+
 
 class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
-  final LocalStorageService _localStorage = LocalStorageService();
-  static const String _wishlistKey = 'cached_wishlist';
+  final FirestoreWishlistService _wishlistService;
 
-  WishlistBloc() : super(WishlistInitial()) {
+  WishlistBloc({FirestoreWishlistService? wishlistService})
+      : _wishlistService = wishlistService ?? FirestoreWishlistService(),
+        super(WishlistInitial()) {
     on<LoadWishlist>(_onLoadWishlist);
     on<ToggleWishlist>(_onToggleWishlist);
     on<ClearWishlist>(_onClearWishlist);
@@ -20,18 +21,11 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
       Emitter<WishlistState> emit,
       ) async {
     emit(WishlistLoading());
-    try {
-      final jsonStr = await _localStorage.getString(_wishlistKey);
-      if (jsonStr != null) {
-        final List<dynamic> list = jsonDecode(jsonStr);
-        // ← RentalProductModel.fromJson
-        final items = list.map((j) => RentalProductModel.fromJson(j)).toList();
-        emit(WishlistLoaded(items));
-      } else {
-        emit(const WishlistLoaded([]));
-      }
-    } catch (e) {
-      emit(const WishlistError('Wishlist load nahi hui'));
+    final response = await _wishlistService.getWishlist(event.userId);
+    if (response.success && response.data != null) {
+      emit(WishlistLoaded(response.data!));
+    } else {
+      emit(WishlistError(response.message ?? 'Wishlist load nahi hui'));
     }
   }
 
@@ -45,24 +39,37 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
       final index = currentItems.indexWhere((i) => i.id == event.product.id);
 
       if (index != -1) {
-        currentItems.removeAt(index);
+        // Remove from Firestore
+        final response = await _wishlistService.removeFromWishlist(event.userId, event.product.id);
+        if (response.success) {
+          currentItems.removeAt(index);
+          emit(WishlistLoaded(currentItems));
+        }
       } else {
-        currentItems.add(event.product);
+        // Add to Firestore
+        final response = await _wishlistService.addToWishlist(event.userId, event.product);
+        if (response.success) {
+          currentItems.add(event.product);
+          emit(WishlistLoaded(currentItems));
+        }
       }
-
-      await _localStorage.saveString(
-        _wishlistKey,
-        jsonEncode(currentItems.map((i) => i.toJson()).toList()),
-      );
-      emit(WishlistLoaded(currentItems));
     }
+  }
+
+  Future<void> _onToggleWishlistSync(
+      ToggleWishlist event,
+      Emitter<WishlistState> emit,
+      ) async {
+    // Optional: Optimistic UI update could be added here
   }
 
   Future<void> _onClearWishlist(
       ClearWishlist event,
       Emitter<WishlistState> emit,
       ) async {
-    await _localStorage.removeString(_wishlistKey);
-    emit(const WishlistLoaded([]));
+    final response = await _wishlistService.clearWishlist(event.userId);
+    if (response.success) {
+      emit(const WishlistLoaded([]));
+    }
   }
 }

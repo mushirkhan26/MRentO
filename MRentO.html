@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>90-minutes App — Full Stack Architecture Report</title>
+<title>MRentO App — Full Stack Architecture Report</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -68,11 +68,11 @@
 
 <!-- COVER -->
 <div class="cover">
-  <h1>🛍️ 90-minutes App</h1>
+  <h1>🏗️ MRentO App</h1>
   <div class="subtitle">Complete Full-Stack Architecture & Technical Analysis Report</div>
   <div class="meta">
-    <span>📱 Flutter Mobile App (E-commerce)</span>
-    <span>📅 May 2026</span>
+    <span>📱 Flutter Mobile App (Machinery Rental)</span>
+    <span>📅 June 2026</span>
     <span>🔖 Version 1.0.0</span>
     <span>🌐 Android + iOS</span>
   </div>
@@ -93,7 +93,7 @@
     <li>Push Notifications</li>
     <li>Navigation System</li>
     <li>Firebase Integration</li>
-    <li>Theme & UI (Quick-Commerce)</li>
+    <li>Theme & UI (Rental Quick-Commerce)</li>
     <li>Authentication Flow (Mobile OTP)</li>
     <li>Feature Modules</li>
     <li>Key Packages Summary</li>
@@ -103,12 +103,12 @@
 
 <!-- 1. OVERVIEW -->
 <h2><span class="num">1</span> Project Overview</h2>
-<p><strong>90-minutes</strong> is a high-performance <strong>Quick-Commerce (Q-Commerce)</strong> application for fashion, inspired by platforms like Blinkit and Instamart. It focuses on ultra-fast delivery of Men's, Women's, and Kids' fashion items, featuring a seamless shopping experience and real-time order tracking.</p>
+<p><strong>MRentO</strong> is a high-performance <strong>Quick-Commerce (Q-Commerce)</strong> application for machinery rental. It focuses on ultra-fast delivery of Power Tools, Construction equipment, and Gardening machinery within a 90-minute window, featuring a seamless rental experience and real-time order tracking.</p>
 
 <table>
   <tr><th>Property</th><th>Value</th></tr>
-  <tr><td>App Name</td><td>90-minutes</td></tr>
-  <tr><td>Category</td><td>E-commerce / Fashion</td></tr>
+  <tr><td>App Name</td><td>MRentO</td></tr>
+  <tr><td>Category</td><td>Rental / Machinery</td></tr>
   <tr><td>Version</td><td>1.0.0</td></tr>
   <tr><td>Framework</td><td>Flutter (Dart SDK ^3.9.0)</td></tr>
   <tr><td>Platforms</td><td>Android + iOS</td></tr>
@@ -133,12 +133,12 @@
 │
 ├── <span class="val">features/</span>            <span class="comment"># Module-based features</span>
 │   ├── auth/            <span class="comment"># Mobile Login & Signup (Unified)</span>
-│   ├── home/            <span class="comment"># Category-based discovery (Men/Women/Kids)</span>
-│   ├── search/          <span class="comment"># Smart product search</span>
-│   ├── cart/            <span class="comment"># Cart management & Checkout</span>
+│   ├── home/            <span class="comment"># Machinery discovery (Power Tools/Construction/Gardening)</span>
+│   ├── search/          <span class="comment"># Smart machinery search</span>
+│   ├── cart/            <span class="comment"># Rental cart management & Checkout</span>
 │   ├── wishlist/        <span class="comment"># Saved items</span>
 │   ├── profile/         <span class="comment"># User account & settings</span>
-│   └── tracking/        <span class="comment"># Live order status tracking</span>
+│   └── tracking/        <span class="comment"># Live rental status tracking</span>
 │
 └── <span class="val">widgets/</span>             <span class="comment"># Reusable UI components</span></div>
 
@@ -151,11 +151,11 @@
 <table>
   <tr><th>BLoC / Cubit</th><th>Responsibility</th><th>Scope</th></tr>
   <tr><td>AuthBloc</td><td>Mobile OTP login, registration, and session management</td><td><span class="badge badge-blue">Global</span></td></tr>
-  <tr><td>CartBloc</td><td>Managing cart items, quantity updates, and price calculations</td><td><span class="badge badge-blue">Global</span></td></tr>
-  <tr><td>ProductBloc</td><td>Fetching products by category (Men/Women/Kids)</td><td><span class="badge badge-green">Feature</span></td></tr>
+  <tr><td>CartBloc</td><td>Managing rental items, quantity updates, and price calculations</td><td><span class="badge badge-blue">Global</span></td></tr>
+  <tr><td>ProductBloc</td><td>Fetching machinery by category (Power Tools/Construction/Gardening)</td><td><span class="badge badge-green">Feature</span></td></tr>
   <tr><td>SearchBloc</td><td>Live search and filter functionality</td><td><span class="badge badge-green">Feature</span></td></tr>
-  <tr><td>TrackingBloc</td><td>Real-time delivery partner location updates</td><td><span class="badge badge-orange">Active Order</span></td></tr>
-  <tr><td>WishlistBloc</td><td>Managing favorite items</td><td><span class="badge badge-blue">Global</span></td></tr>
+  <tr><td>TrackingBloc</td><td>Real-time delivery partner location updates</td><td><span class="badge badge-orange">Active Rental</span></td></tr>
+  <tr><td>WishlistBloc</td><td>Managing favorite machinery</td><td><span class="badge badge-blue">Global</span></td></tr>
 </table>
 
 <!-- 4. NETWORKING -->
@@ -176,7 +176,7 @@
     <h4>🔌 Socket.IO</h4>
     <ul>
       <li>Live Delivery Tracking</li>
-      <li>Order Status Push Updates</li>
+      <li>Rental Status Push Updates</li>
       <li>Low-latency real-time events</li>
       <li>Automatic reconnection handling</li>
     </ul>
@@ -185,7 +185,7 @@
 
 <!-- 5. REAL-TIME TRACKING -->
 <h2><span class="num">5</span> Real-Time Communication (Tracking)</h2>
-<p>Real-time location tracking allows customers to see the delivery partner's movement on the map within 90 minutes.</p>
+<p>Real-time location tracking allows customers to see the delivery partner's movement on the map within 90 minutes of order placement.</p>
 
 <div class="code-block"><span class="key">LocationService</span>  <span class="comment">→ Handles Google Maps / Mapbox integration</span>
       ↓
@@ -205,9 +205,9 @@
 <h2><span class="num">7</span> Push Notifications</h2>
 <p>Integrated with <strong>Firebase Cloud Messaging (FCM)</strong> for:</p>
 <ul>
-  <li>Order Confirmation</li>
+  <li>Rental Confirmation</li>
   <li>Delivery Progress (Out for Delivery)</li>
-  <li>Promotional Offers & Flash Sales</li>
+  <li>Promotional Offers & Flash Deals</li>
 </ul>
 
 <!-- 8. NAVIGATION -->
@@ -218,11 +218,11 @@
 <table>
   <tr><th>Route</th><th>Description</th></tr>
   <tr><td>/login</td><td>Combined Login/Signup via Mobile</td></tr>
-  <tr><td>/home</td><td>Main Dashboard (Fashion discovery)</td></tr>
-  <tr><td>/search</td><td>Product Search & Filters</td></tr>
-  <tr><td>/cart</td><td>Cart details & Checkout process</td></tr>
-  <tr><td>/wishlist</td><td>User's saved fashion items</td></tr>
-  <tr><td>/profile</td><td>Account settings & Order history</td></tr>
+  <tr><td>/home</td><td>Main Dashboard (Machinery discovery)</td></tr>
+  <tr><td>/search</td><td>Machinery Search & Filters</td></tr>
+  <tr><td>/cart</td><td>Rental details & Checkout process</td></tr>
+  <tr><td>/wishlist</td><td>User's saved machinery items</td></tr>
+  <tr><td>/profile</td><td>Account settings & Rental history</td></tr>
   <tr><td>/track-order/:id</td><td>Live Map Tracking View</td></tr>
 </table>
 
@@ -239,10 +239,10 @@
 <h2><span class="num">12</span> Feature Modules</h2>
 <table>
   <tr><th>Feature</th><th>Category</th><th>Key Capabilities</th></tr>
-  <tr><td>Fashion Discovery</td><td>Men/Women/Kids</td><td>High-res image viewing, size selection, category filtering</td></tr>
-  <tr><td>Cart & Checkout</td><td>E-commerce</td><td>Coupon application, address management, payment integration</td></tr>
-  <tr><td>Search & Filters</td><td>Discovery</td><td>Price range, color, brand, and size filtering</td></tr>
-  <tr><td>Live Tracking</td><td>Post-Order</td><td>Google Maps integration, estimated time of arrival (ETA)</td></tr>
+  <tr><td>Machinery Discovery</td><td>Multi-Category</td><td>High-res image viewing, technical specs, category filtering</td></tr>
+  <tr><td>Rental Cart & Checkout</td><td>Rental Flow</td><td>Security deposit handling, address management, payment integration</td></tr>
+  <tr><td>Search & Filters</td><td>Discovery</td><td>Price range, equipment brand, and category filtering</td></tr>
+  <tr><td>Live Tracking</td><td>Post-Rental</td><td>Google Maps integration, estimated time of arrival (ETA)</td></tr>
 </table>
 
 <!-- 14. ARCHITECTURE DIAGRAM -->
@@ -268,20 +268,20 @@
           <span class="arrow">└────────────┬────────────┘</span>
                        │
           <span class="box">┌────────────▼────────────┐</span>
-          <span class="box">│     Backend (90-min)    │</span>
-          <span class="box">│  REST APIs (Products)   │</span>
+          <span class="box">│     Backend (MRentO)    │</span>
+          <span class="box">│  REST APIs (Machinery)  │</span>
           <span class="box">│  WebSocket (Tracking)   │</span>
           <span class="box">└─────────────────────────┘</span>
 </div>
 
 <div class="info-box">
-  <strong>Note:</strong> The app is optimized for a 90-minute delivery window. Real-time features are crucial for customer satisfaction in the fashion quick-commerce space.
+  <strong>Note:</strong> The app is optimized for a 90-minute machinery delivery window. Real-time features are crucial for customer satisfaction in the on-demand machinery rental space.
 </div>
 
 </div><!-- end container -->
 
 <div class="footer">
-  90-minutes App — Architecture Report &nbsp;|&nbsp; Generated May 2026 &nbsp;|&nbsp; Flutter ^3.9.0 &nbsp;|&nbsp; Confidential
+  MRentO App — Architecture Report &nbsp;|&nbsp; Generated June 2026 &nbsp;|&nbsp; Flutter ^3.9.0 &nbsp;|&nbsp; Confidential
 </div>
 
 <script>

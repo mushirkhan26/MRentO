@@ -16,6 +16,12 @@
         android:label="MRentO"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- Move Google Maps API Key here (Inside application, but outside activity) -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD3uryMXI2-iJqW9BH5AWOKtRwRa3nk_nk"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

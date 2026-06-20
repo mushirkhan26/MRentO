@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/services/analytics_service.dart';
 import '../../../core/models/cart_model.dart';
 import '../../../core/constants/app_constants.dart'; // ← constants use karo
 import '../../../core/services/local_storage_service.dart';
@@ -70,6 +71,15 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
       final updatedCart = _calculateCart(updatedItems);
       await _saveCart(updatedCart);
+
+      // Log Analytics Add To Cart
+      AnalyticsService.instance.logAddToCart(
+        productId: event.item.productId,
+        productName: event.item.productName,
+        price: event.item.price,
+        quantity: event.item.quantity,
+      );
+
       emit(CartLoaded(updatedCart));
     }
   }
@@ -80,12 +90,27 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       ) async {
     if (state is CartLoaded) {
       final currentCart = (state as CartLoaded).cart;
+      
+      // Find item before removal for logging
+      final itemToRemove = currentCart.items.firstWhere(
+        (i) => i.productId == event.productId,
+        orElse: () => currentCart.items.first, // Fallback (should not happen if event is valid)
+      );
+
       final updatedItems = currentCart.items
           .where((i) => i.productId != event.productId)
           .toList();
 
       final updatedCart = _calculateCart(updatedItems);
       await _saveCart(updatedCart);
+
+      // Log Analytics Remove From Cart
+      AnalyticsService.instance.logRemoveFromCart(
+        productId: itemToRemove.productId,
+        productName: itemToRemove.productName,
+        price: itemToRemove.price,
+      );
+
       emit(CartLoaded(updatedCart));
     }
   }

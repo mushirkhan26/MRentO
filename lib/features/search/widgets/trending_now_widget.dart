@@ -3,9 +3,18 @@ import 'package:flutter/material.dart';
 class TrendingNowWidget extends StatelessWidget {
   const TrendingNowWidget({super.key});
 
+  // ✅ Rental trending — fashion terms hata diye
+  static const List<String> _trending = [
+    'Drill Machines',
+    'Pressure Washers',
+    'Scaffolding',
+    'Tile Cutters',
+    'Concrete Mixers',
+    'Generators',
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final trending = ['Linen Shirts', 'Cargo Pants', 'Summer Dresses', 'Gym Wear'];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -16,8 +25,11 @@ class TrendingNowWidget extends StatelessWidget {
               Icon(Icons.trending_up, color: Colors.orange, size: 20),
               SizedBox(width: 8),
               Text(
-                'Trending now',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black87),
+                'Abhi trending hai',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black87),
               ),
             ],
           ),
@@ -26,21 +38,23 @@ class TrendingNowWidget extends StatelessWidget {
             shrinkWrap: true,
             padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate:
+            const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200,
               mainAxisExtent: 45,
               mainAxisSpacing: 8,
               crossAxisSpacing: 8,
             ),
-            itemCount: trending.length,
-            itemBuilder: (context, index) => _buildTrendingItem(trending[index]),
+            itemCount: _trending.length,
+            itemBuilder: (context, index) =>
+                _buildItem(_trending[index]),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTrendingItem(String label) {
+  Widget _buildItem(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
@@ -53,17 +67,18 @@ class TrendingNowWidget extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              label, 
-              style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w500, fontSize: 14),
+              label,
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          Icon(Icons.north_east, size: 14, color: Colors.grey.shade400),
+          Icon(Icons.north_east, size: 13, color: Colors.grey.shade400),
         ],
       ),
     );
   }
 }
-
-

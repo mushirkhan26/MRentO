@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/cart_model.dart';
+import '../../../config/theme/app_colors.dart';
 
 class CartPriceBreakdown extends StatelessWidget {
   final CartModel cart;
@@ -13,48 +14,112 @@ class CartPriceBreakdown extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.greyE5E7EB),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Price breakdown', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          const Text('Price breakdown',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
-          _priceRow('MRP total', '₹${cart.mrpTotal.toInt()}'),
-          _priceRow('Product discount', '-₹${cart.productDiscount.toInt()}', color: Colors.green),
-          _priceRow('Delivery fee', 'FREE', color: Colors.green, subtitle: '₹1,200'),
-          const Divider(),
-          _priceRow('Total payable', '₹${cart.total.toInt()}', isBold: true),
-          const SizedBox(height: 12),
-          Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('You save ', style: TextStyle(fontSize: 12, color: Colors.green)),
-                Text('₹${cart.discount.toInt()} on this order', style: const TextStyle(fontSize: 12, color: Colors.green, fontWeight: FontWeight.bold)),
-                const SizedBox(width: 4),
-                const Icon(Icons.celebration, size: 14, color: Colors.orange),
-              ],
+          _priceRow('Rental subtotal', '₹${cart.subtotal.toInt()}'),
+          if (cart.deliveryFee == 0)
+            _priceRow('Delivery fee', 'FREE',
+                color: AppColors.successColor, subtitle: '₹49')
+          else
+            _priceRow('Delivery fee', '₹${cart.deliveryFee.toInt()}'),
+          _priceRow('GST (18%)', '₹${cart.tax.toInt()}'),
+          if (cart.discount > 0)
+            _priceRow('Discount', '-₹${cart.discount.toInt()}',
+                color: AppColors.successColor),
+          const Divider(height: 24),
+          _priceRow('Rental total', '₹${cart.total.toInt()}',
+              isBold: true),
+          const SizedBox(height: 8),
+          // ✅ Security deposit — separate refundable line
+          if (cart.totalSecurityDeposit > 0)
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.categoryPowerBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.security_outlined,
+                          size: 14, color: AppColors.categoryPowerText),
+                      SizedBox(width: 6),
+                      Text('Security deposit (refundable)',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.categoryPowerText)),
+                    ],
+                  ),
+                  Text(
+                    '₹${cart.totalSecurityDeposit.toInt()}',
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.categoryPowerText),
+                  ),
+                ],
+              ),
             ),
-          ),
+          if (cart.totalSecurityDeposit > 0) ...[
+            const SizedBox(height: 8),
+            const Divider(height: 8),
+            const SizedBox(height: 8),
+            _priceRow(
+              'Grand total (incl. deposit)',
+              '₹${cart.grandTotal.toInt()}',
+              isBold: true,
+            ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _priceRow(String label, String value, {bool isBold = false, Color? color, String? subtitle}) {
+  Widget _priceRow(
+      String label,
+      String value, {
+        bool isBold = false,
+        Color? color,
+        String? subtitle,
+      }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontSize: 14, color: isBold ? Colors.black : Colors.grey.shade600, fontWeight: isBold ? FontWeight.bold : FontWeight.normal)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              color: isBold ? Colors.black : AppColors.grey707070,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(value, style: TextStyle(fontSize: 14, color: color ?? (isBold ? Colors.black : Colors.black87), fontWeight: isBold ? FontWeight.bold : FontWeight.normal)),
-              if (subtitle != null) Text(subtitle, style: const TextStyle(fontSize: 10, color: Colors.grey, decoration: TextDecoration.lineThrough)),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: color ?? (isBold ? Colors.black : Colors.black87),
+                  fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              if (subtitle != null)
+                Text(subtitle,
+                    style: const TextStyle(
+                        fontSize: 10,
+                        color: AppColors.grey707070,
+                        decoration: TextDecoration.lineThrough)),
             ],
           ),
         ],

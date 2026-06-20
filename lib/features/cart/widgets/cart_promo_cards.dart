@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../config/theme/app_colors.dart';
 
 class FreeDeliveryPromo extends StatelessWidget {
   const FreeDeliveryPromo({super.key});
@@ -17,20 +18,31 @@ class FreeDeliveryPromo extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.local_shipping_outlined, size: 16, color: Colors.orange),
+              Icon(Icons.local_shipping_outlined,
+                  size: 16, color: Colors.orange),
               SizedBox(width: 8),
-              Text('Free delivery on orders above ₹999', style: TextStyle(fontSize: 12, color: Colors.brown)),
+              Text(
+                'Free delivery on orders above ₹999',
+                style: TextStyle(fontSize: 12, color: Colors.brown),
+              ),
             ],
           ),
-          Text('Applied ✓', style: TextStyle(fontSize: 12, color: Colors.green, fontWeight: FontWeight.bold)),
+          Text(
+            'Applied ✓',
+            style: TextStyle(
+                fontSize: 12,
+                color: Colors.green,
+                fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
   }
 }
 
-class TryReturnBanner extends StatelessWidget {
-  const TryReturnBanner({super.key});
+// ✅ Security deposit banner — Try & Return ki jagah
+class SecurityDepositBanner extends StatelessWidget {
+  const SecurityDepositBanner({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,21 +52,24 @@ class TryReturnBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.greyE5E7EB),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.assignment_return_outlined, size: 16, color: Colors.grey),
+              Icon(Icons.security_outlined, size: 16, color: Colors.grey),
               SizedBox(width: 8),
-              Text('Try & Return', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              Text(
+                'Security Deposit',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
             ],
           ),
           SizedBox(height: 8),
           Text(
-            'Ghar pe try karo — pasand na aaye toh rider waapis le jaayega. 90-min return, zero charge.',
+            'Aapki security deposit 100% refundable hai — machine wapas karte hi refund ho jaati hai. Zero tension.',
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ],

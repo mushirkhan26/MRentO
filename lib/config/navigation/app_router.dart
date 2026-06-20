@@ -12,6 +12,8 @@ import '../../features/orders/screens/order_detail_screen.dart';
 import '../../features/wishlist/screens/wishlist_screen.dart';
 import '../../features/search/screens/search_screen.dart';
 import '../../features/tracking/screens/order_tracking_screen.dart';
+import '../../features/notification/screens/notification_screen.dart';
+import '../../features/settings/screens/address_book_screen.dart';
 import '../../core/models/rental_product_model.dart'; // ← RentalProductModel
 import '../../splash_screen.dart';
 import 'app_routes.dart';
@@ -104,6 +106,16 @@ final GoRouter appRouter = GoRouter(
         final orderId = state.extra as String?;
         return OrderDetailScreen(orderId: orderId ?? '#RN28341');
       },
+    ),
+    GoRoute(
+      path: AppRoutes.notifications,
+      name: 'notifications',
+      builder: (context, state) => const NotificationScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.addressBook,
+      name: 'address-book',
+      builder: (context, state) => const AddressBookScreen(),
     ),
   ],
 );

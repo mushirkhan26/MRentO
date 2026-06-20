@@ -24,18 +24,20 @@ class OrderEmptyState extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  const Icon(Icons.receipt_long_outlined, size: 60, color: AppColors.primaryBlack),
+                  const Icon(Icons.receipt_long_outlined,
+                      size: 60, color: AppColors.primaryBlack),
                   Positioned(
                     bottom: 35,
                     left: 30,
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                          color: AppColors.lightGreenBadge,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2)),
-                      child: const Icon(Icons.shopping_bag_outlined,
-                          size: 12, color: AppColors.primaryDarkGreen),
+                        color: AppColors.primaryYellow,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      child: const Icon(Icons.construction_outlined,
+                          size: 12, color: AppColors.primaryBlack),
                     ),
                   ),
                 ],
@@ -44,24 +46,24 @@ class OrderEmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           const Text(
-            'Koi order nahi abhi tak',
+            'Koi booking nahi abhi tak',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
-            'Pehla order do aur 90-minute mein ghar pe\nfashion enjoy karo!',
+            'Pehli machine rent karo aur kaam\nshuru karo aaj hi!',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 14, color: AppColors.grey707070),
           ),
           const SizedBox(height: 32),
           OrderActionButton(
-            label: 'Pehla order do ↗',
+            label: 'Equipment Dhundho ↗',
             isPrimary: true,
             onPressed: () => context.go('/home'),
           ),
           const SizedBox(height: 12),
           OrderActionButton(
-            label: 'Products explore karo ↗',
+            label: 'Categories dekho ↗',
             isPrimary: false,
             onPressed: () => context.go('/home'),
           ),
@@ -71,55 +73,80 @@ class OrderEmptyState extends StatelessWidget {
               const Expanded(child: Divider(color: AppColors.dividerColor)),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text('Kyon order karein?',
-                    style: TextStyle(fontSize: 12, color: AppColors.grey707070)),
+                child: Text('Kyun MRentO?',
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.grey707070)),
               ),
               const Expanded(child: Divider(color: AppColors.dividerColor)),
             ],
           ),
           const SizedBox(height: 20),
+          // ✅ Rental-appropriate features — fashion features hata diye
           _buildFeatureItem(
-              '90-min delivery',
-              'Order karo — 90 min mein ghar pe',
-              AppColors.lightGreenBadge,
-              AppColors.primaryDarkGreen),
-          _buildFeatureItem('Try & Return — free', 'Pasand na aaye toh rider le jaayega',
-              AppColors.categoryBridalBg, AppColors.warningColor),
-          _buildFeatureItem('Local Jodhpur designers', '48+ boutiques — authentic aur unique',
-              AppColors.categoryLocalBg, AppColors.categoryLocalText),
+            'Verified Machines',
+            'Quality-checked equipment, har baar',
+            AppColors.categoryPowerBg,
+            AppColors.categoryPowerText,
+          ),
+          _buildFeatureItem(
+            'Doorstep Delivery & Pickup',
+            'Ghar pe aata hai, wapas bhi le jaata hai',
+            AppColors.categoryLiftingBg,
+            AppColors.categoryLiftingText,
+          ),
+          _buildFeatureItem(
+            'Security Deposit — 100% Refundable',
+            'Machine wapas karo, deposit turant pao',
+            AppColors.categoryCleaningBg,
+            AppColors.categoryCleaningText,
+          ),
           const SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  Widget _buildFeatureItem(String title, String subtitle, Color bgColor, Color iconColor) {
+  Widget _buildFeatureItem(
+      String title,
+      String subtitle,
+      Color bgColor,
+      Color iconColor,
+      ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.greyOutline.withValues(alpha: 0.3)),
+        border: Border.all(
+            color: AppColors.greyOutline.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8)),
-            child: Icon(Icons.check_circle_outline, color: iconColor, size: 20),
+            decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(8)),
+            child: Icon(Icons.check_circle_outline,
+                color: iconColor, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                Text(subtitle, style: const TextStyle(fontSize: 12, color: AppColors.grey707070)),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.bold)),
+                Text(subtitle,
+                    style: const TextStyle(
+                        fontSize: 11, color: AppColors.grey707070)),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: AppColors.grey707070, size: 16),
+          const Icon(Icons.chevron_right,
+              color: AppColors.grey707070, size: 16),
         ],
       ),
     );

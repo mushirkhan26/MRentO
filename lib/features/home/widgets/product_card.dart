@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_colors.dart';
-import '../../../core/models/rental_product_model.dart';
+import '../../../core/models/rental_product_model.dart'; // ← updated
 
 class ProductCard extends StatelessWidget {
-  final RentalProductModel product;
+  final RentalProductModel product; // ← updated
+
   const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        context.push('/product-details', extra: product);
-      },
+      onTap: () => context.push('/product-details', extra: product),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         width: 160,
         decoration: BoxDecoration(
@@ -29,96 +29,123 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Image + badges
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: Image.network(
-                    product.images.isNotEmpty ? product.images[0] : 'https://via.placeholder.com/160',
-                    height: 180,
+                  borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
+                  child: product.images.isNotEmpty
+                      ? Image.network(
+                    product.images[0],
+                    height: 160,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                  ),
+                    errorBuilder: (_, __, ___) => _placeholder(),
+                  )
+                      : _placeholder(),
                 ),
+                // Available / Out of stock badge
                 Positioned(
                   top: 8,
                   left: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 6, vertical: 3),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryAmber.withValues(alpha: 0.9),
-                      borderRadius: BorderRadius.circular(4),
+                      color: product.isAvailable
+                          ? AppColors.primaryYellow
+                          : AppColors.errorRed.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.flash_on, color: AppColors.primaryDarkGreen, size: 10),
-                        const SizedBox(width: 2),
-                        const Text(
-                          '90 Min',
-                          style: TextStyle(
-                            color: AppColors.primaryDarkGreen,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      product.isAvailable ? 'Available' : 'Unavailable',
+                      style: TextStyle(
+                        color: product.isAvailable
+                            ? AppColors.primaryBlack
+                            : Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
+                // Condition badge top-right
+                if (product.condition != null)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.verified_outlined,
+                          size: 14, color: AppColors.primaryBlack),
                     ),
-                    child: const Icon(Icons.favorite_border, size: 16, color: Colors.grey),
                   ),
-                ),
               ],
             ),
+            // Info
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Biba', // Hardcoded brand for now as per image
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 10,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
+                  // Vendor name
                   Text(
-                    product.name,
+                    product.vendorName,
+                    style: const TextStyle(
+                        color: AppColors.grey707070, fontSize: 10),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  // Machine name
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
+                        fontSize: 12, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '₹${product.buyPrice}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                      // Rent per day
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: product.rentPerDay != null
+                                  ? '₹${product.rentPerDay!.toInt()}'
+                                  : '₹${product.effectiveDailyRate.toInt()}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primaryBlack,
+                              ),
+                            ),
+                            const TextSpan(
+                              text: '/din',
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  color: AppColors.grey707070),
+                            ),
+                          ],
                         ),
                       ),
+                      // Add button
                       Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(5),
                         decoration: const BoxDecoration(
-                          color: AppColors.primaryDarkGreen,
+                          color: AppColors.primaryYellow,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.add, color: Colors.white, size: 16),
+                        child: const Icon(Icons.add,
+                            color: AppColors.primaryBlack, size: 16),
                       ),
                     ],
                   ),
@@ -127,6 +154,18 @@ class ProductCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      height: 160,
+      width: double.infinity,
+      color: AppColors.categoryPowerBg,
+      child: const Center(
+        child: Icon(Icons.construction_rounded,
+            color: AppColors.categoryPowerText, size: 40),
       ),
     );
   }

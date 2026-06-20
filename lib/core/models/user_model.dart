@@ -1,5 +1,5 @@
 class UserModel {
-  final String? id; // MongoDB _id
+  final String? id;
   final String name;
   final String userId;
   final String? profileImage;

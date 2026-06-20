@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/services/analytics_service.dart';
 import '../../../core/services/firebase_auth_service.dart';
 import '../../../core/services/local_storage_service.dart';
 import '../../../core/services/secure_storage_service.dart';
@@ -122,6 +123,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final data = response.data!;
     await _saveAuthData(data);
+    
+    // Log Analytics Login
+    AnalyticsService.instance.logLogin('phone');
+    AnalyticsService.instance.setUserId(data['userId']?.toString() ?? '');
+
     emit(AuthAuthenticated(_userFromMap(data)));
   }
 

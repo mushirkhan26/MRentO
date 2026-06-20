@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../config/navigation/app_routes.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_event.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_summary_cards.dart';
 import '../widgets/profile_referral_banner.dart';
@@ -17,7 +20,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _notificationsEnabled = true;
   bool _locationAccess = true;
-  bool _aiStylist = true;
+  // ✅ _aiStylist removed — fashion-specific, not relevant for rental
   bool _darkMode = false;
 
   @override
@@ -48,8 +51,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SectionHeader(title: 'SUPPORT'),
                   _buildSupportSection(),
                   const SizedBox(height: 32),
+                  // ✅ Updated app name
                   const Text(
-                    '90-Minutes v1.0.0 • Made with love in Jodhpur',
+                    'MRentO v1.0.0 • Made with ❤️ in Jodhpur',
                     style: TextStyle(color: Colors.grey, fontSize: 10),
                   ),
                   const SizedBox(height: 40),
@@ -66,37 +70,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SectionCard(children: [
       ProfileTile(
         icon: Icons.receipt_long_outlined,
-        iconBg: AppColors.lightGreenBadge,
-        iconColor: AppColors.primaryDarkGreen,
-        title: 'My orders',
-        subtitle: '12 orders · 2 active',
-        trailing: const CountBadge(text: '2 active', bg: AppColors.categoryLocalBg, textCol: AppColors.categoryLocalText),
+        iconBg: AppColors.categoryPowerBg,
+        iconColor: AppColors.categoryPowerText,
+        title: 'My Bookings',
+        subtitle: 'Orders and rental history',
         onTap: () => context.push(AppRoutes.ordersRoute),
       ),
       ProfileTile(
         icon: Icons.favorite_border,
-        iconBg: AppColors.categoryWomenBg,
-        iconColor: AppColors.categoryWomenText,
-        title: 'Wishlist',
-        subtitle: '8 items saved',
-        trailing: const CountBadge(text: '8', bg: AppColors.categoryWomenBg, textCol: AppColors.categoryWomenText),
+        iconBg: AppColors.categoryCleaningBg,
+        iconColor: AppColors.categoryCleaningText,
+        title: 'Saved Equipment',
+        subtitle: 'Wishlisted items',
         onTap: () => context.push(AppRoutes.wishlistRoute),
       ),
       ProfileTile(
         icon: Icons.star_outline,
-        iconBg: AppColors.categoryBridalBg,
-        iconColor: AppColors.categoryBridalText,
-        title: 'My reviews',
+        iconBg: AppColors.categoryMeasurementBg,
+        iconColor: AppColors.categoryMeasurementText,
+        title: 'My Reviews',
         subtitle: '4 reviews diye',
         onTap: () {},
       ),
       ProfileTile(
         icon: Icons.confirmation_number_outlined,
-        iconBg: AppColors.categoryMenBg,
-        iconColor: AppColors.categoryMenText,
-        title: 'Coupons & offers',
+        iconBg: AppColors.categoryConstructionBg,
+        iconColor: AppColors.categoryConstructionText,
+        title: 'Coupons & Offers',
         subtitle: '3 coupons available',
-        trailing: const CountBadge(text: '3 new', bg: AppColors.lightGreenBadge, textCol: AppColors.successColor),
+        trailing: const CountBadge(
+            text: '3 new',
+            bg: AppColors.categoryCleaningBg,
+            textCol: AppColors.categoryCleaningText),
         onTap: () {},
         isLast: true,
       ),
@@ -107,26 +112,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SectionCard(children: [
       ProfileTile(
         icon: Icons.location_on_outlined,
-        iconBg: AppColors.categoryLocalBg,
-        iconColor: AppColors.categoryLocalText,
-        title: 'Saved addresses',
-        subtitle: 'Home, Office',
-        onTap: () {},
+        iconBg: AppColors.categoryLiftingBg,
+        iconColor: AppColors.categoryLiftingText,
+        title: 'Saved Addresses',
+        subtitle: 'Manage delivery addresses',
+        onTap: () => context.push(AppRoutes.addressBook),
       ),
       ProfileTile(
         icon: Icons.payment_outlined,
-        iconBg: const Color(0xFFF3E5F5),
-        iconColor: Colors.deepPurple,
-        title: 'Payment methods',
-        subtitle: 'GPay, HDFC Card',
+        iconBg: AppColors.categoryMeasurementBg,
+        iconColor: AppColors.categoryMeasurementText,
+        title: 'Payment Methods',
+        subtitle: 'Manage UPI and cards',
         onTap: () {},
       ),
       ProfileTile(
         icon: Icons.person_outline,
         iconBg: AppColors.gray50,
         iconColor: AppColors.grey707070,
-        title: 'Personal details',
-        subtitle: 'Name, phone, email',
+        title: 'Personal Details',
+        subtitle: 'Update profile info',
         onTap: () {},
         isLast: true,
       ),
@@ -135,38 +140,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildPreferencesSection() {
     return SectionCard(children: [
-      SwitchTile(
+      ProfileTile(
         icon: Icons.notifications_none,
-        iconBg: AppColors.categoryBridalBg,
-        iconColor: AppColors.categoryBridalText,
+        iconBg: AppColors.categoryMeasurementBg,
+        iconColor: AppColors.categoryMeasurementText,
         title: 'Notifications',
-        subtitle: 'Order updates, offers',
-        value: _notificationsEnabled,
-        onChanged: (v) => setState(() => _notificationsEnabled = v),
+        subtitle: 'Booking updates, offers',
+        onTap: () => context.push(AppRoutes.notifications),
       ),
       SwitchTile(
         icon: Icons.location_on_outlined,
-        iconBg: AppColors.lightGreenBadge,
-        iconColor: AppColors.primaryDarkGreen,
-        title: 'Location access',
-        subtitle: 'Fast delivery detection',
+        iconBg: AppColors.categoryCleaningBg,
+        iconColor: AppColors.categoryCleaningText,
+        title: 'Location Access',
+        subtitle: 'Nearby vendor detection',
         value: _locationAccess,
         onChanged: (v) => setState(() => _locationAccess = v),
       ),
       SwitchTile(
-        icon: Icons.auto_awesome_outlined,
-        iconBg: const Color(0xFFE8EAF6),
-        iconColor: Colors.indigo,
-        title: 'AI stylist suggestions',
-        subtitle: 'Personalized recommendations',
-        value: _aiStylist,
-        onChanged: (v) => setState(() => _aiStylist = v),
-      ),
-      SwitchTile(
         icon: Icons.dark_mode_outlined,
         iconBg: AppColors.gray50,
-        iconColor: AppColors.black121212,
-        title: 'Dark mode',
+        iconColor: AppColors.primaryBlack,
+        title: 'Dark Mode',
         subtitle: 'App theme',
         value: _darkMode,
         onChanged: (v) => setState(() => _darkMode = v),
@@ -179,9 +174,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SectionCard(children: [
       ProfileTile(
         icon: Icons.headset_mic_outlined,
-        iconBg: AppColors.lightGreenBadge,
-        iconColor: AppColors.primaryDarkGreen,
-        title: 'Help & support',
+        iconBg: AppColors.categoryCleaningBg,
+        iconColor: AppColors.categoryCleaningText,
+        title: 'Help & Support',
         subtitle: 'Chat, call, FAQ',
         onTap: () {},
       ),
@@ -189,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         icon: Icons.description_outlined,
         iconBg: AppColors.gray50,
         iconColor: AppColors.grey707070,
-        title: 'Terms & privacy',
+        title: 'Terms & Privacy',
         subtitle: 'Policies aur conditions',
         onTap: () {},
       ),
@@ -197,9 +192,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         icon: Icons.logout,
         iconBg: const Color(0xFFFFEBEE),
         iconColor: AppColors.errorRed,
-        title: 'Log out',
-        subtitle: 'rahul.sharma@gmail.com',
-        onTap: () {},
+        title: 'Log Out',
+        subtitle: 'Sign out from your account',
+        onTap: () {
+          context.read<AuthBloc>().add(LogoutRequested());
+          context.go(AppRoutes.loginRoute);
+        },
         isLast: true,
       ),
     ]);

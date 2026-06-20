@@ -1,346 +1,272 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_colors.dart';
-import '../../../config/navigation/app_routes.dart';
+import '../../../core/models/rental_product_model.dart';
+import '../../../core/models/cart_model.dart';
+import '../../../core/utils/alert_utils.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_state.dart';
+import '../../cart/bloc/cart_bloc.dart';
+import '../../cart/bloc/cart_event.dart';
+import '../bloc/wishlist_bloc.dart';
+import '../bloc/wishlist_event.dart';
+import '../bloc/wishlist_state.dart';
 
-class WishlistScreen extends StatelessWidget {
+class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
+
+  @override
+  State<WishlistScreen> createState() => _WishlistScreenState();
+}
+
+class _WishlistScreenState extends State<WishlistScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadWishlist();
+  }
+
+  void _loadWishlist() {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      context.read<WishlistBloc>().add(LoadWishlist(authState.user.userId));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.exploreBackground,
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Wishlist', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.black121212)),
-            Text('8 items saved', style: TextStyle(fontSize: 12, color: AppColors.grey707070)),
-          ],
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        // actions: [
-        //   IconButton(icon: const Icon(Icons.search, color: AppColors.black121212), onPressed: () {}),
-        //   GestureDetector(
-        //     onTap: () => context.push(AppRoutes.userProfile),
-        //     child: _circleBadgeIcon(Icons.person_outline),
-        //   ),
-        //   const SizedBox(width: 8),
-        // ],
-      ),
-      body: _buildBody(context),
-    );
-  }
-
-  Widget _buildBody(BuildContext context) {
-    bool isEmpty = false; // Isse true karke empty state dekh sakte hain
-
-    if (isEmpty) {
-      return _buildEmptyWishlist(context);
-    }
-
-    return Column(
-      children: [
-        _buildSubHeader(),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
+        backgroundColor: AppColors.primaryBlack,
+        foregroundColor: Colors.white,
+        title: BlocBuilder<WishlistBloc, WishlistState>(
+          builder: (context, state) {
+            final count =
+            state is WishlistLoaded ? state.items.length : 0;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildPriceDropBanner(),
-                const SizedBox(height: 16),
-                _buildWishlistGrid(context),
-                const SizedBox(height: 24),
-                _buildMoreItemsCard(),
-                const SizedBox(height: 40),
+                const Text('Saved Equipment',
+                    style: TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('$count items saved',
+                    style: const TextStyle(
+                        fontSize: 12, color: Colors.white60)),
               ],
-            ),
-          ),
+            );
+          },
         ),
-        _buildStickyBottomAction(context),
-      ],
+      ),
+      body: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, authState) {
+          if (authState is! AuthAuthenticated) {
+            return const Center(child: Text('Pehle login karein'));
+          }
+          final userId = authState.user.userId;
+          
+          return BlocBuilder<WishlistBloc, WishlistState>(
+            builder: (context, state) {
+              if (state is WishlistLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is WishlistLoaded) {
+                if (state.items.isEmpty) return _buildEmptyState(context);
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: state.items.length,
+                  itemBuilder: (context, index) {
+                    return _WishlistItemTile(
+                      product: state.items[index],
+                      userId: userId,
+                    );
+                  },
+                );
+              }
+              return const SizedBox();
+            },
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildEmptyWishlist(BuildContext context) {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(30),
-            decoration: BoxDecoration(color: AppColors.categoryWomenBg, shape: BoxShape.circle),
-            child: const Icon(Icons.favorite_border, size: 60, color: AppColors.categoryWomenText),
+            width: 120,
+            height: 120,
+            decoration: const BoxDecoration(
+                color: AppColors.background, shape: BoxShape.circle),
+            child: const Icon(Icons.favorite_border,
+                size: 56, color: AppColors.primaryBlack),
+          ),
+          const SizedBox(height: 20),
+          const Text('Koi machine save nahi ki',
+              style:
+              TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          const Text(
+            'Equipment dekho aur dil pasand\nmachines yahan save karo',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppColors.grey707070),
           ),
           const SizedBox(height: 24),
-          const Text('Wishlist khali hai', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          const Text('Apne manpasand items yahan save karein', style: TextStyle(color: AppColors.grey707070)),
-          const SizedBox(height: 32),
           ElevatedButton(
-            onPressed: () => context.go(AppRoutes.homeRoute),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryDarkGreen, foregroundColor: Colors.white),
-            child: const Text('Explore Now'),
+            onPressed: () => context.go('/home'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryYellow,
+              foregroundColor: AppColors.primaryBlack,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text('Equipment Dhundho ↗',
+                style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _circleBadgeIcon(IconData icon) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: AppColors.categoryWomenBg,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(icon, size: 20, color: AppColors.categoryWomenText),
-    );
-  }
+class _WishlistItemTile extends StatelessWidget {
+  final RentalProductModel product;
+  final String userId;
 
-  Widget _buildSubHeader() {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text('Select all', style: TextStyle(color: AppColors.primaryDarkGreen, fontWeight: FontWeight.bold, fontSize: 13)),
-          Row(
-            children: [
-              const Text('Sort: Recently added', style: TextStyle(color: AppColors.grey707070, fontSize: 12)),
-              const Icon(Icons.unfold_more, size: 14, color: AppColors.grey707070),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  const _WishlistItemTile({required this.product, required this.userId});
 
-  Widget _buildPriceDropBanner() {
+  @override
+  Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.lightGreenBadge.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.lightGreenBadge),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.greyE5E7EB),
       ),
       child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: AppColors.lightGreenBadge)),
-            child: const Icon(Icons.check, size: 12, color: AppColors.primaryDarkGreen),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('2 items mein price drop hua!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                Text('Cart mein add karo pehle koi le jaaye', style: TextStyle(fontSize: 11, color: AppColors.grey707070)),
-              ],
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryDarkGreen,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              minimumSize: const Size(0, 30),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              elevation: 0,
-            ),
-            child: const Text('See deals', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWishlistGrid(BuildContext context) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      childAspectRatio: 0.65,
-      children: [
-        _wishlistCard(
-          context,
-          'Manyavar',
-          'Classic Kurta Set',
-          '₹2,299',
-          '₹2,999',
-          '23% off',
-          '90 Min',
-          const Color(0xFFE8F5E9),
-        ),
-        _wishlistCard(
-          context,
-          'Biba',
-          'Floral Summer Dress',
-          '1,299',
-          '₹1,899',
-          '32% off',
-          '90 Min',
-          const Color(0xFFFCE4EC),
-          isPriceDrop: true,
-        ),
-        _wishlistCard(
-          context,
-          'Jodhpur Couture',
-          'Bandhani Saree',
-          '₹3,499',
-          null,
-          null,
-          'Local',
-          const Color(0xFFF3E5F5),
-        ),
-        _wishlistCard(
-          context,
-          'W for Woman',
-          'Linen Blazer',
-          '₹1,599',
-          '₹1,999',
-          '20% off',
-          '90 Min',
-          const Color(0xFFFFF3E0),
-          isPriceDrop: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _wishlistCard(
-    BuildContext context,
-    String brand,
-    String name,
-    String price,
-    String? originalPrice,
-    String? discount,
-    String badgeText,
-    Color bgColor, {
-    bool isPriceDrop = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: isPriceDrop ? Border.all(color: AppColors.primaryDarkGreen, width: 1) : Border.all(color: AppColors.greyOutline.withValues(alpha: 0.3)),
-      ),
-      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: product.images.isNotEmpty
+                ? Image.network(
+              product.images.first,
+              width: 80,
+              height: 90,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => _imgPlaceholder(),
+            )
+                : _imgPlaceholder(),
+          ),
+          const SizedBox(width: 12),
+          // Details
           Expanded(
-            child: Stack(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: bgColor,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  ),
-                  child: Center(child: Icon(Icons.image_outlined, size: 40, color: AppColors.primaryDarkGreen.withValues(alpha: 0.5))),
-                ),
-                if (isPriceDrop)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: const BoxDecoration(
-                        color: AppColors.lightGreenBadge,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(16), bottomRight: Radius.circular(8)),
-                      ),
-                      child: const Text('Price drop!', style: TextStyle(color: AppColors.primaryDarkGreen, fontSize: 10, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                Positioned(
-                  top: isPriceDrop ? 25 : 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(color: AppColors.primaryDarkGreen.withValues(alpha: 0.8), borderRadius: BorderRadius.circular(4)),
-                    child: Row(
+                // Vendor + remove button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
                       children: [
-                        const Icon(Icons.flash_on, color: Colors.white, size: 8),
-                        const SizedBox(width: 2),
-                        Text(badgeText, style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+                        const Icon(Icons.storefront_outlined,
+                            size: 11, color: AppColors.grey707070),
+                        const SizedBox(width: 3),
+                        Text(product.vendorName,
+                            style: const TextStyle(
+                                fontSize: 10,
+                                color: AppColors.grey707070)),
                       ],
                     ),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                    child: const Icon(Icons.close, size: 14, color: AppColors.grey707070),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(brand, style: const TextStyle(fontSize: 10, color: AppColors.grey707070)),
-                const SizedBox(height: 2),
-                Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(price, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-                    if (originalPrice != null) ...[
-                      const SizedBox(width: 4),
-                      Text(originalPrice, style: const TextStyle(fontSize: 10, color: AppColors.grey707070, decoration: TextDecoration.lineThrough)),
-                    ],
-                    if (discount != null) ...[
-                      const SizedBox(width: 4),
-                      Text(discount, style: const TextStyle(fontSize: 10, color: AppColors.successColor, fontWeight: FontWeight.bold)),
-                    ],
+                    GestureDetector(
+                      onTap: () => context
+                          .read<WishlistBloc>()
+                          .add(ToggleWishlist(userId: userId, product: product)),
+                      child: const Icon(Icons.favorite,
+                          size: 18, color: Colors.red),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 4),
+                // Name
+                Text(product.name,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 6),
+                // Availability badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: product.isAvailable
+                        ? AppColors.categoryCleaningBg
+                        : AppColors.errorRed.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    product.isAvailable ? 'Available' : 'Not Available',
+                    style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: product.isAvailable
+                            ? AppColors.categoryCleaningText
+                            : AppColors.errorRed),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Price row
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {},
+                    product.rentPerDay != null
+                        ? RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text:
+                          '₹${product.rentPerDay!.toInt()}',
+                          style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryBlack),
+                        ),
+                        const TextSpan(
+                          text: '/din',
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: AppColors.grey707070),
+                        ),
+                      ]),
+                    )
+                        : const SizedBox(),
+                    // Add to cart
+                    if (product.isAvailable)
+                      GestureDetector(
+                        onTap: () => _addToCart(context),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: AppColors.primaryDarkGreen,
-                            borderRadius: BorderRadius.circular(6),
+                            color: AppColors.primaryYellow,
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 12),
-                              SizedBox(width: 4),
-                              Text('Add to cart', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                            ],
-                          ),
+                          child: const Text('Add to Cart',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primaryBlack)),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.greyOutline.withValues(alpha: 0.5)),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Icon(Icons.more_horiz, size: 16, color: AppColors.grey707070),
-                    ),
                   ],
                 ),
               ],
@@ -351,59 +277,35 @@ class WishlistScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMoreItemsCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyOutline.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: AppColors.categoryWomenBg, borderRadius: BorderRadius.circular(10)),
-            child: const Icon(Icons.favorite_outline, color: AppColors.categoryWomenText, size: 24),
-          ),
-          const SizedBox(width: 15),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Aur items save karo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                Text('Explore karo aur dil pasand cheezein wishlist mein add karo', style: TextStyle(fontSize: 11, color: AppColors.grey707070)),
-              ],
-            ),
-          ),
-          const Icon(Icons.chevron_right, color: AppColors.grey707070),
-        ],
+  void _addToCart(BuildContext context) {
+    context.read<CartBloc>().add(
+      AddToCart(
+        CartItem(
+          productId: product.id,
+          productName: product.name,
+          productImage:
+          product.images.isNotEmpty ? product.images.first : null,
+          quantity: 1,
+          price: product.rentPerDay ?? product.effectiveDailyRate,
+          vendorName: product.vendorName,
+          rentalDurationLabel: '1 Din',
+          rentalDays: 1,
+          securityDeposit: product.securityDeposit,
+        ),
       ),
     );
+    AlertHelper.snackBarSuccess(
+        context, '${product.name} cart mein add hua!');
   }
 
-  Widget _buildStickyBottomAction(BuildContext context) {
+  Widget _imgPlaceholder() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))],
-      ),
-      child: SafeArea(
-        top: false,
-        child: ElevatedButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.shopping_bag_outlined, size: 20),
-          label: const Text('Sab cart mein add karo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryDarkGreen,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            minimumSize: const Size(double.infinity, 54),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            elevation: 0,
-          ),
-        ),
+      width: 80,
+      height: 90,
+      color: AppColors.categoryPowerBg,
+      child: const Center(
+        child: Icon(Icons.construction_rounded,
+            color: AppColors.categoryPowerText, size: 32),
       ),
     );
   }

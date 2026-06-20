@@ -1,54 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../config/theme/app_colors.dart';
 import '../screens/order_tracking_screen.dart';
-import 'map_painters.dart';
 
-class LiveMapViewer extends StatelessWidget {
+class LiveMapViewer extends StatefulWidget {
   final DeliveryStage currentStage;
 
   const LiveMapViewer({super.key, required this.currentStage});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.lightGreenBadge, // Light green map background
-      child: Stack(
-        children: [
-          // Simulated Grid/Road lines
-          CustomPaint(
-            size: Size.infinite,
-            painter: MapPainter(),
-          ),
-          // Route Line (Dashed)
-          Center(
-            child: CustomPaint(
-              size: const Size(300, 200),
-              painter: RoutePainter(),
-            ),
-          ),
-          // Store Marker
-          const Positioned(
-            top: 180,
-            right: 120,
-            child: Icon(Icons.location_on, size: 40, color: AppColors.primaryDarkGreen),
-          ),
-          // Rider Marker (Changes position based on stage)
-          AnimatedPositioned(
-            duration: const Duration(seconds: 1),
-            bottom: currentStage == DeliveryStage.preparing ? 400 : (currentStage == DeliveryStage.eightMin ? 450 : 250),
-            left: currentStage == DeliveryStage.preparing ? 50 : (currentStage == DeliveryStage.eightMin ? 80 : 220),
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration: const BoxDecoration(
-                color: AppColors.primaryDarkGreen,
-                shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
-              ),
-            ),
-          ),
-        ],
+  State<LiveMapViewer> createState() => _LiveMapViewerState();
+}
+
+class _LiveMapViewerState extends State<LiveMapViewer> {
+  late GoogleMapController _controller;
+
+  // Jodhpur static coordinates for simulation
+  static const LatLng _storeLocation = LatLng(26.2389, 73.0243);
+  static const LatLng _customerLocation = LatLng(26.2913, 73.0375);
+
+  final Set<Marker> _markers = {};
+  final Set<Polyline> _polylines = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _initMarkers();
+    _initPolylines();
+  }
+
+  void _initMarkers() {
+    _markers.addAll([
+      Marker(
+        markerId: const MarkerId('store'),
+        position: _storeLocation,
+        infoWindow: const InfoWindow(title: 'MRentO Partner'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       ),
+      Marker(
+        markerId: const MarkerId('customer'),
+        position: _customerLocation,
+        infoWindow: const InfoWindow(title: 'Aapka Address'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+      ),
+    ]);
+  }
+
+  void _initPolylines() {
+    _polylines.add(
+      const Polyline(
+        polylineId: PolylineId('route'),
+        points: [_storeLocation, _customerLocation],
+        color: AppColors.primaryYellow,
+        width: 5,
+        geodesic: true,
+      ),
+    );
+  }
+
+  LatLng _getRiderPosition() {
+    // Simulating rider movement based on stage
+    switch (widget.currentStage) {
+      case DeliveryStage.preparing:
+        return _storeLocation;
+      case DeliveryStage.eightMin:
+        return const LatLng(26.2550, 73.0280);
+      case DeliveryStage.oneMin:
+        return const LatLng(26.2850, 73.0350);
+      case DeliveryStage.delivered:
+        return _customerLocation;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final riderPos = _getRiderPosition();
+
+    // Add/Update rider marker
+    _markers.add(
+      Marker(
+        markerId: const MarkerId('rider'),
+        position: riderPos,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+        infoWindow: const InfoWindow(title: 'Rider'),
+      ),
+    );
+
+    return GoogleMap(
+      initialCameraPosition: const CameraPosition(
+        target: _storeLocation,
+        zoom: 13,
+      ),
+      markers: _markers,
+      polylines: _polylines,
+      onMapCreated: (controller) => _controller = controller,
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
+      mapToolbarEnabled: false,
     );
   }
 }

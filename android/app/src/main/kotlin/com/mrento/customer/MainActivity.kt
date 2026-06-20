@@ -1,4 +1,5 @@
-package com.delivery90.customer
+package com.mrento.customer
+
 
 import io.flutter.embedding.android.FlutterActivity
 

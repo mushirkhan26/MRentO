@@ -168,7 +168,7 @@ final body = {
     return ApiResponse.success({
       "latestVersion": "1.0.0",
       "minVersion": "1.0.0",
-      "updateUrl": "https://play.google.com/store/apps/details?id=com.delivery90.app",
+      "updateUrl": "https://play.google.com/store/apps/details?id=com.mrento.app",
       "forceUpdate": false,
     });
   }

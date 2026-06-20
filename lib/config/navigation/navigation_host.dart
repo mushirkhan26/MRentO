@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:delivery_90/core/utils/alert_utils.dart';
-import 'package:delivery_90/features/cart/bloc/cart_bloc.dart';
-import 'package:delivery_90/features/cart/bloc/cart_state.dart';
-import 'package:delivery_90/config/theme/app_colors.dart';
-import 'package:delivery_90/config/navigation/app_routes.dart';
+import 'package:MRentO/core/utils/alert_utils.dart';
+import 'package:MRentO/features/cart/bloc/cart_bloc.dart';
+import 'package:MRentO/features/cart/bloc/cart_state.dart';
+import 'package:MRentO/config/theme/app_colors.dart';
+import 'package:MRentO/config/navigation/app_routes.dart';
+import 'package:MRentO/core/services/analytics_service.dart';
 
 import '../../features/wishlist/bloc/wishlist_bloc.dart';
 import '../../features/wishlist/bloc/wishlist_state.dart';
@@ -166,22 +167,31 @@ class _NavigationHostState extends State<NavigationHost> {
   ];
 
   void _navigateTo(int index) {
+    String screenName = '';
     switch (index) {
       case 0:
+        screenName = 'Home';
         context.go(AppRoutes.homeRoute);
         break;
       case 1:
+        screenName = 'Cart';
         context.go(AppRoutes.cartRoute);
         break;
       case 2:
+        screenName = 'Orders';
         context.go(AppRoutes.ordersRoute);
         break;
       case 3:
+        screenName = 'Wishlist';
         context.go(AppRoutes.wishlistRoute);
         break;
       case 4:
+        screenName = 'Profile';
         context.go(AppRoutes.userProfile);
         break;
+    }
+    if (screenName.isNotEmpty) {
+      AnalyticsService.instance.setCurrentScreen(screenName);
     }
   }
 }
@@ -237,7 +247,7 @@ class _WishlistIconWithBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WishlistBloc, WishlistState>(
       builder: (context, state) {
-        final count = 4; // Mock count to match design for now
+        final count = state is WishlistLoaded ? state.items.length : 0;
 
         String location = '';
         try {

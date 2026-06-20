@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import '../../../config/theme/app_colors.dart';
 
 class SuggestedProductsWidget extends StatelessWidget {
   const SuggestedProductsWidget({super.key});
+
+  // ✅ Rental equipment suggestions — fashion items hata diye
+  static const List<Map<String, String>> _suggestions = [
+    {'name': 'Rotary Drill Machine 750W', 'category': 'Power Tools', 'price': '₹199/din'},
+    {'name': 'Concrete Mixer 140L',       'category': 'Construction', 'price': '₹599/din'},
+    {'name': 'Pressure Washer 1500PSI',   'category': 'Cleaning',     'price': '₹349/din'},
+    {'name': 'Tile Cutter Machine',       'category': 'Construction', 'price': '₹299/din'},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -11,51 +20,60 @@ class SuggestedProductsWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Recommended for you',
-            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18),
+            'Aapke liye suggestions',
+            style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
           ),
-          const SizedBox(height: 20),
-          _buildProductListItem(
-            'White Oversized T-shirt',
-            'Men\'s Wear',
-            'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500',
-          ),
-          _buildProductListItem(
-            'Blue High-Waist Jeans',
-            'Women\'s Wear',
-            'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500',
-          ),
+          const SizedBox(height: 16),
+          ..._suggestions.map((item) => _buildItem(item)),
         ],
       ),
     );
   }
 
-  Widget _buildProductListItem(String title, String category, String imageUrl) {
+  Widget _buildItem(Map<String, String> item) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
+      padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         children: [
           Container(
-            width: 55,
-            height: 55,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
+              color: AppColors.categoryPowerBg,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.image, color: Colors.grey, size: 24),
+            child: const Icon(Icons.construction_rounded,
+                color: AppColors.categoryPowerText, size: 24),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                const SizedBox(height: 4),
-                Text(category, style: TextStyle(color: Colors.grey.shade500, fontSize: 13)),
+                Text(
+                  item['name']!,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 14),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  item['category']!,
+                  style: TextStyle(
+                      color: Colors.grey.shade500, fontSize: 12),
+                ),
               ],
             ),
           ),
-          Icon(Icons.north_east, color: Colors.grey.shade400, size: 18),
+          Text(
+            item['price']!,
+            style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+                color: AppColors.primaryBlack),
+          ),
         ],
       ),
     );

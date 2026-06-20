@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../core/models/rental_product_model.dart';
 import '../../../core/models/category_model.dart';
+import '../../../core/models/review_model.dart';
 import '../api/base_api/api_response.dart';
 
 class FirestoreProductService {
@@ -116,6 +117,22 @@ class FirestoreProductService {
       return ApiResponse.success(products);
     } catch (e) {
       return ApiResponse.error('Search fail hua: $e');
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // ADD REVIEW
+  // ─────────────────────────────────────────
+  Future<ApiResponse<void>> addReview(ReviewModel review) async {
+    try {
+      await _firestore
+          .collection('products')
+          .doc(review.productId)
+          .collection('reviews')
+          .add(review.toJson());
+      return ApiResponse.success(null);
+    } catch (e) {
+      return ApiResponse.error('Review add nahi ho paya: $e');
     }
   }
 }

@@ -1,34 +1,81 @@
 import 'package:flutter/material.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../core/models/order_model.dart';
+import 'package:intl/intl.dart';
 
 class OrderStatusBanner extends StatelessWidget {
-  const OrderStatusBanner({super.key});
+  final OrderStatus status;
+  final DateTime date;
+  const OrderStatusBanner({super.key, required this.status, required this.date});
+
+  String get _label {
+    switch (status) {
+      case OrderStatus.pending: return 'Booking pending';
+      case OrderStatus.confirmed: return 'Booking confirmed';
+      case OrderStatus.dispatched: return 'Out for delivery';
+      case OrderStatus.delivered: return 'Equipment delivered';
+      case OrderStatus.active: return 'Rental active';
+      case OrderStatus.returned: return 'Equipment returned';
+      case OrderStatus.overdue: return 'Return overdue';
+      case OrderStatus.cancelled: return 'Booking cancelled';
+    }
+  }
+
+  Color get _bgColor {
+    switch (status) {
+      case OrderStatus.overdue: return AppColors.errorRed;
+      case OrderStatus.cancelled: return AppColors.grey500;
+      default: return AppColors.primaryDarkGreen;
+    }
+  }
+
+  IconData get _icon {
+    switch (status) {
+      case OrderStatus.overdue: return Icons.warning_amber_rounded;
+      case OrderStatus.cancelled: return Icons.cancel_outlined;
+      case OrderStatus.returned: return Icons.assignment_turned_in_outlined;
+      default: return Icons.check_circle;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: AppColors.primaryDarkGreen,
+      decoration: BoxDecoration(
+        color: _bgColor,
       ),
       child: Row(
         children: [
-          const Icon(Icons.check_circle, color: Colors.white, size: 20),
+          Icon(_icon, color: Colors.white, size: 20),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Delivered', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-                Text('May 22 • 4:22 PM • 37 min mein aaya!', style: TextStyle(color: Colors.white70, fontSize: 11)),
+                Text(_label.toUpperCase(),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14)),
+                Text(
+                    '${DateFormat('MMM dd').format(date)} • ${DateFormat('jm').format(date)}',
+                    style:
+                    const TextStyle(color: Colors.white70, fontSize: 11)),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-            child: const Text('90-min', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+            decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12)),
+            child: const Text('90-min',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -37,7 +84,28 @@ class OrderStatusBanner extends StatelessWidget {
 }
 
 class DeliveryTimeline extends StatelessWidget {
-  const DeliveryTimeline({super.key});
+  final OrderStatus status;
+  const DeliveryTimeline({super.key, required this.status});
+
+  // Kis tareeke se pata chale ki step done hai — sequence ke hisaab se
+  bool _isStepDone(int stepIndex) {
+    const sequence = [
+      OrderStatus.pending,
+      OrderStatus.confirmed,
+      OrderStatus.dispatched,
+      OrderStatus.delivered,
+    ];
+    if (status == OrderStatus.cancelled) return stepIndex == 0;
+    // active/returned/overdue sab delivered ke baad ke states hain
+    final effectiveStatus =
+    (status == OrderStatus.active ||
+        status == OrderStatus.returned ||
+        status == OrderStatus.overdue)
+        ? OrderStatus.delivered
+        : status;
+    final currentIndex = sequence.indexOf(effectiveStatus);
+    return stepIndex <= currentIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,20 +124,27 @@ class DeliveryTimeline extends StatelessWidget {
             children: [
               Icon(Icons.timeline, size: 16, color: AppColors.grey707070),
               SizedBox(width: 8),
-              Text('Delivery timeline', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              Text('Delivery timeline',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
             ],
           ),
           const SizedBox(height: 20),
-          _timelineStep('Order placed', 'May 22 • 3:45 PM • Payment confirmed', true),
-          _timelineStep('Order packed', 'May 22 • 3:52 PM • Jodhpur warehouse', true),
-          _timelineStep('Out for delivery', 'May 22 • 3:58 PM • Ramesh Singh • RJ14 SP 4421', true),
-          _timelineStep('Delivered', 'May 22 • 4:22 PM • Baldev Nagar, Jodhpur', true, isLast: true),
+          _timelineStep(
+              'Order placed', 'Humein aapka order mil gaya hai', _isStepDone(0)),
+          _timelineStep('Booking confirmed', 'Vendor ne booking accept kar li',
+              _isStepDone(1)),
+          _timelineStep('Out for delivery',
+              'Rider aapke address ke liye nikal chuka hai', _isStepDone(2)),
+          _timelineStep('Delivered', 'Equipment safely deliver ho gaya',
+              _isStepDone(3),
+              isLast: true),
         ],
       ),
     );
   }
 
-  Widget _timelineStep(String title, String subtitle, bool isDone, {bool isLast = false}) {
+  Widget _timelineStep(String title, String subtitle, bool isDone,
+      {bool isLast = false}) {
     return IntrinsicHeight(
       child: Row(
         children: [
@@ -83,11 +158,17 @@ class DeliveryTimeline extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.primaryDarkGreen),
                 ),
-                child: const Icon(Icons.check, size: 12, color: Colors.white),
+                child: isDone
+                    ? const Icon(Icons.check, size: 12, color: Colors.white)
+                    : null,
               ),
               if (!isLast)
                 Expanded(
-                  child: Container(width: 2, color: AppColors.primaryDarkGreen),
+                  child: Container(
+                      width: 2,
+                      color: isDone
+                          ? AppColors.primaryDarkGreen
+                          : AppColors.greyOutline.withValues(alpha: 0.3)),
                 ),
             ],
           ),
@@ -96,8 +177,12 @@ class DeliveryTimeline extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                Text(subtitle, style: const TextStyle(color: AppColors.grey707070, fontSize: 11)),
+                Text(title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 13)),
+                Text(subtitle,
+                    style: const TextStyle(
+                        color: AppColors.grey707070, fontSize: 11)),
                 const SizedBox(height: 20),
               ],
             ),
@@ -108,8 +193,113 @@ class DeliveryTimeline extends StatelessWidget {
   }
 }
 
+/// Rental period card — sirf tab dikhao jab dates set hon
+class RentalPeriodCard extends StatelessWidget {
+  final OrderModel order;
+  const RentalPeriodCard({super.key, required this.order});
+
+  @override
+  Widget build(BuildContext context) {
+    if (order.rentalStartDate == null || order.rentalEndDate == null) {
+      return const SizedBox.shrink();
+    }
+
+    final isOverdue = order.isOverdue;
+    final daysLeft = order.daysRemaining;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isOverdue
+            ? AppColors.errorRed.withValues(alpha: 0.05)
+            : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isOverdue
+              ? AppColors.errorRed.withValues(alpha: 0.3)
+              : AppColors.greyOutline.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.calendar_month_outlined,
+                  size: 16,
+                  color: isOverdue ? AppColors.errorRed : AppColors.grey707070),
+              const SizedBox(width: 8),
+              Text('Rental period',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: isOverdue ? AppColors.errorRed : Colors.black)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _dateBlock(
+                    'From', DateFormat('dd MMM, yyyy').format(order.rentalStartDate!)),
+              ),
+              const Icon(Icons.arrow_forward, size: 16, color: AppColors.grey400),
+              Expanded(
+                child: _dateBlock(
+                    'To', DateFormat('dd MMM, yyyy').format(order.rentalEndDate!)),
+              ),
+            ],
+          ),
+          if (isOverdue) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.errorRed.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                'Return date ${-(daysLeft ?? 0)} din pehle nikal gayi — jald wapas karein',
+                style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.errorRed,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ] else if (daysLeft != null &&
+              daysLeft >= 0 &&
+              order.status != OrderStatus.returned) ...[
+            const SizedBox(height: 12),
+            Text(
+              daysLeft == 0
+                  ? 'Aaj return karna hai'
+                  : '$daysLeft din baaki hain return karne mein',
+              style: const TextStyle(fontSize: 11, color: AppColors.grey707070),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _dateBlock(String label, String date) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: const TextStyle(fontSize: 10, color: AppColors.grey707070)),
+        const SizedBox(height: 2),
+        Text(date,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+      ],
+    );
+  }
+}
+
 class OrderItemsList extends StatelessWidget {
-  const OrderItemsList({super.key});
+  final List<OrderItem> items;
+  const OrderItemsList({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -124,47 +314,77 @@ class OrderItemsList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.inventory_2_outlined, size: 16, color: AppColors.grey707070),
-              SizedBox(width: 8),
-              Text('Order items (2)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              const Icon(Icons.inventory_2_outlined,
+                  size: 16, color: AppColors.grey707070),
+              const SizedBox(width: 8),
+              Text('Order items (${items.length})',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 14)),
             ],
           ),
           const SizedBox(height: 16),
-          _itemRow('Manyavar', 'Bandhani Saree', 'Size: Free • Blue • Qty: 1', '₹3,499', 'Local designer', const Color(0xFFF3E5F5)),
-          const Divider(height: 24),
-          _itemRow('W for Woman', 'Linen Blazer', 'Size: M • Beige • Qty: 1', '₹1,799', 'New arrival', const Color(0xFFFFF3E0)),
+          ...items.map((item) => Column(
+            children: [
+              _itemRow(item),
+              if (item != items.last) const Divider(height: 24),
+            ],
+          )),
         ],
       ),
     );
   }
 
-  Widget _itemRow(String brand, String name, String details, String price, String badge, Color bgColor) {
+  Widget _itemRow(OrderItem item) {
     return Row(
       children: [
         Container(
           width: 50,
           height: 60,
-          decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8)),
-          child: const Center(child: Icon(Icons.image_outlined, color: Colors.black26)),
+          decoration: BoxDecoration(
+              color: AppColors.categoryPowerBg,
+              borderRadius: BorderRadius.circular(8)),
+          child: const Center(
+              child:
+              Icon(Icons.handyman_outlined, color: AppColors.primaryBlack)),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(brand, style: const TextStyle(fontSize: 10, color: AppColors.grey707070)),
-              Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-              Text(details, style: const TextStyle(fontSize: 11, color: AppColors.grey707070)),
+              Text(item.vendorName ?? 'MRentO Partner',
+                  style: const TextStyle(
+                      fontSize: 10, color: AppColors.grey707070)),
+              Text(item.productName,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 13)),
+              Text(
+                  'Qty: ${item.quantity}'
+                      '${item.rentalDurationLabel != null ? ' • ${item.rentalDurationLabel}' : ''}',
+                  style: const TextStyle(
+                      fontSize: 11, color: AppColors.grey707070)),
+              if (item.securityDeposit > 0)
+                Text(
+                  'Deposit: ₹${item.totalSecurityDeposit.toInt()}',
+                  style: const TextStyle(
+                      fontSize: 10, color: AppColors.grey400),
+                ),
             ],
           ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(price, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-            Text(badge, style: const TextStyle(fontSize: 9, color: AppColors.primaryDarkGreen, fontWeight: FontWeight.bold)),
+            Text('₹${item.total.toInt()}',
+                style:
+                const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+            const Text('Rental',
+                style: TextStyle(
+                    fontSize: 9,
+                    color: AppColors.primaryDarkGreen,
+                    fontWeight: FontWeight.bold)),
           ],
         ),
       ],
@@ -173,10 +393,16 @@ class OrderItemsList extends StatelessWidget {
 }
 
 class OrderInvoiceCard extends StatelessWidget {
-  const OrderInvoiceCard({super.key});
+  final OrderModel order;
+  const OrderInvoiceCard({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
+    // totalAmount mein rental charges hain (deposit alag se track hota hai)
+    final rentalSubtotal = order.totalAmount / 1.18;
+    final tax = order.totalAmount - rentalSubtotal;
+    final grandTotal = order.totalAmount + order.totalSecurityDeposit;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       padding: const EdgeInsets.all(16),
@@ -193,57 +419,100 @@ class OrderInvoiceCard extends StatelessWidget {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.description_outlined, size: 16, color: AppColors.grey707070),
+                  Icon(Icons.description_outlined,
+                      size: 16, color: AppColors.grey707070),
                   SizedBox(width: 8),
-                  Text('Invoice', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  Text('Invoice',
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: AppColors.exploreBackground, borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(
+                    color: AppColors.exploreBackground,
+                    borderRadius: BorderRadius.circular(8)),
                 child: const Row(
                   children: [
                     Icon(Icons.copy, size: 12, color: AppColors.grey707070),
                     SizedBox(width: 4),
-                    Text('Copy', style: TextStyle(fontSize: 10, color: AppColors.grey707070, fontWeight: FontWeight.bold)),
+                    Text('Copy ID',
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: AppColors.grey707070,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20),
-          _invoiceRow('MRP total', '₹5,798'),
-          _invoiceRow('Product discount', '-₹500', isGreen: true),
-          _invoiceRow('Coupon (STYLE20)', '-₹0', isGreen: true),
+          _invoiceRow('Rental subtotal', '₹${rentalSubtotal.toInt()}'),
+          _invoiceRow('GST (18%)', '₹${tax.toInt()}'),
           _invoiceRow('Delivery charge', 'FREE', isGreen: true),
+          if (order.totalSecurityDeposit > 0)
+            _invoiceRow('Security deposit (refundable)',
+                '₹${order.totalSecurityDeposit.toInt()}'),
           const Divider(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Total paid', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              const Text('₹5,298', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              const Text('Grand Total',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              Text('₹${grandTotal.toInt()}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 15)),
             ],
           ),
+          if (order.totalSecurityDeposit > 0) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: order.securityRefunded
+                    ? AppColors.successColor.withValues(alpha: 0.1)
+                    : AppColors.categoryPowerBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    order.securityRefunded
+                        ? Icons.check_circle_outline
+                        : Icons.info_outline,
+                    size: 14,
+                    color: order.securityRefunded
+                        ? AppColors.successColor
+                        : AppColors.categoryPowerText,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      order.securityRefunded
+                          ? 'Security deposit refund ho chuka hai'
+                          : 'Deposit equipment return hone ke baad refund hoga',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: order.securityRefunded
+                            ? AppColors.successColor
+                            : AppColors.categoryPowerText,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Payment method', style: TextStyle(fontSize: 12, color: AppColors.grey707070)),
-              Row(
-                children: [
-                  const Text('GPay UPI', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                  const SizedBox(width: 4),
-                  Icon(Icons.account_balance_wallet, size: 14, color: AppColors.primaryDarkGreen.withValues(alpha: 0.7)),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Order ID', style: TextStyle(fontSize: 12, color: AppColors.grey707070)),
-              const Text('#FD28341', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              const Text('Order ID',
+                  style: TextStyle(fontSize: 12, color: AppColors.grey707070)),
+              Text('#${order.id.substring(0, 8).toUpperCase()}',
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.bold)),
             ],
           ),
         ],
@@ -257,8 +526,64 @@ class OrderInvoiceCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: AppColors.grey707070, fontSize: 13)),
-          Text(value, style: TextStyle(color: isGreen ? AppColors.successColor : AppColors.black121212, fontWeight: FontWeight.bold, fontSize: 13)),
+          Text(label,
+              style: const TextStyle(color: AppColors.grey707070, fontSize: 13)),
+          Text(value,
+              style: TextStyle(
+                  color: isGreen ? AppColors.successColor : AppColors.black121212,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13)),
+        ],
+      ),
+    );
+  }
+}
+
+class OrderDetailAddress extends StatelessWidget {
+  final String address;
+  const OrderDetailAddress({super.key, required this.address});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.greyOutline.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.location_on_outlined,
+                  size: 16, color: AppColors.grey707070),
+              SizedBox(width: 8),
+              Text('Delivery address',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: AppColors.lightGreenBadge,
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Icon(Icons.home_outlined,
+                    color: AppColors.primaryDarkGreen, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(address,
+                    style: const TextStyle(
+                        color: AppColors.grey707070, fontSize: 11, height: 1.4)),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -285,80 +610,23 @@ class OrderRatingCard extends StatelessWidget {
             children: [
               Icon(Icons.star_outline, size: 16, color: AppColors.grey707070),
               SizedBox(width: 8),
-              Text('Rate your order', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              Text('Rate your experience',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
             ],
           ),
           const SizedBox(height: 8),
-          const Text('Delivery aur products ko rate karein', style: TextStyle(color: AppColors.grey707070, fontSize: 12)),
+          const Text('Rental quality aur delivery ko rate karein',
+              style: TextStyle(color: AppColors.grey707070, fontSize: 12)),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (i) => const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Icon(Icons.star_outline, size: 30, color: Colors.orangeAccent),
-            )),
-          ),
-          const SizedBox(height: 12),
-          const Center(child: Text('Zabardast! — shukriya!', style: TextStyle(color: AppColors.primaryDarkGreen, fontWeight: FontWeight.bold, fontSize: 12))),
-          const SizedBox(height: 20),
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Aapka experience likhein... (optional)',
-              hintStyle: const TextStyle(fontSize: 12, color: AppColors.grey707070),
-              filled: true,
-              fillColor: AppColors.exploreBackground,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-              contentPadding: const EdgeInsets.all(16),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class OrderDetailAddress extends StatelessWidget {
-  const OrderDetailAddress({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyOutline.withValues(alpha: 0.2)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.location_on_outlined, size: 16, color: AppColors.grey707070),
-              SizedBox(width: 8),
-              Text('Delivery address', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(color: AppColors.lightGreenBadge, borderRadius: BorderRadius.circular(10)),
-                child: const Icon(Icons.home_outlined, color: AppColors.primaryDarkGreen, size: 20),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Home — Rahul Sharma', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                    Text('12, Baldev Nagar, Near SBI Bank, Jodhpur, Rajasthan — 342001', style: TextStyle(color: AppColors.grey707070, fontSize: 11, height: 1.4)),
-                  ],
-                ),
-              ),
-            ],
+            children: List.generate(
+                5,
+                    (i) => const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Icon(Icons.star_outline,
+                      size: 30, color: Colors.orangeAccent),
+                )),
           ),
         ],
       ),

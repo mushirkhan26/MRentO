@@ -8,7 +8,7 @@ plugins {
     id("com.google.firebase.crashlytics")
     // END: FlutterFire Configuration
     id("kotlin-android")
-     id("kotlin-parcelize") 
+    id("kotlin-parcelize")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -20,9 +20,8 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
-
 android {
-    namespace = "com.delivery90.customer"
+    namespace = "com.mrento.customer"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -32,25 +31,23 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    // ❌ kotlinOptions block yahan se hata diya gaya hai
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.delivery90.customer"
+        applicationId = "com.mrento.customer"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26
         targetSdk = 35
-       
+
         versionCode = 5
         versionName = "1.0.5"
-         // Enable multidex
+        // Enable multidex
         multiDexEnabled = true
     }
 
-     // 🔐 Signing configuration (copied from other app, translated for Kotlin DSL)
+    // 🔐 Signing configuration (copied from other app, translated for Kotlin DSL)
     signingConfigs {
         create("release") {
             storeFile = file(keystoreProperties["KEYSTORE_PATH"] ?: "")
@@ -71,7 +68,7 @@ android {
             )
         }
 
-         getByName("debug") {
+        getByName("debug") {
             // Optional: sign debug with same release key for easier testing
             signingConfig = signingConfigs.getByName("debug")
         }
@@ -85,4 +82,11 @@ flutter {
 dependencies {
     // Updated core library desugaring dependency to version 2.1.4 or higher
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+}
+
+// ✅ Naya Kotlin DSL syntax yahan add kiya gaya hai
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }

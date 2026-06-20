@@ -8,16 +8,12 @@ import '../bloc/search_event.dart';
 
 class SearchHeader extends StatelessWidget {
   final TextEditingController controller;
-
-  const SearchHeader({
-    super.key,
-    required this.controller,
-  });
+  const SearchHeader({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primaryDarkGreen,
+      color: AppColors.primaryBlack,
       padding: const EdgeInsets.fromLTRB(16, 40, 16, 16),
       child: Container(
         height: 55,
@@ -35,7 +31,8 @@ class SearchHeader extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.primaryDarkGreen, size: 20),
+              icon: const Icon(Icons.arrow_back_ios_new,
+                  color: AppColors.primaryBlack, size: 20),
               onPressed: () {
                 if (Navigator.of(context).canPop()) {
                   Navigator.pop(context);
@@ -48,23 +45,24 @@ class SearchHeader extends StatelessWidget {
               child: TextField(
                 controller: controller,
                 decoration: InputDecoration(
-                  hintText: "Search fashion, beauty & more...",
-                  hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                  // ✅ Rental-appropriate hint text
+                  hintText: 'Search drills, mixers, scaffolding...',
+                  hintStyle: TextStyle(
+                      color: Colors.grey.shade500, fontSize: 15),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                  contentPadding:
+                  const EdgeInsets.symmetric(vertical: 12),
                 ),
                 onChanged: (query) {
-                  context.read<SearchBloc>().add(SearchQueryChanged(query));
+                  context
+                      .read<SearchBloc>()
+                      .add(SearchQueryChanged(query));
                 },
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.camera_alt_outlined, color: Colors.grey, size: 22),
-              onPressed: () {},
-            ),
-            Container(height: 24, width: 1, color: Colors.grey.shade300),
-            IconButton(
-              icon: const Icon(Icons.mic, color: AppColors.primaryDarkGreen, size: 24),
+              icon: const Icon(Icons.mic,
+                  color: AppColors.primaryBlack, size: 24),
               onPressed: () {},
             ),
           ],

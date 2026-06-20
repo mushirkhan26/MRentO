@@ -46,3 +46,9 @@ app.*.map.json
 
 keys.env
 .artifacts/
+
+# Sensitive Firebase files
+lib/firebase_options.dart
+google-services.json
+android/app/google-services.json
+firebase.json

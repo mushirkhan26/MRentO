@@ -22,4 +22,5 @@ class AppRoutes {
 
   // Settings
   static const String notifications = '/notifications';
+  static const String addressBook = '/address-book';
 }

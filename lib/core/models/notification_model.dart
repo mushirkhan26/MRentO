@@ -1,33 +1,36 @@
-class NotificationModel {
+import 'package:equatable/equatable.dart';
+
+class NotificationModel extends Equatable {
   final String id;
   final String title;
   final String body;
-  final String type;
   final DateTime createdAt;
-  final bool isRead;
+  final String? type; // e.g., 'order_update', 'promo'
   final Map<String, dynamic>? data;
+  final bool isRead;
 
-  NotificationModel({
+  const NotificationModel({
     required this.id,
     required this.title,
     required this.body,
-    required this.type,
+
     required this.createdAt,
-    this.isRead = false,
+    this.type,
     this.data,
+    this.isRead = false,
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
-      id: (json['notificationId'] ?? json['id'])?.toString() ?? '',
-      title: json['title']?.toString() ?? '',
-      body: (json['message'] ?? json['body'])?.toString() ?? '',
-      type: json['type']?.toString() ?? 'general',
-      createdAt: (json['createdOn'] ?? json['createdAt']) != null 
-          ? DateTime.parse(json['createdOn'] ?? json['createdAt']) 
+      id: json['id'] ?? '',
+      title: json['title'] ?? '',
+      body: json['body'] ?? '',
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
           : DateTime.now(),
-      isRead: json['viewed'] ?? json['isRead'] ?? false,
+      type: json['type'],
       data: json['data'],
+      isRead: json['isRead'] ?? false,
     );
   }
 
@@ -36,10 +39,13 @@ class NotificationModel {
       'id': id,
       'title': title,
       'body': body,
-      'type': type,
       'createdAt': createdAt.toIso8601String(),
-      'isRead': isRead,
+      'type': type,
       'data': data,
+      'isRead': isRead,
     };
   }
+
+  @override
+  List<Object?> get props => [id, title, body, createdAt, type, data, isRead];
 }

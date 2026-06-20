@@ -28,3 +28,14 @@ class RemoveRecentSearch extends SearchEvent {
 class ClearRecentSearches extends SearchEvent {
   const ClearRecentSearches();
 }
+
+class ApplyFilters extends SearchEvent {
+  final double? minPrice;
+  final double? maxPrice;
+  final String? sortBy; // 'price_low_high', 'price_high_low', 'rating'
+
+  const ApplyFilters({this.minPrice, this.maxPrice, this.sortBy});
+
+  @override
+  List<Object?> get props => [minPrice, maxPrice, sortBy];
+}

@@ -127,9 +127,9 @@ class ItemThumbnails extends StatelessWidget {
     return Row(
       children: [
         ...colors.map((c) => Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: _itemThumbnail(c),
-            )),
+          padding: const EdgeInsets.only(right: 8),
+          child: _itemThumbnail(c),
+        )),
         if (extra != null)
           Container(
             width: 40,
@@ -141,7 +141,7 @@ class ItemThumbnails extends StatelessWidget {
             ),
             child: Center(
                 child:
-                    Text(extra!, style: const TextStyle(fontSize: 12, color: AppColors.grey707070))),
+                Text(extra!, style: const TextStyle(fontSize: 12, color: AppColors.grey707070))),
           ),
       ],
     );

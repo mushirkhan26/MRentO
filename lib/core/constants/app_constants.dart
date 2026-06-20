@@ -22,6 +22,10 @@ class AppConstants {
   static const bool enableConsoleLogging = true;
   static const bool enableColoredConsoleOutput = true;
 
+  // Analytics & Crashlytics
+  static bool get enableAnalytics => true; // Set to true for testing logs
+  static bool get enableCrashlytics => true;
+
   // Log Levels
   static const String logLevelDebug = 'DEBUG';
   static const String logLevelInfo = 'INFO';

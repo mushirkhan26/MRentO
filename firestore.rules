@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper: Check if current user is the owner of the document
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // 1. User Profiles
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      // Nested addresses and notifications
+      match /addresses/{addressId} {
+        allow read, write: if isOwner(userId);
+      }
+      match /notifications/{notifId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // 2. Products (Rental Equipment)
+    match /products/{productId} {
+      allow read: if true; // Anyone can browse
+      allow write: if false; // Only via Admin SDK/Portal (Future)
+
+      match /reviews/{reviewId} {
+        allow read: if true;
+        allow create: if isAuthenticated(); // Must be logged in to review
+      }
+    }
+
+    // 3. Orders
+    match /orders/{orderId} {
+      allow create: if isAuthenticated();
+      allow read: if isAuthenticated() &&
+        (resource.data.customerId == request.auth.uid);
+      allow update: if false; // Status updates should happen via Cloud Functions or Admin
+    }
+
+    // 4. Banners
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // 5. Categories
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

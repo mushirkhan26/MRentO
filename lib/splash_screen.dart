@@ -1,4 +1,4 @@
-import 'package:delivery_90/features/onboarding/widgets/onboarding_pages.dart';
+import 'package:MRentO/features/onboarding/widgets/onboarding_pages.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:video_player/video_player.dart';
 import 'config/navigation/app_routes.dart';
 import 'config/theme/app_colors.dart';
 import 'core/api/network/auth_service.dart';
+import 'core/services/local_storage_service.dart';
 import 'core/services/location_service.dart';
 import 'core/utils/utils.dart';
 import 'features/auth/bloc/auth_bloc.dart';
@@ -25,7 +25,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  late VideoPlayerController _videoController;
   late AnimationController _fadeController;
   late AnimationController _pulseController;
   late Animation<double> _fadeAnimation;
@@ -35,24 +34,18 @@ class _SplashScreenState extends State<SplashScreen>
   int _currentPage = 0;
   bool _showOnboarding = false;
 
-  bool _isVideoInitialized = false;
-  bool _isVideoControllerCreated = false;
   bool _hasStartedLogicCheck = false;
   bool _isLoading = false;
-  bool _videoEnded = false;
-  bool _safetyTimerTriggered = false;
-  bool _videoListenerFired = false;
   bool _waitingForSettingsReturn = false;
   int _authRetryCount = 0;
 
   final AuthService _authService = AuthService();
+  final LocalStorageService _storage = LocalStorageService();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _initVideo();
-    _startSafetyTimer();
 
     _fadeController = AnimationController(
       vsync: this,
@@ -70,6 +63,23 @@ class _SplashScreenState extends State<SplashScreen>
     _pulseAnimation = Tween<double>(begin: 0.92, end: 1.0).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
+
+    _initSplash();
+  }
+
+  Future<void> _initSplash() async {
+    // Show simple splash for 2 seconds
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+
+    final seen = await _storage.hasSeenOnboarding();
+    if (seen) {
+      _runGatekeeperLogic();
+    } else {
+      setState(() {
+        _showOnboarding = true;
+      });
+    }
   }
 
   @override
@@ -78,55 +88,7 @@ class _SplashScreenState extends State<SplashScreen>
       _waitingForSettingsReturn = false;
       if (!mounted) return;
       _hasStartedLogicCheck = false;
-      _videoListenerFired = false;
       _runGatekeeperLogic();
-    }
-  }
-
-  Future<void> _startSafetyTimer() async {
-    await Future.delayed(const Duration(seconds: 10));
-    if (mounted && !_hasStartedLogicCheck && !_videoListenerFired) {
-      setState(() {
-        _safetyTimerTriggered = true;
-        _videoEnded = true;
-        _showOnboarding = true;
-      });
-    }
-  }
-
-  Future<void> _initVideo() async {
-    try {
-      _videoController = VideoPlayerController.asset('assets/videos/splash.mp4');
-      _isVideoControllerCreated = true;
-      await _videoController.initialize();
-      if (!mounted) return;
-      setState(() {
-        _isVideoInitialized = true;
-        _videoController.play();
-      });
-      _videoController.setLooping(false);
-      _videoController.addListener(_onVideoUpdate);
-    } catch (e) {
-      debugPrint("Splash: Video init error: $e");
-      if (mounted) {
-        setState(() {
-          _videoEnded = true;
-          _showOnboarding = true;
-        });
-      }
-    }
-  }
-
-  void _onVideoUpdate() {
-    if (!mounted || _videoListenerFired) return;
-    final isCompleted = _videoController.value.position >=
-        _videoController.value.duration - const Duration(milliseconds: 10);
-    if (isCompleted && !_hasStartedLogicCheck && !_safetyTimerTriggered) {
-      setState(() {
-        _videoListenerFired = true;
-        _videoEnded = true;
-        _showOnboarding = true;
-      });
     }
   }
 
@@ -171,6 +133,9 @@ class _SplashScreenState extends State<SplashScreen>
     } catch (e) {
       debugPrint("Splash: Location check error: $e");
     }
+
+    // Mark onboarding as seen
+    await _storage.setSeenOnboarding(true);
 
     // 4. Auth Routing
     _finalizeRouting();
@@ -356,10 +321,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    if (_isVideoControllerCreated) {
-      _videoController.removeListener(_onVideoUpdate);
-      _videoController.dispose();
-    }
     _fadeController.dispose();
     _pulseController.dispose();
     _pageController.dispose();
@@ -369,7 +330,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final width = Utils().width(context);
-    final height = Utils().height(context);
 
     // Onboarding pages
     if (_showOnboarding) {
@@ -381,7 +341,7 @@ class _SplashScreenState extends State<SplashScreen>
           onPageChanged: (i) => setState(() => _currentPage = i),
           children: [
             WelcomePage(
-              onContinue: () => _pageController.nextPage(
+              onGetStarted: () => _pageController.nextPage(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeInOut,
               ),
@@ -411,90 +371,78 @@ class _SplashScreenState extends State<SplashScreen>
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeInOut,
               ),
-              onFinish: _runGatekeeperLogic,
+              onCitySelected: (city) => _runGatekeeperLogic(),
             ),
           ],
         ),
       );
     }
 
-    // Video Splash
+    // Simple Splash (Logo + Name)
     return Scaffold(
       backgroundColor: AppColors.primaryBlack,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Video
-          if (!_videoEnded && _isVideoInitialized && !_isLoading)
-            SizedBox.expand(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _videoController.value.size.width,
-                  height: _videoController.value.size.height,
-                  child: VideoPlayer(_videoController),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Logo Container
+                Container(
+                  width: width * 0.35,
+                  height: width * 0.35,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryYellow,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryYellow.withValues(alpha: 0.3),
+                        blurRadius: 30,
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-
-          // Fallback — agar video load na ho
-          if (_videoEnded || (!_isVideoInitialized && _safetyTimerTriggered))
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: width * 0.35,
-                    height: width * 0.35,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryYellow,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primaryYellow.withValues(alpha: 0.3),
-                          blurRadius: 30,
-                        ),
-                      ],
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                const SizedBox(height: 24),
+                // App Name
+                const Text(
+                  'MRentO',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
                   ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'MRentO',
+                ),
+                const SizedBox(height: 12),
+                // Loading indicator or pulse text
+                ScaleTransition(
+                  scale: _pulseAnimation,
+                  child: const Text(
+                    "Machinery Renting Simplified",
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryYellow,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  ScaleTransition(
-                    scale: _pulseAnimation,
-                    child: const Text(
-                      "Loading...",
-                      style: TextStyle(
-                        color: AppColors.primaryYellow,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
 
-          // Loading overlay
+          // Loading overlay (gatekeeper logic ke waqt)
           if (_isLoading)
             FadeTransition(
               opacity: _fadeAnimation,
               child: Container(
-                color: AppColors.primaryBlack.withValues(alpha: 0.9),
+                color: AppColors.primaryBlack.withValues(alpha: 0.7),
                 child: const Center(
                   child: CircularProgressIndicator(
                     color: AppColors.primaryYellow,

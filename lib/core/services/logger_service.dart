@@ -1,4 +1,5 @@
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
@@ -73,9 +74,9 @@ class LoggingService {
       _logToConsole(level, source, message, error, stackTrace);
     }
 
-    // if (level == LogLevel.error || level == LogLevel.fatal) {
-    //   _logToCrashlytics(level, source, message, error, stackTrace);
-    // }
+    if (AppConstants.enableCrashlytics && (level == LogLevel.error || level == LogLevel.fatal)) {
+      _logToCrashlytics(level, source, message, error, stackTrace);
+    }
   }
 
   bool _shouldLog(LogLevel level) {
@@ -136,29 +137,29 @@ class LoggingService {
     }
   }
 
-  // void _logToCrashlytics(LogLevel level, String source, String message, [dynamic error, StackTrace? stackTrace]) {
-  //   try {
-  //     final crashlytics = FirebaseCrashlytics.instance;
-  //     crashlytics.setCustomKey('log_level', level.name);
-  //     crashlytics.setCustomKey('log_source', source);
-  //     crashlytics.log('[$source] $message');
+  void _logToCrashlytics(LogLevel level, String source, String message, [dynamic error, StackTrace? stackTrace]) {
+    try {
+      final crashlytics = FirebaseCrashlytics.instance;
+      crashlytics.setCustomKey('log_level', level.name);
+      crashlytics.setCustomKey('log_source', source);
+      crashlytics.log('[$source] $message');
 
-  //     if (error != null) {
-  //       crashlytics.recordError(
-  //         error,
-  //         stackTrace,
-  //         fatal: level == LogLevel.fatal,
-  //         information: [
-  //           DiagnosticsProperty('source', source),
-  //           DiagnosticsProperty('level', level.name),
-  //           DiagnosticsProperty('message', message),
-  //         ],
-  //       );
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) print('Failed to log to Crashlytics: $e');
-  //   }
-  // }
+      if (error != null) {
+        crashlytics.recordError(
+          error,
+          stackTrace,
+          fatal: level == LogLevel.fatal,
+          information: [
+            'Source: $source',
+            'Level: ${level.name}',
+            'Message: $message',
+          ],
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) print('Failed to log to Crashlytics: $e');
+    }
+  }
 
   // Public logging methods
   void debug(String source, String message, {Object? error, StackTrace? stackTrace}) =>
@@ -210,32 +211,35 @@ class LoggingService {
     StackTrace? stackTrace,
   }) => _log(level, AppConstants.logCategoryGeneral, message, error, stackTrace);
 
-  // void recordCrash(dynamic error, StackTrace? stackTrace, {String? reason, bool fatal = true}) {
-  //   try {
-  //     final crashlytics = FirebaseCrashlytics.instance;
-  //     if (reason != null) crashlytics.log('Manual crash report: $reason');
-  //     crashlytics.recordError(error, stackTrace, fatal: fatal);
-  //     _log(LogLevel.fatal, 'CrashReport', reason ?? 'Manual crash report', error, stackTrace);
-  //   } catch (e) {
-  //     if (kDebugMode) print('Failed to record crash: $e');
-  //   }
-  // }
+  void recordCrash(dynamic error, StackTrace? stackTrace, {String? reason, bool fatal = true}) {
+    if (!AppConstants.enableCrashlytics) return;
+    try {
+      final crashlytics = FirebaseCrashlytics.instance;
+      if (reason != null) crashlytics.log('Manual crash report: $reason');
+      crashlytics.recordError(error, stackTrace, fatal: fatal);
+      _log(LogLevel.fatal, 'CrashReport', reason ?? 'Manual crash report', error, stackTrace);
+    } catch (e) {
+      if (kDebugMode) print('Failed to record crash: $e');
+    }
+  }
 
-  // void setUserId(String userId) {
-  //   try {
-  //     FirebaseCrashlytics.instance.setUserIdentifier(userId);
-  //   } catch (e) {
-  //     if (kDebugMode) print('Failed to set user ID in Crashlytics: $e');
-  //   }
-  // }
+  void setUserId(String userId) {
+    if (!AppConstants.enableCrashlytics) return;
+    try {
+      FirebaseCrashlytics.instance.setUserIdentifier(userId);
+    } catch (e) {
+      if (kDebugMode) print('Failed to set user ID in Crashlytics: $e');
+    }
+  }
 
-  // void setCustomKey(String key, dynamic value) {
-  //   try {
-  //     FirebaseCrashlytics.instance.setCustomKey(key, value);
-  //   } catch (e) {
-  //     if (kDebugMode) print('Failed to set custom key in Crashlytics: $e');
-  //   }
-  // }
+  void setCustomKey(String key, dynamic value) {
+    if (!AppConstants.enableCrashlytics) return;
+    try {
+      FirebaseCrashlytics.instance.setCustomKey(key, value);
+    } catch (e) {
+      if (kDebugMode) print('Failed to set custom key in Crashlytics: $e');
+    }
+  }
 
   void dispose() => _isInitialized = false;
 }
