@@ -1,0 +1,240 @@
+<svg viewBox="0 0 512 512" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft 3D Shadow Filters for Depth and Claymorphism -->
+    <filter id="blur-large" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" />
+    </filter>
+    <filter id="blur-medium" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="blur-small" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Premium Matte Black Materials -->
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="40%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+
+    <linearGradient id="matteBlackDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="50%" stop-color="#0A0A0A"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+
+    <!-- Edge Highlight for Glossy Bevels -->
+    <linearGradient id="edgeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A4A4A"/>
+      <stop offset="30%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+
+    <!-- Vibrant Yellow Metallic Materials -->
+    <linearGradient id="yellowBadge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="30%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#B48E08"/>
+    </linearGradient>
+
+    <linearGradient id="yellowExt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCA10C"/>
+      <stop offset="50%" stop-color="#8A6D00"/>
+      <stop offset="100%" stop-color="#4D3D00"/>
+    </linearGradient>
+
+    <radialGradient id="yellowGlow" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="40%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#8A6D00"/>
+    </radialGradient>
+
+    <!-- Cutout Mask for Wrench Jaw -->
+    <mask id="wrench-jaw">
+      <rect x="-50" y="-50" width="100" height="100" fill="white" />
+      <rect x="-32" y="-10" width="40" height="20" rx="6" fill="black" />
+    </mask>
+
+    <!-- Reusable Hex Nut Path for Ear Cups -->
+    <g id="hexNut">
+      <polygon points="0,-32 28,-16 28,16 0,32 -28,16 -28,-16" />
+    </g>
+  </defs>
+
+  <!-- Global Floor Shadows -->
+  <ellipse cx="256" cy="460" rx="170" ry="24" fill="#000000" opacity="0.35" filter="url(#blur-large)" />
+  <ellipse cx="256" cy="460" rx="100" ry="12" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+
+  <!-- Floating Sparkle (Top Left) -->
+  <g transform="translate(100, 120)">
+    <path d="M 0,-14 C 0,-4 4,0 14,0 C 4,0 0,4 0,14 C 0,4 -4,0 -14,0 C -4,0 0,-4 0,-14 Z" fill="#FACC15" filter="url(#blur-small)" opacity="0.6" />
+    <path d="M 0,-12 C 0,-3 3,0 12,0 C 3,0 0,3 0,12 C 0,3 -3,0 -12,0 C -3,0 0,-3 0,-12 Z" fill="#FFF080" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 1. CHAT TAIL (Bottom Left Background)      -->
+  <!-- ========================================== -->
+  <g>
+    <!-- Cast Shadow -->
+    <path d="M 190 280 L 120 350 L 230 330 Z" fill="#000000" opacity="0.6" filter="url(#blur-medium)" transform="translate(0, 16)" />
+    <!-- Extrusion / Depth -->
+    <path d="M 190 280 L 120 350 L 230 330 Z" fill="#050505" transform="translate(0, 10)" />
+    <!-- Front Face -->
+    <path d="M 190 280 L 120 350 L 230 330 Z" fill="url(#matteBlack)" />
+    <!-- Edge Highlight -->
+    <path d="M 190 280 L 120 350 L 230 330 Z" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" stroke-linejoin="round" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 2. SHIELD CHAT BUBBLE (Main Body)          -->
+  <!-- ========================================== -->
+  <g>
+    <!-- Shield Cast Shadow -->
+    <path d="M 166 150 Q 256 120 346 150 Q 360 270 256 360 Q 152 270 166 150 Z" fill="#000000" opacity="0.5" filter="url(#blur-large)" transform="translate(0, 24)" />
+
+    <!-- Shield Extrusion (Thick 3D Volume) -->
+    <path d="M 166 150 Q 256 120 346 150 Q 360 270 256 360 Q 152 270 166 150 Z" fill="#0A0A0A" transform="translate(0, 16)" />
+    <path d="M 166 150 Q 256 120 346 150 Q 360 270 256 360 Q 152 270 166 150 Z" fill="#151515" transform="translate(0, 8)" />
+
+    <!-- Shield Front Face -->
+    <path d="M 166 150 Q 256 120 346 150 Q 360 270 256 360 Q 152 270 166 150 Z" fill="url(#matteBlack)" />
+
+    <!-- Shield Glossy Edge Highlight -->
+    <path d="M 166 150 Q 256 120 346 150 Q 360 270 256 360 Q 152 270 166 150 Z" fill="none" stroke="url(#edgeHighlight)" stroke-width="3" />
+
+    <!-- Shield Inner Reflection (Catch-light) -->
+    <path d="M 174 162 Q 256 136 338 162" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.12" stroke-linecap="round" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 3. GLOWING QUESTION MARK                   -->
+  <!-- ========================================== -->
+  <g transform="translate(0, -6)">
+    <!-- Question Mark Cast Shadow -->
+    <path d="M 216 190 C 216 150, 296 150, 296 190 C 296 230, 256 230, 256 260" fill="none" stroke="#000000" stroke-width="36" stroke-linecap="round" opacity="0.6" filter="url(#blur-medium)" transform="translate(0, 16)" />
+
+    <!-- Question Mark Extrusion -->
+    <path d="M 216 190 C 216 150, 296 150, 296 190 C 296 230, 256 230, 256 260" fill="none" stroke="#A17E00" stroke-width="28" stroke-linecap="round" transform="translate(0, 10)" />
+    <path d="M 216 190 C 216 150, 296 150, 296 190 C 296 230, 256 230, 256 260" fill="none" stroke="#DCA10C" stroke-width="28" stroke-linecap="round" transform="translate(0, 5)" />
+
+    <!-- Question Mark Front Face -->
+    <path d="M 216 190 C 216 150, 296 150, 296 190 C 296 230, 256 230, 256 260" fill="none" stroke="url(#yellowBadge)" stroke-width="28" stroke-linecap="round" />
+
+    <!-- Question Mark Inner Highlight -->
+    <path d="M 216 190 C 216 150, 296 150, 296 190 C 296 230, 256 230, 256 260" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.5" transform="translate(0, -4)" />
+
+    <!-- Dot Extrusion & Front -->
+    <circle cx="256" cy="306" r="14" fill="#000000" opacity="0.6" filter="url(#blur-small)" transform="translate(0, 10)" />
+    <circle cx="256" cy="306" r="14" fill="#A17E00" transform="translate(0, 8)" />
+    <circle cx="256" cy="306" r="14" fill="#DCA10C" transform="translate(0, 4)" />
+    <circle cx="256" cy="306" r="14" fill="url(#yellowBadge)" />
+    <!-- Dot Highlight -->
+    <circle cx="256" cy="306" r="12" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" transform="translate(0, -2)" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 4. SUPPORT HEADSET BAND                    -->
+  <!-- ========================================== -->
+  <g>
+    <!-- Yellow Inner Cushion (Glowing effect) -->
+    <path d="M 124 220 C 124 60, 388 60, 388 220" fill="none" stroke="url(#yellowBadge)" stroke-width="12" stroke-linecap="round" />
+
+    <!-- Band Cast Shadow -->
+    <path d="M 116 220 C 116 40, 396 40, 396 220" fill="none" stroke="#000000" stroke-width="32" stroke-linecap="round" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 16)" />
+
+    <!-- Band Extrusion -->
+    <path d="M 116 220 C 116 40, 396 40, 396 220" fill="none" stroke="#050505" stroke-width="32" stroke-linecap="round" transform="translate(0, 12)" />
+    <path d="M 116 220 C 116 40, 396 40, 396 220" fill="none" stroke="#0A0A0A" stroke-width="32" stroke-linecap="round" transform="translate(0, 6)" />
+
+    <!-- Band Front Face -->
+    <path d="M 116 220 C 116 40, 396 40, 396 220" fill="none" stroke="url(#matteBlack)" stroke-width="32" stroke-linecap="round" />
+
+    <!-- Band Glossy Bevel Edge -->
+    <path d="M 116 220 C 116 40, 396 40, 396 220" fill="none" stroke="url(#edgeHighlight)" stroke-width="4" stroke-linecap="round" />
+    <!-- Top Catch-light Reflection -->
+    <path d="M 136 216 C 136 60, 376 60, 376 216" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.15" stroke-linecap="round" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 5. HEX NUT EAR CUPS (Rental Hardware)      -->
+  <!-- ========================================== -->
+
+  <!-- Left Ear Cup -->
+  <g transform="translate(116, 220)">
+    <!-- Shadow -->
+    <circle cx="0" cy="8" r="36" fill="#000000" opacity="0.6" filter="url(#blur-medium)" />
+    <!-- Extrusion -->
+    <use href="#hexNut" fill="#8A6D00" transform="translate(0, 10)" stroke="#8A6D00" stroke-width="4" stroke-linejoin="round" />
+    <use href="#hexNut" fill="#B48E08" transform="translate(0, 5)" stroke="#B48E08" stroke-width="4" stroke-linejoin="round" />
+    <!-- Front -->
+    <use href="#hexNut" fill="url(#yellowBadge)" stroke="url(#yellowBadge)" stroke-width="4" stroke-linejoin="round" />
+    <!-- Inner Speaker Hole -->
+    <circle cx="0" cy="0" r="16" fill="#0A0A0A" />
+    <circle cx="0" cy="0" r="16" fill="none" stroke="#000000" stroke-width="4" opacity="0.7" />
+    <circle cx="0" cy="0" r="10" fill="#222222" />
+    <!-- Glossy Inner Rim -->
+    <circle cx="0" cy="0" r="14" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.4" />
+  </g>
+
+  <!-- Right Ear Cup -->
+  <g transform="translate(396, 220)">
+    <!-- Shadow -->
+    <circle cx="0" cy="8" r="36" fill="#000000" opacity="0.6" filter="url(#blur-medium)" />
+    <!-- Extrusion -->
+    <use href="#hexNut" fill="#8A6D00" transform="translate(0, 10)" stroke="#8A6D00" stroke-width="4" stroke-linejoin="round" />
+    <use href="#hexNut" fill="#B48E08" transform="translate(0, 5)" stroke="#B48E08" stroke-width="4" stroke-linejoin="round" />
+    <!-- Front -->
+    <use href="#hexNut" fill="url(#yellowBadge)" stroke="url(#yellowBadge)" stroke-width="4" stroke-linejoin="round" />
+    <!-- Inner Speaker Hole -->
+    <circle cx="0" cy="0" r="16" fill="#0A0A0A" />
+    <circle cx="0" cy="0" r="16" fill="none" stroke="#000000" stroke-width="4" opacity="0.7" />
+    <circle cx="0" cy="0" r="10" fill="#222222" />
+    <!-- Glossy Inner Rim -->
+    <circle cx="0" cy="0" r="14" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.4" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 6. WRENCH MIC BOOM (Support + Tools)       -->
+  <!-- ========================================== -->
+  <g>
+    <!-- Boom Arm Cast Shadow -->
+    <path d="M 396 220 Q 380 370 260 350" fill="none" stroke="#000000" stroke-width="16" stroke-linecap="round" opacity="0.6" filter="url(#blur-small)" transform="translate(0, 12)" />
+
+    <!-- Boom Arm Extrusion -->
+    <path d="M 396 220 Q 380 370 260 350" fill="none" stroke="url(#yellowExt)" stroke-width="16" stroke-linecap="round" transform="translate(0, 6)" />
+
+    <!-- Boom Arm Front -->
+    <path d="M 396 220 Q 380 370 260 350" fill="none" stroke="url(#yellowBadge)" stroke-width="16" stroke-linecap="round" />
+
+    <!-- Boom Arm Highlight -->
+    <path d="M 396 216 Q 380 366 260 346" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.5" />
+
+    <!-- Wrench Head End -->
+    <g transform="translate(260, 350) rotate(15)">
+      <!-- Wrench Shadow -->
+      <circle cx="0" cy="8" r="26" fill="#000000" opacity="0.6" filter="url(#blur-small)" />
+
+      <!-- Wrench Extrusion -->
+      <circle cx="0" cy="8" r="24" fill="#8A6D00" mask="url(#wrench-jaw)" />
+      <circle cx="0" cy="4" r="24" fill="#B48E08" mask="url(#wrench-jaw)" />
+
+      <!-- Wrench Front Face -->
+      <circle cx="0" cy="0" r="24" fill="url(#yellowBadge)" mask="url(#wrench-jaw)" />
+
+      <!-- Wrench Inner Highlight -->
+      <circle cx="0" cy="0" r="22" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.6" mask="url(#wrench-jaw)" />
+
+      <!-- Mechanical Dimple on Wrench -->
+      <circle cx="10" cy="0" r="4" fill="#B48E08" />
+      <circle cx="10" cy="0" r="4" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4" />
+    </g>
+  </g>
+
+  <!-- Floating Sparkle (Bottom Right) -->
+  <g transform="translate(420, 360) scale(0.7)">
+    <path d="M 0,-14 C 0,-4 4,0 14,0 C 4,0 0,4 0,14 C 0,4 -4,0 -14,0 C -4,0 0,-4 0,-14 Z" fill="#FACC15" filter="url(#blur-small)" opacity="0.8" />
+    <path d="M 0,-12 C 0,-3 3,0 12,0 C 3,0 0,3 0,12 C 0,3 -3,0 -12,0 C -3,0 0,-3 0,-12 Z" fill="#FFF080" />
+  </g>
+
+</svg>

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_state.dart';
@@ -44,8 +45,11 @@ class ProfileHeader extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Colors.white.withValues(alpha: 0.1),
                     ),
-                    child: const Icon(Icons.settings_outlined,
-                        color: Colors.white, size: 20),
+                    child: SvgPicture.asset(
+                      'assets/icons/settings_3d.svg',
+                      width: 20,
+                      height: 20,
+                    ),
                   ),
                 ],
               ),

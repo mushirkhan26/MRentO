@@ -1,0 +1,213 @@
+<svg viewBox="0 0 512 512" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft 3D Shadow Filters for Depth and Claymorphism -->
+    <filter id="blur-large" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" />
+    </filter>
+    <filter id="blur-medium" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="blur-small" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Premium Matte Black Materials -->
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="40%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+
+    <linearGradient id="matteBlackDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="50%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+
+    <!-- Edge Highlight for Glossy Bevels -->
+    <linearGradient id="edgeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#555555"/>
+      <stop offset="30%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+
+    <!-- Vibrant Yellow Metallic & Clay Materials -->
+    <linearGradient id="yellowBadge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="30%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#B48E08"/>
+    </linearGradient>
+
+    <linearGradient id="yellowExt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCA10C"/>
+      <stop offset="50%" stop-color="#8A6D00"/>
+      <stop offset="100%" stop-color="#4D3D00"/>
+    </linearGradient>
+
+    <!-- Volumetric Light Beam Gradient -->
+    <linearGradient id="lightBeam" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FACC15" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FACC15" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <linearGradient id="lightBeamCore" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#FACC15" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- GLOBAL FLOOR SHADOWS                       -->
+  <!-- ========================================== -->
+  <ellipse cx="256" cy="450" rx="160" ry="24" fill="#000000" opacity="0.35" filter="url(#blur-large)" />
+  <ellipse cx="256" cy="450" rx="90" ry="12" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+
+  <!-- Background Floating Sparkles -->
+  <g transform="translate(100, 160)">
+    <circle cx="0" cy="16" r="12" fill="#000000" opacity="0.4" filter="url(#blur-medium)" />
+    <circle cx="0" cy="0" r="12" fill="url(#yellowBadge)" />
+    <circle cx="-3" cy="-3" r="4" fill="#FFFFFF" opacity="0.5" filter="url(#blur-small)" />
+  </g>
+
+  <!-- MASTER GROUP: Isometric Tilt (-6 degrees) -->
+  <g transform="translate(256, 256) rotate(-6) translate(-256, -256)">
+
+    <!-- ========================================== -->
+    <!-- LAYER 1: VOLUMETRIC LIGHT BEAM (Below Dome)-->
+    <!-- ========================================== -->
+    <path d="M 176 280 L 110 440 A 150 24 0 0 0 402 440 L 336 280 Z" fill="url(#lightBeam)" />
+    <path d="M 216 280 L 180 440 A 80 12 0 0 0 332 440 L 296 280 Z" fill="url(#lightBeamCore)" />
+
+    <!-- ========================================== -->
+    <!-- LAYER 2: NOTIFICATION PING WAVES           -->
+    <!-- ========================================== -->
+    <g fill="none" stroke-linecap="round">
+      <!-- Left Waves -->
+      <path d="M 120 200 A 70 90 0 0 0 120 340" stroke="#8A6D00" stroke-width="12" transform="translate(0, 6)" />
+      <path d="M 120 200 A 70 90 0 0 0 120 340" stroke="url(#yellowBadge)" stroke-width="12" />
+
+      <path d="M 80 160 A 110 130 0 0 0 80 380" stroke="#8A6D00" stroke-width="12" opacity="0.6" transform="translate(0, 6)" />
+      <path d="M 80 160 A 110 130 0 0 0 80 380" stroke="url(#yellowBadge)" stroke-width="12" opacity="0.6" />
+
+      <!-- Right Waves -->
+      <path d="M 392 200 A 70 90 0 0 1 392 340" stroke="#8A6D00" stroke-width="12" transform="translate(0, 6)" />
+      <path d="M 392 200 A 70 90 0 0 1 392 340" stroke="url(#yellowBadge)" stroke-width="12" />
+
+      <path d="M 432 160 A 110 130 0 0 1 432 380" stroke="#8A6D00" stroke-width="12" opacity="0.6" transform="translate(0, 6)" />
+      <path d="M 432 160 A 110 130 0 0 1 432 380" stroke="url(#yellowBadge)" stroke-width="12" opacity="0.6" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LAYER 3: HANGING RENTAL EQUIPMENT TAG      -->
+    <!-- ========================================== -->
+    <g transform="translate(226, 90) rotate(-15)">
+      <!-- Tag Shadow -->
+      <rect x="-36" y="24" width="32" height="48" rx="4" fill="#000000" opacity="0.5" filter="url(#blur-small)" transform="translate(0, 8)" />
+
+      <!-- Connecting Hook/Wire -->
+      <path d="M 0 0 L -20 24" fill="none" stroke="#FACC15" stroke-width="4" stroke-linecap="round" />
+
+      <!-- Tag Extrusion & Body -->
+      <rect x="-36" y="24" width="32" height="48" rx="4" fill="url(#yellowExt)" transform="translate(0, 4)" />
+      <rect x="-36" y="24" width="32" height="48" rx="4" fill="url(#yellowBadge)" />
+
+      <!-- Tag Top Header (Black) -->
+      <path d="M -36 28 C -36 26, -34 24, -32 24 L -8 24 C -6 24, -4 26, -4 28 L -4 36 L -36 36 Z" fill="#111111" />
+      <circle cx="-20" cy="30" r="3" fill="#FACC15" />
+
+      <!-- Tag Barcode/Content Lines -->
+      <line x1="-30" y1="44" x2="-10" y2="44" stroke="#111111" stroke-width="2.5" stroke-linecap="round" />
+      <line x1="-30" y1="52" x2="-16" y2="52" stroke="#111111" stroke-width="2.5" stroke-linecap="round" />
+      <line x1="-30" y1="60" x2="-10" y2="60" stroke="#111111" stroke-width="2.5" stroke-linecap="round" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LAYER 4: TOP INDUSTRIAL BRACKET            -->
+    <!-- ========================================== -->
+    <g>
+      <!-- Bracket Cast Shadow -->
+      <path d="M 226 130 L 226 70 A 30 30 0 0 1 286 70 L 286 130" fill="none" stroke="#000000" stroke-width="24" stroke-linecap="round" opacity="0.6" filter="url(#blur-small)" transform="translate(0, 10)" />
+
+      <!-- Bracket Extrusion -->
+      <path d="M 226 130 L 226 70 A 30 30 0 0 1 286 70 L 286 130" fill="none" stroke="url(#yellowExt)" stroke-width="24" stroke-linecap="round" transform="translate(0, 6)" />
+
+      <!-- Bracket Front -->
+      <path d="M 226 130 L 226 70 A 30 30 0 0 1 286 70 L 286 130" fill="none" stroke="url(#yellowBadge)" stroke-width="24" stroke-linecap="round" />
+
+      <!-- Bracket Inner Edge Highlight -->
+      <path d="M 226 130 L 226 70 A 30 30 0 0 1 286 70 L 286 130" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.5" transform="translate(-2, -2)" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LAYER 5: SMART BEACON DOME (The Bell Body) -->
+    <!-- ========================================== -->
+    <g id="beacon-dome">
+      <!-- Dome Base Depth (The Extrusion) -->
+      <ellipse cx="256" cy="296" rx="100" ry="30" fill="#050505" />
+      <ellipse cx="256" cy="288" rx="100" ry="30" fill="#111111" />
+
+      <!-- Main Matte Black Dome Shape -->
+      <path d="M 156 280 L 190 130 C 190 90, 322 90, 322 130 L 356 280 Z" fill="url(#matteBlack)" />
+      <ellipse cx="256" cy="280" rx="100" ry="30" fill="url(#matteBlack)" />
+
+      <!-- Dome Top Cap (Where Bracket Connects) -->
+      <ellipse cx="256" cy="130" rx="66" ry="18" fill="url(#matteBlackDark)" />
+      <ellipse cx="256" cy="130" rx="66" ry="18" fill="none" stroke="#333333" stroke-width="2" />
+
+      <!-- Glossy Edge Highlights for Dome -->
+      <path d="M 156 280 L 190 130 C 190 90, 322 90, 322 130 L 356 280" fill="none" stroke="url(#edgeHighlight)" stroke-width="4" />
+      <path d="M 158 280 L 192 130 C 192 92, 320 92, 320 130 L 354 280" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.1" />
+
+      <!-- Glowing Industrial Stripe 1 (Middle) -->
+      <path d="M 166 230 A 90 26 0 0 0 346 230" fill="none" stroke="url(#yellowExt)" stroke-width="16" transform="translate(0, 4)" />
+      <path d="M 166 230 A 90 26 0 0 0 346 230" fill="none" stroke="url(#yellowBadge)" stroke-width="16" />
+      <path d="M 166 226 A 90 26 0 0 0 346 226" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4" />
+
+      <!-- Glowing Industrial Stripe 2 (Top) -->
+      <path d="M 183 180 A 73 20 0 0 0 329 180" fill="none" stroke="url(#yellowExt)" stroke-width="8" transform="translate(0, 3)" />
+      <path d="M 183 180 A 73 20 0 0 0 329 180" fill="none" stroke="url(#yellowBadge)" stroke-width="8" />
+
+      <!-- Inner Cavity (Dark Recess) -->
+      <ellipse cx="256" cy="280" rx="84" ry="24" fill="#0A0A0A" />
+      <ellipse cx="256" cy="280" rx="84" ry="24" fill="none" stroke="#1F1F1F" stroke-width="4" />
+
+      <!-- Tech Lens / Core Emitter (Inside Cavity) -->
+      <ellipse cx="256" cy="280" rx="56" ry="16" fill="#222222" />
+      <ellipse cx="256" cy="280" rx="40" ry="12" fill="url(#yellowExt)" />
+      <ellipse cx="256" cy="280" rx="30" ry="9" fill="url(#yellowBadge)" />
+      <ellipse cx="256" cy="280" rx="14" ry="4" fill="#FFFFFF" opacity="0.7" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LAYER 6: FLOATING ALERT BADGE (Top Right)  -->
+    <!-- ========================================== -->
+    <g transform="translate(390, 110)">
+      <!-- Badge Cast Shadow -->
+      <circle cx="0" cy="16" r="46" fill="#000000" opacity="0.6" filter="url(#blur-medium)" />
+
+      <!-- Badge Extrusion / 3D Depth -->
+      <circle cx="0" cy="8" r="46" fill="#8A6D00" />
+      <circle cx="0" cy="4" r="46" fill="#B48E08" />
+
+      <!-- Badge Front Face -->
+      <circle cx="0" cy="0" r="46" fill="url(#yellowBadge)" />
+
+      <!-- Badge Inner Bevel / Rim Highlight -->
+      <circle cx="0" cy="0" r="42" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5" />
+      <circle cx="0" cy="0" r="46" fill="none" stroke="#DCA10C" stroke-width="2" />
+
+      <!-- Bold Alert Exclamation Mark (Matte Black) -->
+      <!-- Shadow -->
+      <rect x="-8" y="-22" width="16" height="28" rx="8" fill="#A17E00" transform="translate(0, 3)" />
+      <circle cx="0" cy="18" r="8" fill="#A17E00" transform="translate(0, 3)" />
+
+      <!-- Icon Body -->
+      <rect x="-8" y="-22" width="16" height="28" rx="8" fill="#111111" />
+      <circle cx="0" cy="18" r="8" fill="#111111" />
+
+      <!-- Icon Subtle Highlight -->
+      <rect x="-6" y="-20" width="12" height="24" rx="6" fill="none" stroke="#333333" stroke-width="1.5" />
+    </g>
+
+  </g>
+</svg>

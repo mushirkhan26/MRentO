@@ -20,4 +20,29 @@ class UrlLauncherHelper {
       rethrow;
     }
   }
+
+  static Future<void> launchPhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      throw 'Could not launch $launchUri';
+    }
+  }
+
+  static Future<void> launchWhatsApp(String phoneNumber, {String message = ""}) async {
+    // Standard WhatsApp link format: https://wa.me/number?text=message
+    final String cleanNumber = phoneNumber.replaceAll(RegExp(r'\D'), '');
+    final String encodedMessage = Uri.encodeComponent(message);
+    final Uri whatsappUri = Uri.parse("https://wa.me/$cleanNumber?text=$encodedMessage");
+
+    if (await canLaunchUrl(whatsappUri)) {
+      await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch WhatsApp';
+    }
+  }
 }

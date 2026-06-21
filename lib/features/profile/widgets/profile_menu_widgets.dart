@@ -38,7 +38,8 @@ class SectionCard extends StatelessWidget {
 }
 
 class ProfileTile extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final Widget? customIcon;
   final Color iconBg;
   final Color iconColor;
   final String title;
@@ -49,7 +50,8 @@ class ProfileTile extends StatelessWidget {
 
   const ProfileTile({
     super.key,
-    required this.icon,
+    this.icon,
+    this.customIcon,
     required this.iconBg,
     required this.iconColor,
     required this.title,
@@ -68,7 +70,7 @@ class ProfileTile extends StatelessWidget {
           leading: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(10)),
-            child: Icon(icon, color: iconColor, size: 20),
+            child: customIcon ?? Icon(icon, color: iconColor, size: 20),
           ),
           title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.black121212)),
           subtitle: Text(subtitle, style: const TextStyle(fontSize: 11, color: AppColors.grey707070)),
@@ -82,7 +84,8 @@ class ProfileTile extends StatelessWidget {
 }
 
 class SwitchTile extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final Widget? customIcon;
   final Color iconBg;
   final Color iconColor;
   final String title;
@@ -93,7 +96,8 @@ class SwitchTile extends StatelessWidget {
 
   const SwitchTile({
     super.key,
-    required this.icon,
+    this.icon,
+    this.customIcon,
     required this.iconBg,
     required this.iconColor,
     required this.title,
@@ -111,7 +115,7 @@ class SwitchTile extends StatelessWidget {
           leading: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(10)),
-            child: Icon(icon, color: iconColor, size: 20),
+            child: customIcon ?? Icon(icon, color: iconColor, size: 20),
           ),
           title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.black121212)),
           subtitle: Text(subtitle, style: const TextStyle(fontSize: 11, color: AppColors.grey707070)),

@@ -1,0 +1,242 @@
+<svg viewBox="0 0 512 512" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft 3D Shadow Filters for Depth and Claymorphism -->
+    <filter id="blur-large" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" />
+    </filter>
+    <filter id="blur-medium" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="blur-small" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Premium Matte Black Materials -->
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="40%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+
+    <linearGradient id="matteBlackDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="50%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+
+    <!-- Edge Highlight for Glossy Bevels -->
+    <linearGradient id="edgeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#555555"/>
+      <stop offset="30%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+
+    <!-- Vibrant Yellow Metallic & Clay Materials -->
+    <linearGradient id="yellowBadge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="30%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#A17E00"/>
+    </linearGradient>
+
+    <linearGradient id="yellowExt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCA10C"/>
+      <stop offset="50%" stop-color="#8A6D00"/>
+      <stop offset="100%" stop-color="#4D3D00"/>
+    </linearGradient>
+
+    <!-- Ambient Glowing Spheres -->
+    <radialGradient id="yellowSphere" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="40%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#8A6D00"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- GLOBAL FLOOR SHADOWS                       -->
+  <!-- ========================================== -->
+  <ellipse cx="256" cy="460" rx="160" ry="24" fill="#000000" opacity="0.35" filter="url(#blur-large)" />
+  <ellipse cx="256" cy="460" rx="90" ry="12" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+
+  <!-- ========================================== -->
+  <!-- BACKGROUND FLOATING ELEMENTS               -->
+  <!-- ========================================== -->
+  <!-- Floating Yellow Sphere (Top Left) -->
+  <g transform="translate(120, 150)">
+    <circle cx="0" cy="16" r="16" fill="#000000" opacity="0.4" filter="url(#blur-medium)" />
+    <circle cx="0" cy="0" r="16" fill="url(#yellowSphere)" />
+    <circle cx="-5" cy="-5" r="5" fill="#FFFFFF" opacity="0.4" filter="url(#blur-small)" />
+  </g>
+
+  <!-- Small Floating Sparkle (Bottom Left) -->
+  <g transform="translate(90, 320) scale(0.6)">
+    <path d="M 0 -16 C 0 -4, 4 0, 16 0 C 4 0, 0 4, 0 16 C 0 4, -4 0, -16 0 C -4 0, 0 -4, 0 -16 Z" fill="#FACC15" filter="url(#blur-small)" opacity="0.8" />
+    <path d="M 0 -12 C 0 -3, 3 0, 12 0 C 3 0, 0 3, 0 12 C 0 3, -3 0, -12 0 C -3 0, 0 -3, 0 -12 Z" fill="#FFF080" />
+  </g>
+
+  <!-- MASTER GROUP: Isometric Tilt (-10 degrees) -->
+  <g transform="translate(256, 256) rotate(-10) translate(-256, -256)">
+
+    <!-- ========================================== -->
+    <!-- 1. BACK HOUSING (Inside the Terminal Slot) -->
+    <!-- ========================================== -->
+    <g id="terminal-back">
+      <!-- Cast Shadow -->
+      <rect x="136" y="150" width="240" height="130" rx="20" fill="#000000" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 12)" />
+
+      <!-- Base Layer -->
+      <rect x="136" y="150" width="240" height="130" rx="20" fill="#050505" />
+      <rect x="136" y="150" width="240" height="130" rx="20" fill="url(#matteBlackDark)" />
+
+      <!-- Inner Bevel Highlight -->
+      <rect x="138" y="152" width="236" height="126" rx="18" fill="none" stroke="#222222" stroke-width="2" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 2. THE EJECTING ID CARD (Sign Out Action)  -->
+    <!-- ========================================== -->
+    <g id="ejecting-card">
+      <!-- Drop Shadow inside the slot -->
+      <rect x="166" y="60" width="180" height="220" rx="16" fill="#000000" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 16)" />
+
+      <!-- Card Extrusion (3D Volume) -->
+      <rect x="166" y="60" width="180" height="220" rx="16" fill="url(#yellowExt)" transform="translate(0, 8)" />
+      <rect x="166" y="60" width="180" height="220" rx="16" fill="#DCA10C" transform="translate(0, 4)" />
+
+      <!-- Card Front Face -->
+      <rect x="166" y="60" width="180" height="220" rx="16" fill="url(#yellowBadge)" />
+
+      <!-- Glossy Card Edge -->
+      <rect x="168" y="62" width="176" height="216" rx="14" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4" />
+
+      <!-- ========================================== -->
+      <!-- CARD UI: Logout / Disconnect Symbols       -->
+      <!-- ========================================== -->
+
+      <!-- Distinct Eject/Logout Symbol (Matte Black) -->
+      <path d="M 236 100 L 256 80 L 276 100" fill="none" stroke="#111111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 232 114 L 280 114" fill="none" stroke="#111111" stroke-width="8" stroke-linecap="round" />
+      <!-- Subtle Highlight on Eject Symbol -->
+      <path d="M 236 100 L 256 80 L 276 100" fill="none" stroke="#555555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" transform="translate(0, -1)" />
+
+      <!-- User Avatar / Rental Profile Badge -->
+      <circle cx="256" cy="164" r="32" fill="#111111" />
+      <circle cx="256" cy="164" r="32" fill="none" stroke="#A17E00" stroke-width="2" />
+
+      <!-- Minimalist Inner Avatar -->
+      <circle cx="256" cy="154" r="10" fill="#333333" />
+      <path d="M 238 178 C 238 166, 274 166, 274 178 Z" fill="#333333" />
+
+      <!-- ID Skeleton Data Lines -->
+      <rect x="220" y="210" width="72" height="6" rx="3" fill="#A17E00" opacity="0.8" />
+      <rect x="230" y="222" width="52" height="6" rx="3" fill="#A17E00" opacity="0.6" />
+
+      <!-- Motion/Eject Track Lines (Visualizing the upward exit) -->
+      <rect x="200" y="250" width="4" height="20" rx="2" fill="#FACC15" opacity="0.4" />
+      <rect x="308" y="250" width="4" height="20" rx="2" fill="#FACC15" opacity="0.4" />
+    </g>
+
+    <!-- Ambient Occlusion Pocket (Shadow cast by Front Terminal onto Card) -->
+    <rect x="166" y="230" width="180" height="20" fill="#000000" opacity="0.6" filter="url(#blur-small)" />
+
+    <!-- ========================================== -->
+    <!-- 3. FRONT TERMINAL (Secure Gateway Base)    -->
+    <!-- ========================================== -->
+    <g id="terminal-front">
+      <!-- Terminal Drop Shadow -->
+      <rect x="116" y="240" width="280" height="140" rx="28" fill="#000000" opacity="0.6" filter="url(#blur-large)" transform="translate(0, 16)" />
+
+      <!-- Terminal Extrusion (Thick Matte Block) -->
+      <rect x="116" y="240" width="280" height="140" rx="28" fill="#050505" transform="translate(0, 12)" />
+      <rect x="116" y="240" width="280" height="140" rx="28" fill="#0A0A0A" transform="translate(0, 6)" />
+
+      <!-- Terminal Front Face -->
+      <rect x="116" y="240" width="280" height="140" rx="28" fill="url(#matteBlack)" />
+
+      <!-- Glossy Outer Edge Highlight -->
+      <rect x="117" y="241" width="278" height="138" rx="27" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" />
+      <rect x="136" y="242" width="240" height="2" rx="1" fill="#FFFFFF" opacity="0.1" />
+
+      <!-- Top Lip Bevel (Creating the 3D Slot Opening) -->
+      <path d="M 116 240 L 396 240 L 386 250 L 126 250 Z" fill="#151515" />
+      <path d="M 126 250 L 386 250" fill="none" stroke="#2A2A2A" stroke-width="1.5" />
+
+      <!-- Glowing Inner Slot Rim -->
+      <line x1="166" y1="240" x2="346" y2="240" stroke="url(#yellowBadge)" stroke-width="3" opacity="0.8" filter="url(#blur-small)" />
+      <line x1="166" y1="240" x2="346" y2="240" stroke="#FFF080" stroke-width="1.5" opacity="0.9" />
+
+      <!-- ========================================== -->
+      <!-- TERMINAL UI: Status Indicators & Buttons   -->
+      <!-- ========================================== -->
+
+      <!-- Standby / Power Button (The Logout Trigger) -->
+      <g transform="translate(256, 310)">
+        <!-- Button Base -->
+        <circle cx="0" cy="0" r="28" fill="#0A0A0A" />
+        <circle cx="0" cy="0" r="28" fill="none" stroke="#222222" stroke-width="3" />
+
+        <!-- Subtle Yellow Glow behind the icon -->
+        <circle cx="0" cy="0" r="16" fill="#FACC15" opacity="0.15" filter="url(#blur-small)" />
+
+        <!-- Power / Standby Symbol (Vibrant Yellow) -->
+        <path d="M -10 -8 A 14 14 0 1 0 10 -8" fill="none" stroke="url(#yellowBadge)" stroke-width="4" stroke-linecap="round" />
+        <line x1="0" y1="-14" x2="0" y2="2" stroke="url(#yellowBadge)" stroke-width="4" stroke-linecap="round" />
+
+        <!-- Symbol Core Highlights -->
+        <path d="M -10 -8 A 14 14 0 1 0 10 -8" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity="0.5" transform="translate(0, -1)" />
+      </g>
+
+      <!-- Status LED (Locked / Secure) -->
+      <circle cx="360" cy="270" r="5" fill="#FACC15" filter="url(#blur-small)" opacity="0.8" />
+      <circle cx="360" cy="270" r="3" fill="#FFF080" />
+
+      <!-- Industrial Fingerprint/Grip Texture -->
+      <rect x="146" y="300" width="4" height="20" rx="2" fill="#222222" />
+      <rect x="156" y="295" width="4" height="30" rx="2" fill="#1A1A1A" />
+      <rect x="166" y="300" width="4" height="20" rx="2" fill="#222222" />
+
+      <rect x="342" y="300" width="4" height="20" rx="2" fill="#222222" />
+      <rect x="352" y="295" width="4" height="30" rx="2" fill="#1A1A1A" />
+      <rect x="362" y="300" width="4" height="20" rx="2" fill="#222222" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 4. FLOATING SECURE PADLOCK (Account Locked)-->
+    <!-- ========================================== -->
+    <!-- Positioned Bottom Right to reinforce "Security after Exit" -->
+    <g id="secure-padlock" transform="translate(380, 320) rotate(15)">
+
+      <!-- Padlock Shadow -->
+      <rect x="-24" y="-36" width="48" height="72" rx="10" fill="#000000" opacity="0.6" filter="url(#blur-medium)" transform="translate(0, 12)" />
+
+      <!-- Padlock Shackle (Locked/Closed state) -->
+      <g transform="translate(0, 2)">
+        <path d="M -12 0 L -12 -14 A 12 12 0 0 1 12 -14 L 12 0" fill="none" stroke="#050505" stroke-width="10" transform="translate(0, 4)" />
+        <path d="M -12 0 L -12 -14 A 12 12 0 0 1 12 -14 L 12 0" fill="none" stroke="#111111" stroke-width="10" />
+        <path d="M -12 0 L -12 -14 A 12 12 0 0 1 12 -14 L 12 0" fill="none" stroke="#333333" stroke-width="2" opacity="0.8" />
+      </g>
+
+      <!-- Padlock Body Extrusion -->
+      <rect x="-24" y="0" width="48" height="36" rx="10" fill="url(#yellowExt)" transform="translate(0, 6)" />
+      <rect x="-24" y="0" width="48" height="36" rx="10" fill="#DCA10C" transform="translate(0, 3)" />
+
+      <!-- Padlock Body Face -->
+      <rect x="-24" y="0" width="48" height="36" rx="10" fill="url(#yellowBadge)" />
+      <rect x="-22" y="2" width="44" height="32" rx="8" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.5" />
+
+      <!-- Keyhole (Matte Black) -->
+      <circle cx="0" cy="14" r="5" fill="#111111" />
+      <path d="M -4 16 L 4 16 L 5 26 L -5 26 Z" fill="#111111" />
+
+      <!-- Keyhole Highlight -->
+      <circle cx="0" cy="14" r="5" fill="none" stroke="#A17E00" stroke-width="1.5" opacity="0.8" />
+    </g>
+
+    <!-- Floating Star / Sparkle (Top Right) -->
+    <g transform="translate(390, 80) scale(0.7)">
+      <path d="M 0 -16 C 0 -4, 4 0, 16 0 C 4 0, 0 4, 0 16 C 0 4, -4 0, -16 0 C -4 0, 0 -4, 0 -16 Z" fill="#FACC15" filter="url(#blur-small)" opacity="0.8" />
+      <path d="M 0 -12 C 0 -3, 3 0, 12 0 C 3 0, 0 3, 0 12 C 0 3, -3 0, -12 0 C -3 0, 0 -3, 0 -12 Z" fill="#FFF080" />
+    </g>
+
+  </g>
+</svg>

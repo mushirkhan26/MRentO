@@ -1,0 +1,250 @@
+<svg viewBox="0 0 512 512" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft 3D Shadow Filters for Depth and Claymorphism -->
+    <filter id="blur-large" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" />
+    </filter>
+    <filter id="blur-medium" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="blur-small" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Premium Matte Black Materials -->
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="40%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+
+    <linearGradient id="matteBlackDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="50%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+
+    <!-- Edge Highlight for Glossy Bevels -->
+    <linearGradient id="edgeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#555555"/>
+      <stop offset="30%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+
+    <!-- Vibrant Yellow Metallic & Clay Materials -->
+    <linearGradient id="yellowBadge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="30%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#B48E08"/>
+    </linearGradient>
+
+    <linearGradient id="yellowExt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCA10C"/>
+      <stop offset="50%" stop-color="#8A6D00"/>
+      <stop offset="100%" stop-color="#4D3D00"/>
+    </linearGradient>
+
+    <!-- Ambient Glowing Spheres -->
+    <radialGradient id="yellowSphere" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="40%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#8A6D00"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- GLOBAL FLOOR SHADOWS                       -->
+  <!-- ========================================== -->
+  <ellipse cx="256" cy="450" rx="180" ry="26" fill="#000000" opacity="0.35" filter="url(#blur-large)" />
+  <ellipse cx="256" cy="450" rx="120" ry="14" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+
+  <!-- Background Floating Sparkles -->
+  <g transform="translate(100, 160)">
+    <circle cx="0" cy="20" r="16" fill="#000000" opacity="0.4" filter="url(#blur-medium)" />
+    <circle cx="0" cy="0" r="16" fill="url(#yellowSphere)" />
+    <circle cx="-4" cy="-4" r="6" fill="#FFFFFF" opacity="0.5" filter="url(#blur-small)" />
+  </g>
+
+  <!-- MASTER GROUP: Centers the asymmetrical cart and adds SaaS isometric rotation -->
+  <!-- Translated slightly left (220) to balance the protruding right handle -->
+  <g transform="translate(220, 256) rotate(-6) translate(-256, -256)">
+
+    <!-- ========================================== -->
+    <!-- LAYER 1: PUSH HANDLE (Back Right)          -->
+    <!-- ========================================== -->
+    <!-- Handle Cast Shadow -->
+    <path d="M 350 220 L 420 140 L 460 140" fill="none" stroke="#000000" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 16)" />
+
+    <!-- Handle Extrusion (Depth) -->
+    <path d="M 350 220 L 420 140 L 460 140" fill="none" stroke="url(#yellowExt)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" transform="translate(0, 6)" />
+
+    <!-- Handle Front Face (Yellow Tube) -->
+    <path d="M 350 220 L 420 140 L 460 140" fill="none" stroke="url(#yellowBadge)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 350 220 L 420 140 L 460 140" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.4" transform="translate(-2, -2)" />
+
+    <!-- Handle Grip (Matte Black Sleeve) -->
+    <path d="M 405 140 L 460 140" fill="none" stroke="url(#matteBlackDark)" stroke-width="32" stroke-linecap="round" />
+    <path d="M 405 140 L 460 140" fill="none" stroke="url(#edgeHighlight)" stroke-width="32" stroke-linecap="round" />
+    <path d="M 405 138 L 460 138" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.15" />
+    <!-- Yellow Grip Accent Ring -->
+    <rect x="412" y="124" width="6" height="32" rx="3" fill="#FACC15" />
+
+    <!-- ========================================== -->
+    <!-- LAYER 2: INTERIOR CART WALL                -->
+    <!-- ========================================== -->
+    <!-- Creates the dark bucket interior behind the cargo -->
+    <path d="M 110 180 L 150 340 L 350 340 L 350 140 Z" fill="url(#matteBlackDark)" stroke="#0A0A0A" stroke-width="16" stroke-linejoin="round" />
+
+    <!-- ========================================== -->
+    <!-- LAYER 3: RENTAL CARGO (Inside Cart)        -->
+    <!-- ========================================== -->
+    <!-- Object 1: Black Equipment Case (Tilted dynamically) -->
+    <g transform="rotate(-15, 210, 220)">
+      <rect x="150" y="160" width="110" height="130" rx="16" fill="#000000" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 10)" />
+      <rect x="150" y="160" width="110" height="130" rx="16" fill="#0A0A0A" transform="translate(0, 6)" />
+      <rect x="150" y="160" width="110" height="130" rx="16" fill="url(#matteBlack)" />
+      <rect x="151" y="161" width="108" height="128" rx="15" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" />
+      <!-- Tech Detail on Case -->
+      <circle cx="205" cy="225" r="24" fill="#1A1A1A" stroke="#333333" stroke-width="4" />
+      <circle cx="205" cy="225" r="10" fill="#FACC15" />
+    </g>
+
+    <!-- Object 2: Heavy Yellow Generator/Power Unit -->
+    <g>
+      <!-- Base Shadow -->
+      <rect x="200" y="180" width="130" height="140" rx="20" fill="#000000" opacity="0.7" filter="url(#blur-small)" transform="translate(0, 10)" />
+      <!-- Unit Extrusion -->
+      <rect x="200" y="180" width="130" height="140" rx="20" fill="url(#yellowExt)" transform="translate(0, 6)" />
+      <!-- Unit Front Face -->
+      <rect x="200" y="180" width="130" height="140" rx="20" fill="url(#yellowBadge)" />
+      <rect x="200" y="180" width="130" height="140" rx="20" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.4" />
+      <!-- Unit Grill/Vents -->
+      <rect x="215" y="220" width="100" height="80" rx="12" fill="url(#matteBlackDark)" />
+      <rect x="215" y="220" width="100" height="80" rx="12" fill="none" stroke="#333333" stroke-width="2" />
+      <path d="M 230 240 L 300 240 M 230 260 L 300 260 M 230 280 L 300 280" fill="none" stroke="#FACC15" stroke-width="6" stroke-linecap="round" opacity="0.9" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LAYER 4: FRONT U-SHAPE CART FRAME          -->
+    <!-- ========================================== -->
+    <g>
+      <!-- Thick Structural Silhouette (The Bucket) -->
+      <path d="M 110 180 L 150 340 L 350 340 L 350 140" fill="none" />
+
+      <!-- Frame Cast Shadow -->
+      <path d="M 110 180 L 150 340 L 350 340 L 350 140" fill="none" stroke="#000000" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 16)" />
+
+      <!-- Frame 3D Extrusion -->
+      <path d="M 110 180 L 150 340 L 350 340 L 350 140" fill="none" stroke="#050505" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" transform="translate(0, 10)" />
+      <path d="M 110 180 L 150 340 L 350 340 L 350 140" fill="none" stroke="#111111" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" transform="translate(0, 5)" />
+
+      <!-- Frame Front Face -->
+      <path d="M 110 180 L 150 340 L 350 340 L 350 140" fill="none" stroke="url(#matteBlack)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" />
+
+      <!-- Frame Edge Highlights -->
+      <path d="M 110 180 L 150 340 L 350 340 L 350 140" fill="none" stroke="url(#edgeHighlight)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 110 180 L 150 340 L 350 340 L 350 140" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.15" transform="translate(0, -2)" />
+
+      <!-- High-Tech LED Rivets on Frame -->
+      <circle cx="120" cy="220" r="4" fill="#FACC15" />
+      <circle cx="160" cy="340" r="4" fill="#FACC15" />
+      <circle cx="250" cy="340" r="4" fill="#FACC15" />
+      <circle cx="350" cy="340" r="4" fill="#FACC15" />
+      <circle cx="350" cy="180" r="4" fill="#FACC15" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LAYER 5: INDUSTRIAL CASTERS (WHEELS)       -->
+    <!-- ========================================== -->
+
+    <!-- Front Caster (Left) -->
+    <g transform="translate(150, 340)">
+      <!-- Bracket/Mount -->
+      <rect x="-20" y="0" width="40" height="24" rx="8" fill="#151515" />
+      <rect x="-18" y="2" width="36" height="20" rx="6" fill="none" stroke="#333333" stroke-width="2" />
+
+      <!-- Wheel Shadow -->
+      <circle cx="0" cy="40" r="28" fill="#000000" opacity="0.5" filter="url(#blur-small)" transform="translate(0, 10)" />
+
+      <!-- Tire (Thick Matte Black) -->
+      <circle cx="0" cy="40" r="28" fill="url(#matteBlackDark)" />
+      <circle cx="0" cy="40" r="26" fill="none" stroke="#222222" stroke-width="4" />
+
+      <!-- Inner Rim (Yellow) -->
+      <circle cx="0" cy="40" r="14" fill="url(#yellowBadge)" />
+      <circle cx="0" cy="40" r="14" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.4" />
+
+      <!-- Axle Hub -->
+      <circle cx="0" cy="40" r="6" fill="#111111" stroke="#4A4A4A" stroke-width="2" />
+    </g>
+
+    <!-- Back Caster (Right) -->
+    <g transform="translate(330, 340)">
+      <!-- Bracket/Mount -->
+      <rect x="-20" y="0" width="40" height="24" rx="8" fill="#151515" />
+      <rect x="-18" y="2" width="36" height="20" rx="6" fill="none" stroke="#333333" stroke-width="2" />
+
+      <!-- Wheel Shadow -->
+      <circle cx="0" cy="40" r="28" fill="#000000" opacity="0.5" filter="url(#blur-small)" transform="translate(0, 10)" />
+
+      <!-- Tire (Thick Matte Black) -->
+      <circle cx="0" cy="40" r="28" fill="url(#matteBlackDark)" />
+      <circle cx="0" cy="40" r="26" fill="none" stroke="#222222" stroke-width="4" />
+
+      <!-- Inner Rim (Yellow) -->
+      <circle cx="0" cy="40" r="14" fill="url(#yellowBadge)" />
+      <circle cx="0" cy="40" r="14" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.4" />
+
+      <!-- Axle Hub -->
+      <circle cx="0" cy="40" r="6" fill="#111111" stroke="#4A4A4A" stroke-width="2" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LAYER 6: HANGING RENTAL TAG (Left post)    -->
+    <!-- ========================================== -->
+    <g transform="translate(100, 210)">
+      <!-- Wire/Lanyard Hook -->
+      <path d="M 12 -4 C 18 -20, 38 -10, 20 10" fill="none" stroke="#FACC15" stroke-width="4" stroke-linecap="round" />
+
+      <!-- Tag Shadow -->
+      <rect x="-18" y="0" width="36" height="54" rx="8" fill="#000000" opacity="0.5" filter="url(#blur-medium)" transform="rotate(15) translate(0, 10)" />
+
+      <g transform="rotate(15)">
+        <!-- Tag Extrusion -->
+        <rect x="-18" y="0" width="36" height="54" rx="8" fill="url(#yellowExt)" transform="translate(0, 4)" />
+        <!-- Tag Face -->
+        <rect x="-18" y="0" width="36" height="54" rx="8" fill="url(#yellowBadge)" />
+        <!-- Inner Border & Hole -->
+        <rect x="-14" y="4" width="28" height="46" rx="4" fill="none" stroke="#DCA10C" stroke-width="2" />
+        <circle cx="0" cy="10" r="4" fill="#111111" />
+        <!-- Barcode/Scan lines -->
+        <line x1="-8" y1="24" x2="8" y2="24" stroke="#111111" stroke-width="3" stroke-linecap="round" />
+        <line x1="-8" y1="32" x2="4" y2="32" stroke="#111111" stroke-width="3" stroke-linecap="round" />
+        <line x1="-8" y1="40" x2="8" y2="40" stroke="#111111" stroke-width="3" stroke-linecap="round" />
+      </g>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LAYER 7: FLOATING CHECKOUT BADGE           -->
+    <!-- ========================================== -->
+    <!-- A floating pill badge symbolizing 'Ready to Checkout' / Cart Action -->
+    <g transform="translate(420, 60)">
+      <!-- Badge Shadow -->
+      <rect x="-36" y="-24" width="72" height="48" rx="24" fill="#000000" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 16)" />
+
+      <!-- Badge Extrusion -->
+      <rect x="-36" y="-24" width="72" height="48" rx="24" fill="#A17E00" transform="translate(0, 8)" />
+      <rect x="-36" y="-24" width="72" height="48" rx="24" fill="#DCA10C" transform="translate(0, 4)" />
+
+      <!-- Badge Front Face -->
+      <rect x="-36" y="-24" width="72" height="48" rx="24" fill="url(#yellowBadge)" />
+
+      <!-- Badge Inner Glow / Rim -->
+      <rect x="-34" y="-22" width="68" height="44" rx="22" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+
+      <!-- Matte Black Checkmark (Bold, Modern UI) -->
+      <path d="M -12,4 L -2,12 L 14,-6" fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+  </g>
+</svg>

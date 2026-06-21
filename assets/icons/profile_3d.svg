@@ -1,0 +1,206 @@
+<svg viewBox="0 0 512 512" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft 3D Shadow Filters for Depth and Claymorphism -->
+    <filter id="blur-large" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" />
+    </filter>
+    <filter id="blur-medium" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="blur-small" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Premium Matte Black Materials -->
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="40%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+
+    <!-- Edge Highlight for Glossy Bevels -->
+    <linearGradient id="edgeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A4A4A"/>
+      <stop offset="30%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+
+    <!-- Vibrant Yellow Metallic & Clay Materials -->
+    <linearGradient id="yellowBadge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="30%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#B48E08"/>
+    </linearGradient>
+
+    <linearGradient id="yellowExt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCA10C"/>
+      <stop offset="50%" stop-color="#8A6D00"/>
+      <stop offset="100%" stop-color="#4D3D00"/>
+    </linearGradient>
+
+    <!-- Sphere Radial Lighting -->
+    <radialGradient id="yellowSphere" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="40%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#8A6D00"/>
+    </radialGradient>
+
+    <radialGradient id="darkSphere" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#333333"/>
+      <stop offset="50%" stop-color="#111111"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Global Floor Shadows (Grounding the floating composition) -->
+  <ellipse cx="256" cy="460" rx="160" ry="24" fill="#000000" opacity="0.35" filter="url(#blur-large)" />
+  <ellipse cx="256" cy="460" rx="90" ry="12" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+
+  <!-- Background Floating Sphere (Adds 3D spatial depth) -->
+  <g transform="translate(120, 200)">
+    <circle cx="0" cy="20" r="24" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+    <circle cx="0" cy="0" r="24" fill="url(#yellowSphere)" />
+    <circle cx="-6" cy="-6" r="8" fill="#FFFFFF" opacity="0.4" filter="url(#blur-small)" />
+  </g>
+
+  <!-- Secondary Floating Object (Top Right) -->
+  <g transform="translate(400, 130)">
+    <circle cx="0" cy="14" r="18" fill="#000000" opacity="0.4" filter="url(#blur-medium)" />
+    <circle cx="0" cy="0" r="18" fill="url(#darkSphere)" />
+    <circle cx="-4" cy="-4" r="6" fill="#FFFFFF" opacity="0.15" filter="url(#blur-small)" />
+    <circle cx="0" cy="0" r="16" fill="none" stroke="url(#edgeHighlight)" stroke-width="1" />
+  </g>
+
+  <!-- MAIN ID BADGE & AVATAR GROUP (Slight isometric rotation) -->
+  <g transform="translate(256, 256) rotate(-6) translate(-256, -256)">
+
+    <!-- ========================================== -->
+    <!-- 1. BASE ID CARD (Matte Black Block)        -->
+    <!-- ========================================== -->
+    <!-- Card Cast Shadow -->
+    <rect x="136" y="126" width="240" height="300" rx="36" fill="#000000" opacity="0.55" filter="url(#blur-large)" transform="translate(0, 20)" />
+
+    <!-- Card Extrusion (Thick Depth) -->
+    <rect x="136" y="106" width="240" height="300" rx="36" fill="#050505" transform="translate(0, 12)" />
+    <rect x="136" y="106" width="240" height="300" rx="36" fill="#0A0A0A" transform="translate(0, 6)" />
+
+    <!-- Card Front Face -->
+    <rect x="136" y="106" width="240" height="300" rx="36" fill="url(#matteBlack)" />
+
+    <!-- Card Glossy Edge Bevel -->
+    <rect x="137" y="107" width="238" height="298" rx="35" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" />
+    <rect x="156" y="108" width="100" height="2" rx="1" fill="#FFFFFF" opacity="0.1" />
+
+    <!-- ========================================== -->
+    <!-- 2. CARD UI ELEMENTS (Mock Text & Chip)     -->
+    <!-- ========================================== -->
+    <!-- Mock User Info Lines -->
+    <rect x="160" y="146" width="60" height="8" rx="4" fill="#333333" />
+    <rect x="160" y="162" width="40" height="6" rx="3" fill="#222222" />
+    <rect x="160" y="174" width="50" height="6" rx="3" fill="#222222" />
+
+    <!-- Rental Verification Chip (Smart Tech Element) -->
+    <rect x="316" y="142" width="32" height="32" rx="8" fill="none" stroke="#FACC15" stroke-width="2" opacity="0.8" />
+    <rect x="322" y="148" width="20" height="20" rx="4" fill="#FACC15" opacity="0.15" />
+    <line x1="332" y1="142" x2="332" y2="174" stroke="#FACC15" stroke-width="2" opacity="0.8" />
+    <line x1="316" y1="158" x2="348" y2="158" stroke="#FACC15" stroke-width="2" opacity="0.8" />
+
+    <!-- ========================================== -->
+    <!-- 3. TOP LANYARD CLIP (Metallic Yellow)      -->
+    <!-- ========================================== -->
+    <g transform="translate(256, 96)">
+      <!-- Clip Shadow on Card -->
+      <rect x="-24" y="-10" width="48" height="40" rx="12" fill="#000000" opacity="0.6" filter="url(#blur-small)" />
+      <!-- Slot Cutout Base -->
+      <rect x="-30" y="24" width="60" height="12" rx="6" fill="#000000" />
+      <rect x="-30" y="26" width="60" height="12" rx="6" fill="#050505" />
+
+      <!-- Clip Extrusion -->
+      <rect x="-20" y="-30" width="40" height="60" rx="16" fill="url(#yellowExt)" transform="translate(0, 6)" />
+      <!-- Clip Front -->
+      <rect x="-20" y="-30" width="40" height="60" rx="16" fill="url(#yellowBadge)" />
+      <!-- Clip Highlight -->
+      <rect x="-18" y="-28" width="36" height="56" rx="14" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+      <!-- Mechanical Rivet -->
+      <circle cx="0" cy="14" r="6" fill="#111111" />
+      <circle cx="0" cy="14" r="6" fill="none" stroke="#4A4A4A" stroke-width="1.5" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 4. 3D AVATAR (Worker / Profile Silhouette) -->
+    <!-- ========================================== -->
+    <!-- Avatar Cast Shadow on Card -->
+    <ellipse cx="256" cy="386" rx="86" ry="16" fill="#000000" opacity="0.6" filter="url(#blur-medium)" />
+    <ellipse cx="256" cy="286" rx="46" ry="46" fill="#000000" opacity="0.5" filter="url(#blur-large)" />
+
+    <!-- A. Avatar Torso (Safety Vest/Shirt) -->
+    <g transform="translate(0, 10)">
+      <!-- Torso Extrusion -->
+      <path d="M 170 380 C 170 310, 342 310, 342 380 Z" fill="url(#yellowExt)" transform="translate(0, 8)" />
+      <!-- Torso Front -->
+      <path d="M 170 380 C 170 310, 342 310, 342 380 Z" fill="url(#yellowBadge)" />
+      <!-- Torso Highlights -->
+      <path d="M 170 380 C 170 310, 342 310, 342 380" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.4" />
+      <!-- Vest V-Neck Detail -->
+      <path d="M 226 380 L 256 330 L 286 380" fill="none" stroke="#DCA10C" stroke-width="8" stroke-linejoin="round" />
+      <path d="M 226 380 L 256 330 L 286 380" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" opacity="0.3" />
+    </g>
+
+    <!-- B. Avatar Head/Face (Matte Black) -->
+    <rect x="236" y="270" width="40" height="40" rx="16" fill="#0A0A0A" /> <!-- Neck -->
+    <circle cx="256" cy="240" r="36" fill="url(#matteBlack)" />
+    <!-- Face Edge Highlight -->
+    <circle cx="256" cy="240" r="34" fill="none" stroke="#4A4A4A" stroke-width="2" opacity="0.7" />
+    <circle cx="256" cy="240" r="34" fill="none" stroke="#000000" stroke-width="4" opacity="0.5" transform="translate(0, 4)" />
+
+    <!-- C. Avatar Hardhat (Vibrant Yellow Construction Theme) -->
+    <!-- Brim Shadow -->
+    <rect x="200" y="224" width="112" height="18" rx="9" fill="#000000" opacity="0.6" filter="url(#blur-small)" />
+    <!-- Brim Extrusion -->
+    <rect x="200" y="218" width="112" height="18" rx="9" fill="url(#yellowExt)" />
+    <!-- Brim Front -->
+    <rect x="200" y="212" width="112" height="18" rx="9" fill="url(#yellowBadge)" />
+    <!-- Brim Highlight -->
+    <rect x="202" y="214" width="108" height="14" rx="7" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+
+    <!-- Dome Base -->
+    <path d="M 214 218 C 214 158, 298 158, 298 218 Z" fill="url(#yellowBadge)" />
+    <!-- Dome Extrusion/Shading -->
+    <path d="M 214 218 C 214 158, 298 158, 298 218 Z" fill="none" stroke="#B48E08" stroke-width="6" opacity="0.4" />
+    <!-- Hardhat Center Ridge -->
+    <path d="M 244 218 C 244 168, 268 168, 268 218 Z" fill="url(#yellowBadge)" />
+    <path d="M 244 218 C 244 168, 268 168, 268 218 Z" fill="none" stroke="#DCA10C" stroke-width="3" />
+    <!-- Dome Catch-light Reflection -->
+    <path d="M 224 200 C 234 170, 278 170, 288 200" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.4" />
+
+    <!-- ========================================== -->
+    <!-- 5. FLOATING VERIFICATION BADGE (Checkmark) -->
+    <!-- ========================================== -->
+    <g transform="translate(366, 326)">
+      <!-- Badge Cast Shadow on Floor & Card -->
+      <circle cx="0" cy="20" r="44" fill="#000000" opacity="0.55" filter="url(#blur-large)" />
+
+      <!-- Outer Black Ring Extrusion -->
+      <circle cx="0" cy="10" r="40" fill="#000000" />
+      <circle cx="0" cy="5" r="40" fill="#111111" />
+
+      <!-- Outer Black Ring Front -->
+      <circle cx="0" cy="0" r="40" fill="url(#matteBlack)" />
+      <circle cx="0" cy="0" r="38" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" />
+
+      <!-- Inner Yellow Circle (Glowing core) -->
+      <circle cx="0" cy="0" r="28" fill="url(#yellowBadge)" />
+      <circle cx="0" cy="0" r="28" fill="none" stroke="#DCA10C" stroke-width="4" opacity="0.8" />
+      <circle cx="0" cy="0" r="24" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5" />
+
+      <!-- Thick 3D Checkmark (Matte Black) -->
+      <!-- Checkmark Cast Shadow -->
+      <path d="M -12,2 L -4,10 L 16,-8" fill="none" stroke="#A17E00" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="translate(0, 4)" />
+      <!-- Checkmark Body -->
+      <path d="M -12,2 L -4,10 L 16,-8" fill="none" stroke="#111111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Checkmark Highlight -->
+      <path d="M -12,2 L -4,10 L 16,-8" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" transform="translate(0, -1)" />
+    </g>
+
+  </g>
+</svg>

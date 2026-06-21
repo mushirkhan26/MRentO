@@ -1,0 +1,222 @@
+<svg viewBox="0 0 512 512" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft 3D Shadow Filters for Depth and Claymorphism -->
+    <filter id="blur-large" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" />
+    </filter>
+    <filter id="blur-medium" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="blur-small" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Premium Matte Black Materials -->
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="40%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+
+    <linearGradient id="matteBlackDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="50%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+
+    <!-- Edge Highlight for Glossy Bevels -->
+    <linearGradient id="edgeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#555555"/>
+      <stop offset="30%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+
+    <!-- Vibrant Yellow Metallic & Clay Materials -->
+    <linearGradient id="yellowBadge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="30%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#B48E08"/>
+    </linearGradient>
+
+    <linearGradient id="yellowExt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCA10C"/>
+      <stop offset="50%" stop-color="#8A6D00"/>
+      <stop offset="100%" stop-color="#4D3D00"/>
+    </linearGradient>
+
+    <!-- Ambient Glowing Spheres & Pulses -->
+    <radialGradient id="yellowSphere" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="40%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#8A6D00"/>
+    </radialGradient>
+
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FACC15" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#FACC15" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Reusable Main Shield Path -->
+    <path id="shield-body" d="M 126 160 L 386 160 C 402 160, 416 173, 416 190 L 416 280 C 416 380, 256 460, 256 460 C 256 460, 96 380, 96 280 L 96 190 C 96 173, 110 160, 126 160 Z" />
+
+    <!-- Reusable Inner Cavity Path -->
+    <path id="shield-cavity" d="M 156 185 L 356 185 C 368 185, 376 194, 376 205 L 376 280 C 376 360, 256 425, 256 425 C 256 425, 136 360, 136 280 L 136 205 C 136 194, 144 185, 156 185 Z" />
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- GLOBAL FLOOR SHADOWS                       -->
+  <!-- ========================================== -->
+  <ellipse cx="256" cy="460" rx="170" ry="24" fill="#000000" opacity="0.35" filter="url(#blur-large)" />
+  <ellipse cx="256" cy="460" rx="100" ry="12" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+
+  <!-- Background Ambient Depth Particles -->
+  <g transform="translate(110, 130)">
+    <circle cx="0" cy="16" r="14" fill="#000000" opacity="0.4" filter="url(#blur-medium)" />
+    <circle cx="0" cy="0" r="14" fill="url(#yellowSphere)" />
+    <circle cx="-4" cy="-4" r="5" fill="#FFFFFF" opacity="0.5" filter="url(#blur-small)" />
+  </g>
+
+  <!-- MASTER GROUP: Isometric Tilt (-8 degrees) -->
+  <g transform="translate(256, 256) rotate(-8) translate(-256, -256)">
+
+    <!-- ========================================== -->
+    <!-- 1. BACKGROUND LAYER: DATA/POLICY DOCUMENT  -->
+    <!-- ========================================== -->
+    <!-- Anchors the shield contextually into privacy/policies -->
+    <g id="secure-document" transform="translate(100, 70) rotate(-6)">
+      <!-- Document Cast Shadow -->
+      <rect x="0" y="0" width="180" height="240" rx="16" fill="#000000" opacity="0.55" filter="url(#blur-large)" transform="translate(0, 20)" />
+
+      <!-- Document Extrusion -->
+      <rect x="0" y="0" width="180" height="240" rx="16" fill="#050505" transform="translate(0, 10)" />
+
+      <!-- Document Front Face (Dark Matte) -->
+      <rect x="0" y="0" width="180" height="240" rx="16" fill="url(#matteBlackDark)" />
+      <rect x="1" y="1" width="178" height="238" rx="15" fill="none" stroke="#333333" stroke-width="2" />
+
+      <!-- UI Skeleton (Encrypted Data Lines) -->
+      <rect x="24" y="30" width="100" height="10" rx="5" fill="#4A4A4A" />
+      <rect x="24" y="56" width="132" height="6" rx="3" fill="#1A1A1A" />
+      <rect x="24" y="70" width="90" height="6" rx="3" fill="#1A1A1A" />
+      <rect x="24" y="84" width="110" height="6" rx="3" fill="#1A1A1A" />
+      <rect x="24" y="98" width="120" height="6" rx="3" fill="#1A1A1A" />
+
+      <!-- Document Security Seal -->
+      <circle cx="140" cy="180" r="24" fill="none" stroke="#FACC15" stroke-width="2" opacity="0.2" />
+      <circle cx="140" cy="180" r="18" fill="none" stroke="#FACC15" stroke-width="1" opacity="0.4" stroke-dasharray="4 4" />
+      <circle cx="140" cy="180" r="10" fill="#FACC15" opacity="0.15" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN PRIVACY SHIELD (Thick 3D Volume)   -->
+    <!-- ========================================== -->
+    <g id="main-shield">
+      <!-- Shield Massive Drop Shadow -->
+      <use href="#shield-body" fill="#000000" opacity="0.6" filter="url(#blur-large)" transform="translate(0, 28)" />
+
+      <!-- Shield Extrusions (Creates heavy industrial depth) -->
+      <use href="#shield-body" fill="#050505" transform="translate(0, 18)" />
+      <use href="#shield-body" fill="#0A0A0A" transform="translate(0, 9)" />
+
+      <!-- Shield Front Face -->
+      <use href="#shield-body" fill="url(#matteBlack)" />
+
+      <!-- Glossy Outer Edge Bevel (Apple Vision Pro Glassy Edge) -->
+      <use href="#shield-body" fill="none" stroke="url(#edgeHighlight)" stroke-width="4" />
+      <use href="#shield-body" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.12" transform="translate(0, -2)" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 3. SHIELD INNER CAVITY (Dark Recess)       -->
+    <!-- ========================================== -->
+    <g id="shield-inner">
+      <!-- Inner Base Level -->
+      <use href="#shield-cavity" fill="#0A0A0A" />
+
+      <!-- Inner Extrusion / Bevel Shadow -->
+      <use href="#shield-cavity" fill="none" stroke="#000000" stroke-width="12" opacity="0.8" filter="url(#blur-small)" />
+      <use href="#shield-cavity" fill="none" stroke="#151515" stroke-width="3" />
+
+      <!-- Subtle Yellow Glowing Trim inside the cavity -->
+      <use href="#shield-cavity" fill="none" stroke="#FACC15" stroke-width="2" opacity="0.25" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 4. CENTRAL PRIVACY CORE (Biometric/Vault)  -->
+    <!-- ========================================== -->
+    <g id="security-core" transform="translate(256, 280)">
+      <!-- Soft Yellow Underglow -->
+      <circle cx="0" cy="0" r="80" fill="url(#coreGlow)" />
+
+      <!-- Heavy Outer Vault Dial -->
+      <circle cx="0" cy="4" r="64" fill="#050505" />
+      <circle cx="0" cy="0" r="64" fill="#111111" />
+      <circle cx="0" cy="0" r="62" fill="none" stroke="#222222" stroke-width="4" />
+
+      <!-- Mechanical Dial Grooves (Abstracted) -->
+      <circle cx="0" cy="0" r="54" fill="none" stroke="#0A0A0A" stroke-width="6" stroke-dasharray="12 8" />
+
+      <!-- Glowing Yellow Data Track -->
+      <circle cx="0" cy="0" r="44" fill="none" stroke="url(#yellowExt)" stroke-width="8" transform="translate(0, 3)" />
+      <circle cx="0" cy="0" r="44" fill="none" stroke="url(#yellowBadge)" stroke-width="8" />
+
+      <!-- Secondary Encrypted Ring -->
+      <circle cx="0" cy="0" r="32" fill="none" stroke="#FFF080" stroke-width="2" opacity="0.7" stroke-dasharray="8 6" />
+
+      <!-- Core Protective Sphere (Yellow) -->
+      <circle cx="0" cy="4" r="22" fill="#8A6D00" />
+      <circle cx="0" cy="0" r="22" fill="url(#yellowBadge)" />
+      <circle cx="0" cy="0" r="20" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4" />
+
+      <!-- Inner Matte Black Mini-Shield (The Lock Core) -->
+      <path d="M -12 -12 L 12 -12 C 14 -12, 16 -10, 16 -7 L 16 5 C 16 14, 0 22, 0 22 C 0 22, -16 14, -16 5 L -16 -7 C -16 -10, -14 -12, -12 -12 Z" fill="#111111" transform="translate(0, -2)" />
+      <path d="M -12 -12 L 12 -12 C 14 -12, 16 -10, 16 -7 L 16 5 C 16 14, 0 22, 0 22 C 0 22, -16 14, -16 5 L -16 -7 C -16 -10, -14 -12, -12 -12 Z" fill="none" stroke="#333333" stroke-width="1.5" transform="translate(0, -2)" />
+      <circle cx="0" cy="-2" r="3" fill="#FACC15" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 5. FLOATING RENTAL VERIFICATION PILL       -->
+    <!-- ========================================== -->
+    <!-- Positioned Top Right to signify "System Secure / Verified" -->
+    <g id="verified-pill" transform="translate(380, 120)">
+      <rect x="-40" y="-20" width="80" height="40" rx="20" fill="#000000" opacity="0.6" filter="url(#blur-medium)" transform="translate(0, 12)" />
+
+      <rect x="-40" y="-20" width="80" height="40" rx="20" fill="#050505" transform="translate(0, 8)" />
+      <rect x="-40" y="-20" width="80" height="40" rx="20" fill="#0A0A0A" transform="translate(0, 4)" />
+
+      <rect x="-40" y="-20" width="80" height="40" rx="20" fill="url(#matteBlack)" />
+      <rect x="-38" y="-18" width="76" height="36" rx="18" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" />
+
+      <!-- Glowing Yellow Checkmark -->
+      <path d="M -14 2 L -4 10 L 14 -8" fill="none" stroke="#FACC15" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#blur-small)" opacity="0.6" />
+      <path d="M -14 2 L -4 10 L 14 -8" fill="none" stroke="#FFF080" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 6. USER SECURITY HEX BADGE (Bottom Right)  -->
+    <!-- ========================================== -->
+    <!-- Explicitly ties the privacy shield to the USER identity -->
+    <g id="user-badge" transform="translate(390, 360)">
+      <polygon points="0,-46 39.8,-23 39.8,23 0,46 -39.8,23 -39.8,-23" fill="#000000" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 14)" />
+
+      <polygon points="0,-46 39.8,-23 39.8,23 0,46 -39.8,23 -39.8,-23" fill="#8A6D00" transform="translate(0, 8)" />
+      <polygon points="0,-46 39.8,-23 39.8,23 0,46 -39.8,23 -39.8,-23" fill="#B48E08" transform="translate(0, 4)" />
+
+      <polygon points="0,-46 39.8,-23 39.8,23 0,46 -39.8,23 -39.8,-23" fill="url(#yellowBadge)" />
+
+      <polygon points="0,-42 36.4,-21 36.4,21 0,42 -36.4,21 -36.4,-21" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.5" />
+
+      <g transform="translate(0, 4)">
+        <circle cx="0" cy="-14" r="12" fill="#111111" />
+        <path d="M -22 14 C -22 -2, 22 -2, 22 14 L 22 18 C 22 22, -22 22, -22 18 Z" fill="#111111" />
+        <path d="M -20 14 C -20 2, 20 2, 20 14" fill="none" stroke="#333333" stroke-width="2" />
+        <circle cx="0" cy="-14" r="10" fill="none" stroke="#333333" stroke-width="2" />
+      </g>
+    </g>
+
+    <circle cx="130" cy="380" r="6" fill="#FACC15" filter="url(#blur-small)" opacity="0.8" />
+    <circle cx="130" cy="380" r="4" fill="#FFF080" />
+
+  </g>
+</svg>

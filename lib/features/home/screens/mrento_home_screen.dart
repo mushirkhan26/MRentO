@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../config/navigation/app_routes.dart';
@@ -16,6 +17,9 @@ import '../../search/bloc/search_bloc.dart';
 import '../../search/bloc/search_event.dart';
 import '../../cart/bloc/cart_bloc.dart';
 import '../../cart/bloc/cart_state.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_state.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../widgets/location_picker_sheet.dart';
 
@@ -73,161 +77,196 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader() {
-    return BlocBuilder<LocationBloc, LocationState>(
-      builder: (context, state) {
-        String displayLocation = 'Detecting...';
-        if (state is LocationLoaded) {
-          displayLocation = state.address;
-        } else if (state is LocationError) {
-          displayLocation = 'Tap to set';
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, authState) {
+        String userName = 'User';
+        if (authState is AuthAuthenticated) {
+          userName = authState.user.name.split(' ')[0];
         }
 
-        return Container(
-          padding: const EdgeInsets.fromLTRB(16, 8, 8, 16), // Adjusted right padding
-          color: AppColors.primaryBlack,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return BlocBuilder<LocationBloc, LocationState>(
+          builder: (context, state) {
+            String displayLocation = 'Detecting...';
+            if (state is LocationLoaded) {
+              displayLocation = state.address;
+            } else if (state is LocationError) {
+              displayLocation = 'Tap to set';
+            }
+
+            return Container(
+              padding: const EdgeInsets.fromLTRB(16, 12, 8, 16),
+              color: AppColors.primaryBlack,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => _showLocationPicker(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Deliver karein',
-                            style: TextStyle(
-                              color: Colors.white60,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Row(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => _showLocationPicker(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Flexible(
-                                child: Text(
-                                  displayLocation,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
+                              Text(
+                                'Namaste, $userName 👋',
+                                style: const TextStyle(
+                                  color: AppColors.primaryYellow,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const Icon(
-                                Icons.keyboard_arrow_down,
-                                color: AppColors.primaryYellow,
-                                size: 20,
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.location_on,
+                                    color: Colors.white70,
+                                    size: 14,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  const Text(
+                                    'Deliver karein',
+                                    style: TextStyle(
+                                      color: Colors.white60,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      displayLocation,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: AppColors.primaryYellow,
+                                    size: 18,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          _HomeHeaderCartIcon(),
+                          _buildHeaderIcon(
+                            'assets/icons/notifications_3d.svg',
+                            () => context.push(AppRoutes.notifications),
+                          ),
+                          _buildHeaderIcon(
+                            'assets/icons/profile_3d.svg',
+                            () => context.push(AppRoutes.userProfile),
+                            isProfile: true,
+                          ),
                         ],
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      // Cart Icon with Badge
-                      _HomeHeaderCartIcon(),
-                      
-                      // Profile Icon
-                      IconButton(
-                        icon: const Icon(Icons.person_outline_rounded, color: Colors.white),
-                        onPressed: () => context.push(AppRoutes.userProfile),
-                      ),
-                      
-                      IconButton(
-                        icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                        onPressed: () => context.push(AppRoutes.notifications),
                       ),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              _build90MinBadge(),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 
-  Widget _build90MinBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.primaryYellow,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.timer_outlined,
-              size: 14, color: AppColors.primaryBlack),
-          SizedBox(width: 4),
-          Text(
-            '90 Min Delivery',
-            style: TextStyle(
-              color: AppColors.primaryBlack,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+  Widget _buildHeaderIcon(String asset, VoidCallback onTap, {bool isProfile = false}) {
+    return IconButton(
+      onPressed: onTap,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(),
+      icon: Container(
+        margin: const EdgeInsets.only(left: 10),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isProfile 
+              ? AppColors.primaryYellow.withValues(alpha: 0.15)
+              : Colors.white.withValues(alpha: 0.08),
+          shape: BoxShape.circle,
+          border: isProfile ? Border.all(color: AppColors.primaryYellow.withValues(alpha: 0.3), width: 1) : null,
+        ),
+        child: SvgPicture.asset(
+          asset,
+          width: 24,
+          height: 24,
+        ),
       ),
     );
   }
-
 
   Widget _buildSearchBar() {
     return GestureDetector(
       onTap: () => context.push(AppRoutes.searchRoute),
       child: Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Row(
           children: [
-            const Icon(Icons.search, color: AppColors.grey500),
-            const SizedBox(width: 12),
+            const Icon(Icons.search, color: AppColors.primaryYellow, size: 24),
+            const SizedBox(width: 10),
             const Expanded(
               child: Text(
-                'Drill, Mixer, Scaffolding dhundho...',
-                style: TextStyle(color: AppColors.grey400, fontSize: 14),
+                'Drill, Mixer, Scaffolding...',
+                style: TextStyle(
+                  color: AppColors.grey500,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
+            const Icon(Icons.mic_none_rounded, color: AppColors.grey400, size: 22),
+            const SizedBox(width: 12),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              height: 24,
+              width: 1,
+              color: AppColors.grey200,
+            ),
+            const SizedBox(width: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.primaryYellow,
-                borderRadius: BorderRadius.circular(6),
+                color: AppColors.primaryBlack,
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text(
-                'Filter',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryBlack,
-                ),
+              child: Row(
+                children: [
+                  const Icon(Icons.tune_rounded, color: AppColors.primaryYellow, size: 14),
+                  const SizedBox(width: 4),
+                  const Text(
+                    'Filter',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -240,20 +279,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<BannerBloc, BannerState>(
       builder: (context, state) {
         if (state is BannerLoading) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            height: 150,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Center(child: CircularProgressIndicator()),
-          );
+          return _buildBannerShimmer();
         }
 
         if (state is BannerLoaded && state.banners.isNotEmpty) {
           return SizedBox(
-            height: 160,
+            height: 180,
             child: PageView.builder(
               itemCount: state.banners.length,
               itemBuilder: (context, index) {
@@ -263,9 +294,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Logic to handle redirection
                   },
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                       image: DecorationImage(
                         image: NetworkImage(banner.imageUrl),
                         fit: BoxFit.cover,
@@ -278,70 +316,114 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        // Fallback banner if Firestore is empty
+        // Optimized Fallback banner
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          height: 150,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          height: 160,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24),
             gradient: const LinearGradient(
-              colors: [AppColors.primaryBlack, Color(0xFF2D2D2D)],
+              colors: [AppColors.primaryBlack, Color(0xFF323232)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          padding: const EdgeInsets.all(16),
-          child: Row(
+          child: Stack(
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+              Positioned(
+                right: -20,
+                bottom: -20,
+                child: Icon(
+                  Icons.construction_rounded,
+                  size: 160,
+                  color: Colors.white.withValues(alpha: 0.05),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryYellow,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Text(
-                        'PEHLA ORDER',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryBlack,
-                        ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryYellow,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text(
+                              'LIMITED OFFER',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.primaryBlack,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'FREE Delivery\nPehle order pe!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                                height: 1.1,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Use Code: MRENTO100',
+                            style: TextStyle(
+                              color: Colors.white60,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'FREE Delivery\nPehle order pe!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            height: 1.2,
-                          ),
-                        ),
-                      ),
+                    const Icon(
+                      Icons.electric_bolt_rounded,
+                      size: 80,
+                      color: AppColors.primaryYellow,
                     ),
                   ],
                 ),
-              ),
-              const Icon(
-                Icons.construction,
-                size: 80,
-                color: AppColors.primaryYellow,
               ),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildBannerShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        height: 160,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
     );
   }
 
@@ -379,19 +461,41 @@ class _HomeScreenState extends State<HomeScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
-              child: Text(
-                'Categories',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryBlack,
-                ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Categories',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryBlack,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => context.push(AppRoutes.searchRoute),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      foregroundColor: AppColors.primaryYellow,
+                    ),
+                    child: const Text(
+                      'See All',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(
-              height: 100,
+              height: 110,
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 scrollDirection: Axis.horizontal,
@@ -403,55 +507,53 @@ class _HomeScreenState extends State<HomeScreen> {
                   return GestureDetector(
                     onTap: () {
                       setState(() => _selectedCategoryIndex = index);
-                      // Feature: Navigate to search with category filter
                       context.read<SearchBloc>().add(SearchQueryChanged(category.name));
                       context.push(AppRoutes.searchRoute);
                     },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      width: 90,
                       decoration: BoxDecoration(
-                        color: isSelected
-                            ? AppColors.primaryYellow
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isSelected
-                              ? AppColors.primaryYellow
-                              : AppColors.grey200,
-                        ),
-                        boxShadow: isSelected
-                            ? [BoxShadow(
-                          color: AppColors.primaryYellow.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        )]
-                            : [],
+                        color: isSelected ? AppColors.primaryYellow : Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: isSelected 
+                                ? AppColors.primaryYellow.withValues(alpha: 0.3)
+                                : Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            _getCategoryIcon(category.name),
-                            color: isSelected
-                                ? AppColors.primaryBlack
-                                : AppColors.grey500,
-                            size: 28,
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: isSelected 
+                                  ? Colors.white.withValues(alpha: 0.3)
+                                  : AppColors.grey100,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              _getCategoryIcon(category.name),
+                              color: isSelected ? AppColors.primaryBlack : AppColors.grey600,
+                              size: 26,
+                            ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 8),
                           Text(
                             category.name,
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 11,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.w500,
-                              color: isSelected
-                                  ? AppColors.primaryBlack
-                                  : AppColors.grey600,
+                              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                              color: isSelected ? AppColors.primaryBlack : AppColors.grey707070,
                             ),
                           ),
                         ],
@@ -466,7 +568,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
+  
   Widget _buildCategoryFallbackIcon(String name, bool isSelected) {
     return Icon(
       _getCategoryIcon(name),
@@ -479,12 +581,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is ProductLoading) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(40),
-              child: CircularProgressIndicator(color: AppColors.primaryYellow),
-            ),
-          );
+          return _buildProductsShimmer();
         }
 
         if (state is ProductLoaded) {
@@ -492,9 +589,15 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(
               child: Padding(
                 padding: EdgeInsets.all(40),
-                child: Text(
-                  'Is category mein abhi koi item nahi hai',
-                  style: TextStyle(color: AppColors.grey500),
+                child: Column(
+                  children: [
+                    Icon(Icons.inventory_2_outlined, size: 64, color: AppColors.grey300),
+                    SizedBox(height: 16),
+                    Text(
+                      'Is category mein abhi koi item nahi hai',
+                      style: TextStyle(color: AppColors.grey500, fontWeight: FontWeight.w500),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -504,23 +607,52 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text(
-                      'Available Near You',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryBlack,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Available Near You',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryBlack,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        Text(
+                          '${state.products.length} items found nearby',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.grey500,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '${state.products.length} items',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.grey500,
+                    TextButton(
+                      onPressed: () => context.push(AppRoutes.searchRoute),
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        foregroundColor: AppColors.primaryYellow,
+                      ),
+                      child: const Row(
+                        children: [
+                          Text(
+                            'See All',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Icon(Icons.chevron_right, size: 20),
+                        ],
                       ),
                     ),
                   ],
@@ -532,9 +664,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.75,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.68, // Increased from 0.70 to give more vertical space
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
                 ),
                 itemCount: state.products.length,
                 itemBuilder: (context, index) {
@@ -559,6 +691,45 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+  
+  Widget _buildProductsShimmer() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(width: 150, height: 20, color: Colors.white),
+              Container(width: 60, height: 20, color: Colors.white),
+            ],
+          ),
+        ),
+        GridView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.70,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: 4,
+          itemBuilder: (context, index) => Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _buildProductCard(dynamic product) {
     return GestureDetector(
@@ -566,32 +737,45 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
+            // Image Section
             Expanded(
+              flex: 11,
               child: Stack(
                 children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    ),
-                    child: product.images.isNotEmpty
-                        ? Image.network(
-                      product.images[0],
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                  Hero(
+                    tag: 'product_${product.id}',
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                      child: product.images.isNotEmpty
+                          ? Image.network(
+                        product.images[0],
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: AppColors.grey100,
+                          child: const Icon(
+                            Icons.construction,
+                            size: 40,
+                            color: AppColors.grey300,
+                          ),
+                        ),
+                      )
+                          : Container(
                         color: AppColors.grey100,
                         child: const Icon(
                           Icons.construction,
@@ -599,97 +783,124 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: AppColors.grey300,
                         ),
                       ),
-                    )
-                        : Container(
-                      color: AppColors.grey100,
-                      child: const Icon(
-                        Icons.construction,
-                        size: 40,
-                        color: AppColors.grey300,
-                      ),
                     ),
                   ),
-                  // 90 Min badge
+                  // Badges
                   Positioned(
-                    top: 8,
-                    left: 8,
+                    top: 10,
+                    left: 10,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildBadge('90 Min', AppColors.primaryYellow, AppColors.primaryBlack),
+                        const SizedBox(height: 4),
+                        _buildBadge('Nearby', Colors.white, AppColors.primaryBlack),
+                      ],
+                    ),
+                  ),
+                  // Favorite toggle (Optional but adds to UI feel)
+                  Positioned(
+                    top: 10,
+                    right: 10,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
+                      padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryYellow,
-                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.white.withValues(alpha: 0.9),
+                        shape: BoxShape.circle,
                       ),
-                      child: const Text(
-                        '90 Min',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryBlack,
-                        ),
-                      ),
+                      child: const Icon(Icons.favorite_border, size: 16, color: AppColors.grey600),
                     ),
                   ),
                 ],
               ),
             ),
-            // Info
+            // Info Section
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     product.name,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.primaryBlack,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  if (product.rentPerDay != null)
-                    Text(
-                      '₹${product.rentPerDay!.toInt()}/din',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryYellow,
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on_outlined, size: 12, color: AppColors.grey500),
+                      const SizedBox(width: 2),
+                      const Text(
+                        '1.2 km away',
+                        style: TextStyle(fontSize: 10, color: AppColors.grey500, fontWeight: FontWeight.w500),
                       ),
-                    ),
-                  const SizedBox(height: 6),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () =>
-                          context.push('/product-details', extra: product),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryBlack,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Rent per day',
+                            style: TextStyle(fontSize: 9, color: AppColors.grey400, fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            '₹${product.rentPerDay?.toInt() ?? 0}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.primaryBlack,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryYellow,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        child: const Icon(Icons.add, color: AppColors.primaryBlack, size: 20),
                       ),
-                      child: const Text(
-                        'Rent Karo',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBadge(String text, Color bgColor, Color textColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          color: textColor,
         ),
       ),
     );
@@ -716,16 +927,32 @@ class _HomeHeaderCartIcon extends StatelessWidget {
       builder: (context, state) {
         final count = state is CartLoaded ? state.cart.items.length : 0;
         return IconButton(
+          onPressed: () => context.push(AppRoutes.cartRoute),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
           icon: Badge(
             label: Text(count.toString()),
             isLabelVisible: count > 0,
-            backgroundColor: AppColors.primaryYellow,
-            textColor: AppColors.primaryBlack,
-            child: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
+            backgroundColor: AppColors.errorRed,
+            textColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Container(
+              margin: const EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+              ),
+              child: SvgPicture.asset(
+                'assets/icons/cart_3d.svg',
+                width: 24,
+                height: 24,
+              ),
+            ),
           ),
-          onPressed: () => context.push(AppRoutes.cartRoute),
         );
       },
     );
   }
 }
+

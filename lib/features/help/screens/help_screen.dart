@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../config/navigation/app_routes.dart';
+import '../../../core/utils/url_launcher_helper.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
+
+  static const String supportNumber = "+919460433786"; // TODO: Update with actual number
 
   @override
   Widget build(BuildContext context) {
@@ -38,34 +42,55 @@ class HelpScreen extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: AppColors.grey600),
             ),
             const SizedBox(height: 32),
-            
+
             _buildBigButton(
-              icon: Icons.call_rounded,
+              customIcon: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SvgPicture.asset(
+                  'assets/icons/call_support_3d.svg',
+                  width: 32,
+                  height: 32,
+                ),
+              ),
               title: 'Humein Call Karein',
               subtitle: 'Baat karein hamare support team se',
               color: const Color(0xFFE8F5E9),
               iconColor: Colors.green.shade700,
-              onTap: () {
-                // Future: Add URL launcher for phone
-              },
+              onTap: () => UrlLauncherHelper.launchPhoneCall(supportNumber),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             _buildBigButton(
-              icon: Icons.chat_rounded,
+              customIcon: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SvgPicture.asset(
+                  'assets/icons/whatsapp_3d.svg',
+                  width: 32,
+                  height: 32,
+                ),
+              ),
               title: 'WhatsApp Chat',
               subtitle: 'Message karein jaldi help ke liye',
               color: const Color(0xFFE1F5FE),
               iconColor: Colors.blue.shade700,
-              onTap: () {
-                // Future: Add URL launcher for WhatsApp
-              },
+              onTap: () => UrlLauncherHelper.launchWhatsApp(
+                supportNumber,
+                message: "Namaste MRentO Support, mujhe help chahiye.",
+              ),
             ),
             
             const SizedBox(height: 16),
             
             _buildBigButton(
+              customIcon: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SvgPicture.asset(
+                  'assets/icons/faq_3d.svg',
+                  width: 32,
+                  height: 32,
+                ),
+              ),
               icon: Icons.question_answer_rounded,
               title: 'Sawaal & Jawaab (FAQ)',
               subtitle: 'Common questions ke answers',
@@ -81,22 +106,23 @@ class HelpScreen extends StatelessWidget {
             const SizedBox(height: 32),
             
             _buildTile(
-              icon: Icons.person_outline_rounded,
+              customIcon: SvgPicture.asset('assets/icons/profile_3d.svg', width: 24, height: 24),
               title: 'My Profile',
               onTap: () => context.push(AppRoutes.userProfile),
             ),
             _buildTile(
-              icon: Icons.location_on_outlined,
+              customIcon: SvgPicture.asset('assets/icons/location_3d.svg', width: 24, height: 24),
               title: 'Saved Addresses',
               onTap: () => context.push(AppRoutes.addressBook),
             ),
             _buildTile(
-              icon: Icons.description_outlined,
+              customIcon: SvgPicture.asset('assets/icons/terms_3d.svg', width: 24, height: 24),
               title: 'Terms & Conditions',
               onTap: () {},
             ),
+
             _buildTile(
-              icon: Icons.privacy_tip_outlined,
+              customIcon: SvgPicture.asset('assets/icons/privacy_3d.svg', width: 24, height: 24),
               title: 'Privacy Policy',
               onTap: () {},
             ),
@@ -116,7 +142,8 @@ class HelpScreen extends StatelessWidget {
   }
 
   Widget _buildBigButton({
-    required IconData icon,
+    IconData? icon,
+    Widget? customIcon,
     required String title,
     required String subtitle,
     required Color color,
@@ -147,7 +174,7 @@ class HelpScreen extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: iconColor, size: 32),
+              child: customIcon ?? Icon(icon, color: iconColor, size: 32),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -180,12 +207,13 @@ class HelpScreen extends StatelessWidget {
   }
 
   Widget _buildTile({
-    required IconData icon,
+    IconData? icon,
+    Widget? customIcon,
     required String title,
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primaryBlack),
+      leading: customIcon ?? Icon(icon, color: AppColors.primaryBlack),
       title: Text(
         title,
         style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
@@ -196,3 +224,4 @@ class HelpScreen extends StatelessWidget {
     );
   }
 }
+

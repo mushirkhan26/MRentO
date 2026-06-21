@@ -1,0 +1,220 @@
+<svg viewBox="0 0 512 512" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft 3D Shadow Filters for Depth and Floating Effects -->
+    <filter id="blur-large" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" />
+    </filter>
+    <filter id="blur-medium" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="blur-small" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Premium Matte Black Materials -->
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="40%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+
+    <linearGradient id="matteBlackDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="50%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+
+    <!-- Edge Highlight for Glossy Bevels -->
+    <linearGradient id="edgeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#555555"/>
+      <stop offset="30%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+
+    <!-- Vibrant Yellow Metallic & Clay Materials -->
+    <linearGradient id="yellowBadge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="30%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#A17E00"/>
+    </linearGradient>
+
+    <linearGradient id="yellowExt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCA10C"/>
+      <stop offset="50%" stop-color="#8A6D00"/>
+      <stop offset="100%" stop-color="#4D3D00"/>
+    </linearGradient>
+
+    <!-- Volumetric Light Beam Gradient -->
+    <linearGradient id="beaconBeam" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FACC15" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#FACC15" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <radialGradient id="yellowSphere" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="40%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#8A6D00"/>
+    </radialGradient>
+
+    <!-- Perfect Teardrop Pin Shape -->
+    <path id="pin-shape" d="M 256 100 C 200.8 100, 156 155.2, 156 200 C 156 260, 244 356, 250 364 C 253 368, 259 368, 262 364 C 268 356, 356 260, 356 200 C 356 155.2, 311.2 100, 256 100 Z" />
+
+    <!-- Cavity Inner Shadow Clip -->
+    <clipPath id="cavity-clip">
+      <circle cx="256" cy="200" r="56" />
+    </clipPath>
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- 1. LOCATION DROP ZONE / TARGET BASE        -->
+  <!-- ========================================== -->
+  <g id="base-target">
+    <!-- Cast Floor Shadow -->
+    <ellipse cx="256" cy="430" rx="140" ry="36" fill="#000000" opacity="0.6" filter="url(#blur-medium)" />
+
+    <!-- Base Extrusion (Thick 3D Pad) -->
+    <ellipse cx="256" cy="432" rx="140" ry="36" fill="#050505" />
+    <ellipse cx="256" cy="432" rx="140" ry="36" fill="#0A0A0A" />
+
+    <!-- Base Front Face -->
+    <ellipse cx="256" cy="420" rx="140" ry="36" fill="url(#matteBlack)" />
+
+    <!-- Edge Bevel Highlight -->
+    <ellipse cx="256" cy="420" rx="138" ry="34" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" />
+
+    <!-- Radar & GPS Discovery Rings -->
+    <ellipse cx="256" cy="420" rx="100" ry="26" fill="none" stroke="#FACC15" stroke-width="3" opacity="0.7" stroke-dasharray="10 8" />
+    <ellipse cx="256" cy="420" rx="60" ry="16" fill="none" stroke="#FACC15" stroke-width="2" opacity="0.4" />
+
+    <!-- Target Center Emitter -->
+    <ellipse cx="256" cy="420" rx="20" ry="6" fill="#FACC15" filter="url(#blur-small)" opacity="0.6" />
+    <ellipse cx="256" cy="420" rx="8" ry="3" fill="#FFF080" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 2. VOLUMETRIC LOCATION BEAM                -->
+  <!-- ========================================== -->
+  <!-- Drops down from the map pin tip to the ground target -->
+  <polygon points="250,368 262,368 280,420 232,420" fill="url(#beaconBeam)" />
+
+  <!-- ========================================== -->
+  <!-- 3. FLOATING AMBIENT ELEMENTS               -->
+  <!-- ========================================== -->
+  <!-- Navigation Pointer Arrow (Orbiting Right) -->
+  <g transform="translate(390, 220) rotate(25)">
+    <path d="M 0 -30 L 20 30 L 0 16 L -20 30 Z" fill="#000000" opacity="0.6" filter="url(#blur-medium)" transform="translate(-10, 16)" />
+    <!-- Extrusion -->
+    <path d="M 0 -30 L 20 30 L 0 16 L -20 30 Z" fill="#8A6D00" transform="translate(0, 8)" />
+    <path d="M 0 -30 L 20 30 L 0 16 L -20 30 Z" fill="#B48E08" transform="translate(0, 4)" />
+    <!-- Front & Highlights -->
+    <path d="M 0 -30 L 20 30 L 0 16 L -20 30 Z" fill="url(#yellowBadge)" />
+    <path d="M 0 -30 L 20 30 L 0 16 Z" fill="#FFFFFF" opacity="0.25" />
+    <path d="M 0 -30 L 20 30 L 0 16 L -20 30 Z" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.4" stroke-linejoin="round" />
+  </g>
+
+  <!-- UI Data Pill / Coordinates (Orbiting Left) -->
+  <g transform="translate(110, 160) rotate(-15)">
+    <rect x="-30" y="-14" width="60" height="28" rx="14" fill="#000000" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 12)" />
+    <rect x="-30" y="-14" width="60" height="28" rx="14" fill="#050505" transform="translate(0, 6)" />
+    <rect x="-30" y="-14" width="60" height="28" rx="14" fill="url(#matteBlack)" />
+    <rect x="-29" y="-13" width="58" height="26" rx="13" fill="none" stroke="url(#edgeHighlight)" stroke-width="1.5" />
+    <!-- Signal Dots -->
+    <circle cx="-12" cy="0" r="4" fill="#FACC15" />
+    <circle cx="0" cy="0" r="4" fill="#333333" />
+    <circle cx="12" cy="0" r="4" fill="#333333" />
+  </g>
+
+  <!-- Ambient Yellow Sparkle Core -->
+  <circle cx="380" cy="380" r="10" fill="url(#yellowSphere)" />
+  <circle cx="380" cy="380" r="10" fill="none" stroke="#FFF080" stroke-width="1.5" opacity="0.6" />
+  <circle cx="396" cy="360" r="4" fill="#FACC15" filter="url(#blur-small)" opacity="0.8" />
+
+  <!-- ========================================== -->
+  <!-- 4. MAIN GPS MAP PIN (Premium Matte Black)  -->
+  <!-- ========================================== -->
+  <!-- Floating Drop Shadow -->
+  <use href="#pin-shape" fill="#000000" opacity="0.5" filter="url(#blur-large)" transform="translate(0, 44)" />
+
+  <!-- Massive 3D Extrusion (Depth of the marker) -->
+  <use href="#pin-shape" fill="#050505" transform="translate(0, 24)" />
+  <use href="#pin-shape" fill="#0A0A0A" transform="translate(0, 12)" />
+
+  <!-- Matte Black Front Face -->
+  <use href="#pin-shape" fill="url(#matteBlack)" />
+
+  <!-- Glossy Edge Highlights (Claymorphism bevel) -->
+  <use href="#pin-shape" fill="none" stroke="url(#edgeHighlight)" stroke-width="3" />
+  <use href="#pin-shape" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.15" transform="translate(0, -1)" />
+
+  <!-- ========================================== -->
+  <!-- 5. INTERNAL CAVITY (Glowing Equipment Chamber)-->
+  <!-- ========================================== -->
+  <!-- Glowing Yellow Back Wall inside the Pin -->
+  <circle cx="256" cy="200" r="56" fill="url(#yellowBadge)" />
+
+  <!-- Inner Cylindrical Wall (Simulates 3D cut-out depth) -->
+  <g clip-path="url(#cavity-clip)">
+    <!-- Shifted dark circles create the top crescent shadow -->
+    <circle cx="256" cy="188" r="56" fill="#0A0A0A" />
+    <circle cx="256" cy="184" r="56" fill="#050505" />
+    <circle cx="256" cy="180" r="56" fill="none" stroke="#000000" stroke-width="16" opacity="0.8" filter="url(#blur-small)" />
+  </g>
+
+  <!-- ========================================== -->
+  <!-- 6. INDUSTRIAL HEX NUT CORE (Rental Theme)  -->
+  <!-- ========================================== -->
+  <g transform="translate(256, 204)">
+    <!-- Hex Shadow in the Chamber -->
+    <polygon points="0,-28 24.2,-14 24.2,14 0,28 -24.2,14 -24.2,-14" fill="#000000" opacity="0.6" filter="url(#blur-small)" transform="translate(0, 12)" />
+
+    <!-- Hex Extrusion / 3D Body -->
+    <polygon points="0,-28 24.2,-14 24.2,14 0,28 -24.2,14 -24.2,-14" fill="#0A0A0A" transform="translate(0, 8)" />
+    <polygon points="0,-28 24.2,-14 24.2,14 0,28 -24.2,14 -24.2,-14" fill="#151515" transform="translate(0, 4)" />
+
+    <!-- Hex Front Face (Matte Black) -->
+    <polygon points="0,-28 24.2,-14 24.2,14 0,28 -24.2,14 -24.2,-14" fill="url(#matteBlackDark)" />
+    <polygon points="0,-28 24.2,-14 24.2,14 0,28 -24.2,14 -24.2,-14" fill="none" stroke="#4A4A4A" stroke-width="2" stroke-linejoin="round" />
+
+    <!-- Equipment Center Hole -->
+    <circle cx="0" cy="0" r="12" fill="#050505" />
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#222222" stroke-width="2" />
+
+    <!-- Glowing Tech Node inside Nut -->
+    <circle cx="0" cy="4" r="8" fill="url(#yellowBadge)" />
+    <circle cx="0" cy="4" r="8" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5" />
+  </g>
+
+  <!-- Outer Ring Highlight of the Chamber Opening -->
+  <circle cx="256" cy="200" r="56" fill="none" stroke="url(#yellowBadge)" stroke-width="3" />
+  <circle cx="256" cy="200" r="58" fill="none" stroke="#000000" stroke-width="2" opacity="0.5" />
+
+  <!-- ========================================== -->
+  <!-- 7. TOP INDUSTRIAL CRANE HOOK / SHACKLE     -->
+  <!-- ========================================== -->
+  <!-- Subtly reinforces the heavy equipment / rental identity -->
+  <g transform="translate(256, 100)">
+    <!-- Shadow cast down onto the Pin body -->
+    <path d="M -28 0 C -28 -34, 28 -34, 28 0" fill="none" stroke="#000000" stroke-width="12" opacity="0.5" filter="url(#blur-small)" transform="translate(0, 6)" />
+
+    <!-- Extrusion / Arch Depth -->
+    <path d="M -28 0 C -28 -34, 28 -34, 28 0" fill="none" stroke="url(#yellowExt)" stroke-width="16" stroke-linecap="round" transform="translate(0, 4)" />
+
+    <!-- Front Face (Vibrant Yellow Shackle) -->
+    <path d="M -28 0 C -28 -34, 28 -34, 28 0" fill="none" stroke="url(#yellowBadge)" stroke-width="16" stroke-linecap="round" />
+
+    <!-- Shackle Top Highlight -->
+    <path d="M -28 0 C -28 -34, 28 -34, 28 0" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.4" />
+
+    <!-- Mounting Bracket Hardware (Left & Right) -->
+    <rect x="-36" y="-6" width="16" height="14" rx="4" fill="#151515" />
+    <rect x="-35" y="-5" width="14" height="12" rx="3" fill="none" stroke="#4A4A4A" stroke-width="1.5" />
+
+    <rect x="20" y="-6" width="16" height="14" rx="4" fill="#151515" />
+    <rect x="21" y="-5" width="14" height="12" rx="3" fill="none" stroke="#4A4A4A" stroke-width="1.5" />
+
+    <!-- Bracket Screws/Rivets -->
+    <circle cx="-28" cy="1" r="2" fill="#555555" />
+    <circle cx="28" cy="1" r="2" fill="#555555" />
+  </g>
+
+</svg>

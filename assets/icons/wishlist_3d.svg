@@ -1,0 +1,269 @@
+<svg viewBox="0 0 512 512" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft 3D Shadow Filters for Depth and Claymorphism -->
+    <filter id="blur-large" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" />
+    </filter>
+    <filter id="blur-medium" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="blur-small" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+
+    <!-- Premium Matte Black Materials -->
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="40%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+
+    <linearGradient id="matteBlackDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="50%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+
+    <linearGradient id="matteBlackLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3A3A3A"/>
+      <stop offset="50%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+
+    <!-- Edge Highlight for Glossy Bevels -->
+    <linearGradient id="edgeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#555555"/>
+      <stop offset="30%" stop-color="#222222"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+
+    <!-- Vibrant Yellow Metallic & Clay Materials -->
+    <linearGradient id="yellowBadge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="30%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#A17E00"/>
+    </linearGradient>
+
+    <linearGradient id="yellowExt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCA10C"/>
+      <stop offset="50%" stop-color="#8A6D00"/>
+      <stop offset="100%" stop-color="#4D3D00"/>
+    </linearGradient>
+
+    <!-- Ambient Glowing Spheres -->
+    <radialGradient id="yellowSphere" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF080"/>
+      <stop offset="40%" stop-color="#FACC15"/>
+      <stop offset="100%" stop-color="#8A6D00"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- GLOBAL FLOOR SHADOWS                       -->
+  <!-- ========================================== -->
+  <ellipse cx="256" cy="460" rx="170" ry="24" fill="#000000" opacity="0.35" filter="url(#blur-large)" />
+  <ellipse cx="256" cy="460" rx="100" ry="12" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+
+  <!-- Background Floating Sparkles -->
+  <g transform="translate(110, 140)">
+    <circle cx="0" cy="14" r="16" fill="#000000" opacity="0.4" filter="url(#blur-medium)" />
+    <circle cx="0" cy="0" r="16" fill="url(#yellowSphere)" />
+    <circle cx="-4" cy="-4" r="6" fill="#FFFFFF" opacity="0.4" filter="url(#blur-small)" />
+  </g>
+
+  <!-- MASTER GROUP: Isometric Tilt (-10 degrees) -->
+  <g transform="translate(256, 256) rotate(-10) translate(-256, -256)">
+
+    <!-- ========================================== -->
+    <!-- 1. BACK PANEL OF STORAGE CRATE/VAULT       -->
+    <!-- ========================================== -->
+    <g id="crate-back">
+      <!-- Back Panel Shadow -->
+      <rect x="136" y="140" width="240" height="200" rx="20" fill="#000000" opacity="0.5" filter="url(#blur-medium)" transform="translate(0, 16)" />
+
+      <!-- Back Panel Extrusion -->
+      <rect x="136" y="140" width="240" height="200" rx="20" fill="#050505" transform="translate(0, 8)" />
+
+      <!-- Back Panel Front Face -->
+      <rect x="136" y="140" width="240" height="200" rx="20" fill="url(#matteBlackDark)" />
+      <rect x="137" y="141" width="238" height="198" rx="19" fill="none" stroke="#222222" stroke-width="2" />
+
+      <!-- Ambient Occlusion inside the crate -->
+      <rect x="136" y="240" width="240" height="100" rx="20" fill="#000000" opacity="0.6" filter="url(#blur-large)" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 2. SAVED ITEM 1: YELLOW EQUIPMENT CARD     -->
+    <!-- ========================================== -->
+    <g id="saved-item-1" transform="translate(176, 170) rotate(-12)">
+      <!-- Card Shadow inside crate -->
+      <rect x="-46" y="-56" width="92" height="132" rx="12" fill="#000000" opacity="0.6" filter="url(#blur-medium)" transform="translate(0, 8)" />
+
+      <!-- Card Extrusion -->
+      <rect x="-46" y="-56" width="92" height="132" rx="12" fill="url(#yellowExt)" transform="translate(0, 4)" />
+
+      <!-- Card Face -->
+      <rect x="-46" y="-56" width="92" height="132" rx="12" fill="url(#yellowBadge)" />
+      <rect x="-44" y="-54" width="88" height="128" rx="10" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.5" />
+
+      <!-- Card Inner Border -->
+      <rect x="-38" y="-48" width="76" height="116" rx="8" fill="none" stroke="#DCA10C" stroke-width="2" />
+
+      <!-- Matte Black Wrench Icon -->
+      <g transform="translate(0, -6)">
+        <circle cx="0" cy="-14" r="14" fill="#111111" />
+        <rect x="-6" y="-10" width="12" height="44" rx="4" fill="#111111" />
+        <rect x="-8" y="-24" width="16" height="12" rx="4" fill="url(#yellowBadge)" /> <!-- Jaw Cutout -->
+        <!-- Wrench Highlight -->
+        <circle cx="0" cy="-14" r="12" fill="none" stroke="#333333" stroke-width="1.5" opacity="0.8" />
+        <rect x="-4" y="-8" width="8" height="40" rx="2" fill="none" stroke="#333333" stroke-width="1.5" opacity="0.8" />
+        <circle cx="0" cy="28" r="3" fill="#111111" /> <!-- Handle hole -->
+      </g>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 3. SAVED ITEM 2: MATTE BLACK DATA CARD     -->
+    <!-- ========================================== -->
+    <g id="saved-item-2" transform="translate(300, 180) rotate(8)">
+      <!-- Card Shadow inside crate -->
+      <rect x="-56" y="-66" width="112" height="152" rx="12" fill="#000000" opacity="0.6" filter="url(#blur-medium)" transform="translate(0, 10)" />
+
+      <!-- Card Extrusion -->
+      <rect x="-56" y="-66" width="112" height="152" rx="12" fill="#050505" transform="translate(0, 6)" />
+      <rect x="-56" y="-66" width="112" height="152" rx="12" fill="#0A0A0A" transform="translate(0, 3)" />
+
+      <!-- Card Face -->
+      <rect x="-56" y="-66" width="112" height="152" rx="12" fill="url(#matteBlack)" />
+      <rect x="-54" y="-64" width="108" height="148" rx="10" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" />
+
+      <!-- Yellow Header Tag -->
+      <rect x="-56" y="-40" width="112" height="16" fill="url(#yellowBadge)" />
+      <rect x="-56" y="-40" width="112" height="16" fill="none" stroke="#FFF080" stroke-width="1" opacity="0.4" />
+
+      <!-- Data / Barcode UI -->
+      <rect x="-36" y="-10" width="72" height="8" rx="4" fill="#333333" />
+      <rect x="-36" y="4" width="48" height="6" rx="3" fill="#222222" />
+      <rect x="-36" y="16" width="60" height="6" rx="3" fill="#222222" />
+
+      <circle cx="-26" cy="40" r="10" fill="#151515" stroke="#333333" stroke-width="2" />
+      <circle cx="-26" cy="40" r="4" fill="#FACC15" />
+
+      <rect x="-6" y="36" width="42" height="8" rx="4" fill="#1A1A1A" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 4. FRONT PANEL OF STORAGE CRATE            -->
+    <!-- ========================================== -->
+    <!-- Ambient Shadow cast backwards onto the cards to simulate interior depth -->
+    <rect x="116" y="230" width="280" height="40" rx="20" fill="#000000" opacity="0.8" filter="url(#blur-medium)" />
+
+    <g id="crate-front">
+      <!-- Front Panel Shadow to the Floor -->
+      <rect x="116" y="240" width="280" height="140" rx="24" fill="#000000" opacity="0.6" filter="url(#blur-large)" transform="translate(0, 16)" />
+
+      <!-- Front Panel Extrusion (Thick Volume) -->
+      <rect x="116" y="240" width="280" height="140" rx="24" fill="#050505" transform="translate(0, 12)" />
+      <rect x="116" y="240" width="280" height="140" rx="24" fill="#0A0A0A" transform="translate(0, 6)" />
+
+      <!-- Front Panel Face -->
+      <rect x="116" y="240" width="280" height="140" rx="24" fill="url(#matteBlack)" />
+
+      <!-- Glossy Outer Edge Bevel -->
+      <rect x="117" y="241" width="278" height="138" rx="23" fill="none" stroke="url(#edgeHighlight)" stroke-width="2" />
+      <rect x="136" y="242" width="240" height="2" rx="1" fill="#FFFFFF" opacity="0.1" />
+
+      <!-- Industrial Ribs (Rental/Hardware Design) -->
+      <g opacity="0.8">
+        <!-- Rib 1 -->
+        <rect x="236" y="260" width="20" height="100" rx="10" fill="#050505" />
+        <rect x="236" y="260" width="20" height="100" rx="10" fill="none" stroke="#2A2A2A" stroke-width="1.5" />
+        <rect x="238" y="262" width="16" height="96" rx="8" fill="none" stroke="#000000" stroke-width="2" />
+        <!-- Rib 2 -->
+        <rect x="286" y="260" width="20" height="100" rx="10" fill="#050505" />
+        <rect x="286" y="260" width="20" height="100" rx="10" fill="none" stroke="#2A2A2A" stroke-width="1.5" />
+        <rect x="238" y="262" width="16" height="96" rx="8" fill="none" stroke="#000000" stroke-width="2" />
+        <!-- Rib 3 -->
+        <rect x="336" y="260" width="20" height="100" rx="10" fill="#050505" />
+        <rect x="336" y="260" width="20" height="100" rx="10" fill="none" stroke="#2A2A2A" stroke-width="1.5" />
+        <rect x="338" y="262" width="16" height="96" rx="8" fill="none" stroke="#000000" stroke-width="2" />
+      </g>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 5. 3D FOLDED BOOKMARK RIBBON               -->
+    <!-- ========================================== -->
+    <!-- Drapes perfectly over the left edge of the front crate panel -->
+    <g id="premium-bookmark">
+
+      <!-- Bookmark Drop Shadow onto Front Panel -->
+      <path d="M 146 240 L 214 240 L 214 370 L 180 340 L 146 370 Z" fill="#000000" opacity="0.65" filter="url(#blur-medium)" transform="translate(0, 8)" />
+
+      <!-- Fold Top Shadow (Simulating interior drop) -->
+      <path d="M 150 240 L 210 240 L 218 224 L 158 224 Z" fill="#000000" opacity="0.8" filter="url(#blur-small)" transform="translate(0, 4)" />
+
+      <!-- Bookmark Top Face (The Fold over the edge) -->
+      <path d="M 150 240 L 210 240 L 218 224 L 158 224 Z" fill="url(#yellowBadge)" />
+      <path d="M 150 240 L 210 240 L 218 224 L 158 224 Z" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.6" stroke-linejoin="round" />
+
+      <!-- Bookmark Front Face Extrusion (Thickness) -->
+      <path d="M 150 240 L 210 240 L 210 370 L 180 340 L 150 370 Z" fill="url(#yellowExt)" transform="translate(0, 6)" />
+
+      <!-- Bookmark Front Face -->
+      <path d="M 150 240 L 210 240 L 210 370 L 180 340 L 150 370 Z" fill="url(#yellowBadge)" />
+
+      <!-- Glossy Edge Highlights for the Ribbon -->
+      <path d="M 150 240 L 210 240 L 210 370 L 180 340 L 150 370 Z" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.5" stroke-linejoin="round" />
+      <path d="M 152 242 L 208 242 L 208 365 L 180 335 L 152 365 Z" fill="none" stroke="#DCA10C" stroke-width="2" stroke-linejoin="round" opacity="0.8" />
+
+      <!-- Bookmark Mechanical Rivet / Button -->
+      <circle cx="180" cy="260" r="10" fill="#111111" />
+      <circle cx="180" cy="260" r="10" fill="none" stroke="#4A4A4A" stroke-width="2" />
+      <circle cx="180" cy="260" r="4" fill="#050505" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 6. FLOATING FAVORITE STAR COIN             -->
+    <!-- ========================================== -->
+    <!-- A massive, premium 3D badge signifying "Favorites" -->
+    <g id="star-coin" transform="translate(370, 140)">
+
+      <!-- Coin Massive Drop Shadow -->
+      <circle cx="0" cy="24" r="54" fill="#000000" opacity="0.6" filter="url(#blur-large)" />
+      <circle cx="0" cy="12" r="50" fill="#000000" opacity="0.5" filter="url(#blur-medium)" />
+
+      <!-- Coin Extrusion (Thick 3D Base) -->
+      <circle cx="0" cy="10" r="50" fill="#8A6D00" />
+      <circle cx="0" cy="5" r="50" fill="#B48E08" />
+
+      <!-- Coin Front Face -->
+      <circle cx="0" cy="0" r="50" fill="url(#yellowBadge)" />
+
+      <!-- Coin Inner Bevel & Outer Highlight -->
+      <circle cx="0" cy="0" r="48" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.5" />
+      <circle cx="0" cy="0" r="42" fill="none" stroke="#DCA10C" stroke-width="4" opacity="0.8" />
+      <circle cx="0" cy="0" r="42" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.4" transform="translate(0, -1)" />
+
+      <!-- Matte Black 3D Star Icon -->
+      <g transform="translate(0, -4)">
+        <!-- Star Drop Shadow -->
+        <path d="M 0 -22 L 8 -2 L 28 0 L 12 14 L 18 34 L 0 22 L -18 34 L -12 14 L -28 0 L -8 -2 Z" fill="#A17E00" transform="translate(0, 4)" />
+
+        <!-- Star Body -->
+        <path d="M 0 -22 L 8 -2 L 28 0 L 12 14 L 18 34 L 0 22 L -18 34 L -12 14 L -28 0 L -8 -2 Z" fill="#111111" />
+
+        <!-- Star Inner Highlight / Bevel -->
+        <path d="M 0 -22 L 8 -2 L 28 0 L 12 14 L 18 34 L 0 22 L -18 34 L -12 14 L -28 0 L -8 -2 Z" fill="none" stroke="#333333" stroke-width="2" stroke-linejoin="round" opacity="0.9" />
+        <path d="M 0 -18 L 6 0 L 24 2 L 10 14" fill="none" stroke="#555555" stroke-width="1.5" stroke-linejoin="round" opacity="0.6" />
+      </g>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 7. FLOATING AMBIENT PARTICLES              -->
+    <!-- ========================================== -->
+    <g transform="translate(100, 320) scale(0.7)">
+      <path d="M 0 -16 C 0 -4, 4 0, 16 0 C 4 0, 0 4, 0 16 C 0 4, -4 0, -16 0 C -4 0, 0 -4, 0 -16 Z" fill="#FACC15" filter="url(#blur-small)" opacity="0.8" />
+      <path d="M 0 -12 C 0 -3, 3 0, 12 0 C 3 0, 0 3, 0 12 C 0 3, -3 0, -12 0 C -3 0, 0 -3, 0 -12 Z" fill="#FFF080" />
+    </g>
+
+  </g>
+</svg>

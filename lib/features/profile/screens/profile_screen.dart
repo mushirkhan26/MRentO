@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../config/navigation/app_routes.dart';
@@ -77,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onTap: () => context.push(AppRoutes.ordersRoute),
       ),
       ProfileTile(
-        icon: Icons.favorite_border,
+        customIcon: SvgPicture.asset('assets/icons/wishlist_3d.svg', width: 20, height: 20),
         iconBg: AppColors.categoryCleaningBg,
         iconColor: AppColors.categoryCleaningText,
         title: 'Saved Equipment',
@@ -85,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onTap: () => context.push(AppRoutes.wishlistRoute),
       ),
       ProfileTile(
-        icon: Icons.star_outline,
+        customIcon: SvgPicture.asset('assets/icons/reviews_3d.svg', width: 20, height: 20),
         iconBg: AppColors.categoryMeasurementBg,
         iconColor: AppColors.categoryMeasurementText,
         title: 'My Reviews',
@@ -93,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onTap: () {},
       ),
       ProfileTile(
-        icon: Icons.confirmation_number_outlined,
+        customIcon: SvgPicture.asset('assets/icons/coupons_3d.svg', width: 20, height: 20),
         iconBg: AppColors.categoryConstructionBg,
         iconColor: AppColors.categoryConstructionText,
         title: 'Coupons & Offers',
@@ -111,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildAccountSection() {
     return SectionCard(children: [
       ProfileTile(
-        icon: Icons.location_on_outlined,
+        customIcon: SvgPicture.asset('assets/icons/location_3d.svg', width: 20, height: 20),
         iconBg: AppColors.categoryLiftingBg,
         iconColor: AppColors.categoryLiftingText,
         title: 'Saved Addresses',
@@ -127,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onTap: () {},
       ),
       ProfileTile(
-        icon: Icons.person_outline,
+        customIcon: SvgPicture.asset('assets/icons/profile_3d.svg', width: 20, height: 20),
         iconBg: AppColors.gray50,
         iconColor: AppColors.grey707070,
         title: 'Personal Details',
@@ -141,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildPreferencesSection() {
     return SectionCard(children: [
       ProfileTile(
-        icon: Icons.notifications_none,
+        customIcon: SvgPicture.asset('assets/icons/notifications_3d.svg', width: 20, height: 20),
         iconBg: AppColors.categoryMeasurementBg,
         iconColor: AppColors.categoryMeasurementText,
         title: 'Notifications',
@@ -149,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onTap: () => context.push(AppRoutes.notifications),
       ),
       SwitchTile(
-        icon: Icons.location_on_outlined,
+        customIcon: SvgPicture.asset('assets/icons/location_3d.svg', width: 20, height: 20),
         iconBg: AppColors.categoryCleaningBg,
         iconColor: AppColors.categoryCleaningText,
         title: 'Location Access',
@@ -173,15 +174,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildSupportSection() {
     return SectionCard(children: [
       ProfileTile(
-        icon: Icons.headset_mic_outlined,
+        customIcon: SvgPicture.asset('assets/icons/help_3d.svg', width: 20, height: 20),
         iconBg: AppColors.categoryCleaningBg,
         iconColor: AppColors.categoryCleaningText,
         title: 'Help & Support',
         subtitle: 'Chat, call, FAQ',
-        onTap: () {},
+        onTap: () => context.push(AppRoutes.helpRoute),
       ),
       ProfileTile(
-        icon: Icons.description_outlined,
+        customIcon: SvgPicture.asset('assets/icons/terms_3d.svg', width: 20, height: 20),
         iconBg: AppColors.gray50,
         iconColor: AppColors.grey707070,
         title: 'Terms & Privacy',
@@ -189,7 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onTap: () {},
       ),
       ProfileTile(
-        icon: Icons.logout,
+        customIcon: SvgPicture.asset('assets/icons/logout_3d.svg', width: 20, height: 20),
         iconBg: const Color(0xFFFFEBEE),
         iconColor: AppColors.errorRed,
         title: 'Log Out',

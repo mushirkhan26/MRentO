@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:MRentO/core/utils/alert_utils.dart';
 import 'package:MRentO/config/theme/app_colors.dart';
 import 'package:MRentO/config/navigation/app_routes.dart';
@@ -89,7 +90,7 @@ class _NavigationHostState extends State<NavigationHost> {
               unselectedItemColor: AppColors.grey808080,
               showSelectedLabels: true,
               showUnselectedLabels: true,
-              iconSize: 28, // Increased size for tactile feel
+              iconSize: 32, // Increased size for detailed 3D icons
               selectedLabelStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 13,
@@ -100,15 +101,27 @@ class _NavigationHostState extends State<NavigationHost> {
               ),
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(_selectedIndex == 0 ? Icons.home_rounded : Icons.home_outlined),
+                  icon: SvgPicture.asset(
+                    'assets/icons/home_3d.svg',
+                    width: 24,
+                    height: 24,
+                  ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(_selectedIndex == 1 ? Icons.receipt_long_rounded : Icons.receipt_long_outlined),
+                  icon: SvgPicture.asset(
+                    'assets/icons/orders_3d.svg',
+                    width: 24,
+                    height: 24,
+                  ),
                   label: 'My Orders',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(_selectedIndex == 2 ? Icons.help_rounded : Icons.help_outline_rounded),
+                  icon: SvgPicture.asset(
+                    'assets/icons/help_3d.svg',
+                    width: 24,
+                    height: 24,
+                  ),
                   label: 'Help',
                 ),
               ],
