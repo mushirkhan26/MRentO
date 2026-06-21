@@ -14,6 +14,8 @@ import '../bloc/location_bloc.dart';
 import '../bloc/location_state.dart';
 import '../../search/bloc/search_bloc.dart';
 import '../../search/bloc/search_event.dart';
+import '../../cart/bloc/cart_bloc.dart';
+import '../../cart/bloc/cart_state.dart';
 
 import '../widgets/location_picker_sheet.dart';
 
@@ -81,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         return Container(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 8, 8, 16), // Adjusted right padding
           color: AppColors.primaryBlack,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,50 +130,63 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
                   Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryYellow,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.timer_outlined,
-                                size: 14, color: AppColors.primaryBlack),
-                            SizedBox(width: 4),
-                            Text(
-                              '90 Min',
-                              style: TextStyle(
-                                color: AppColors.primaryBlack,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
+                      // Cart Icon with Badge
+                      _HomeHeaderCartIcon(),
+                      
+                      // Profile Icon
                       IconButton(
-                        icon: const Icon(Icons.notifications_outlined,
-                            color: Colors.white),
+                        icon: const Icon(Icons.person_outline_rounded, color: Colors.white),
+                        onPressed: () => context.push(AppRoutes.userProfile),
+                      ),
+                      
+                      IconButton(
+                        icon: const Icon(Icons.notifications_outlined, color: Colors.white),
                         onPressed: () => context.push(AppRoutes.notifications),
                       ),
                     ],
                   ),
                 ],
               ),
+              const SizedBox(height: 8),
+              _build90MinBadge(),
             ],
           ),
         );
       },
     );
   }
+
+  Widget _build90MinBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.primaryYellow,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.timer_outlined,
+              size: 14, color: AppColors.primaryBlack),
+          SizedBox(width: 4),
+          Text(
+            '90 Min Delivery',
+            style: TextStyle(
+              color: AppColors.primaryBlack,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildSearchBar() {
     return GestureDetector(
@@ -452,6 +467,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildCategoryFallbackIcon(String name, bool isSelected) {
+    return Icon(
+      _getCategoryIcon(name),
+      color: isSelected ? AppColors.primaryBlack : AppColors.grey500,
+      size: 40,
+    );
+  }
+
   Widget _buildProductsSection() {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
@@ -672,6 +695,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  
   IconData _getCategoryIcon(String name) {
     switch (name.toLowerCase()) {
       case 'power tools': return Icons.electrical_services;
@@ -682,5 +706,26 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'gardening': return Icons.grass;
       default: return Icons.handyman;
     }
+  }
+}
+
+class _HomeHeaderCartIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        final count = state is CartLoaded ? state.cart.items.length : 0;
+        return IconButton(
+          icon: Badge(
+            label: Text(count.toString()),
+            isLabelVisible: count > 0,
+            backgroundColor: AppColors.primaryYellow,
+            textColor: AppColors.primaryBlack,
+            child: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
+          ),
+          onPressed: () => context.push(AppRoutes.cartRoute),
+        );
+      },
+    );
   }
 }

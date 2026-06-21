@@ -14,6 +14,7 @@ import '../../features/wishlist/screens/wishlist_screen.dart';
 import '../../features/search/screens/search_screen.dart';
 import '../../features/tracking/screens/order_tracking_screen.dart';
 import '../../features/notification/screens/notification_screen.dart';
+import '../../features/help/screens/help_screen.dart';
 import '../../features/settings/screens/address_book_screen.dart';
 import '../../features/settings/screens/edit_address_screen.dart';
 import '../../core/models/rental_product_model.dart'; // ← RentalProductModel
@@ -72,6 +73,11 @@ final GoRouter appRouter = GoRouter(
           path: AppRoutes.userProfile,
           name: 'profile',
           builder: (context, state) => const ProfileScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.helpRoute,
+          name: 'help',
+          builder: (context, state) => const HelpScreen(),
         ),
       ],
     ),

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:MRentO/core/utils/alert_utils.dart';
-import 'package:MRentO/features/cart/bloc/cart_bloc.dart';
-import 'package:MRentO/features/cart/bloc/cart_state.dart';
 import 'package:MRentO/config/theme/app_colors.dart';
 import 'package:MRentO/config/navigation/app_routes.dart';
 import 'package:MRentO/core/services/analytics_service.dart';
-
-import '../../features/wishlist/bloc/wishlist_bloc.dart';
-import '../../features/wishlist/bloc/wishlist_state.dart';
 
 class NavigationHost extends StatefulWidget {
   final Widget child;
@@ -95,34 +89,27 @@ class _NavigationHostState extends State<NavigationHost> {
               unselectedItemColor: AppColors.grey808080,
               showSelectedLabels: true,
               showUnselectedLabels: true,
+              iconSize: 28, // Increased size for tactile feel
               selectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
               ),
               unselectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 fontSize: 12,
               ),
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(_selectedIndex == 0 ? Icons.explore : Icons.explore_outlined),
-                  label: 'Explore',
-                ),
-                const BottomNavigationBarItem(
-                  icon: _CartIconWithBadge(),
-                  label: 'Cart',
+                  icon: Icon(_selectedIndex == 0 ? Icons.home_rounded : Icons.home_outlined),
+                  label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(_selectedIndex == 2 ? Icons.receipt_long_rounded : Icons.receipt_long_outlined),
-                  label: 'Orders',
-                ),
-                const BottomNavigationBarItem(
-                  icon: _WishlistIconWithBadge(),
-                  label: 'Wishlist',
+                  icon: Icon(_selectedIndex == 1 ? Icons.receipt_long_rounded : Icons.receipt_long_outlined),
+                  label: 'My Orders',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(_selectedIndex == 4 ? Icons.person : Icons.person_2_outlined),
-                  label: 'Profile',
+                  icon: Icon(_selectedIndex == 2 ? Icons.help_rounded : Icons.help_outline_rounded),
+                  label: 'Help',
                 ),
               ],
             ),
@@ -160,10 +147,8 @@ class _NavigationHostState extends State<NavigationHost> {
 
   static const _routes = [
     AppRoutes.homeRoute,
-    AppRoutes.cartRoute,
     AppRoutes.ordersRoute,
-    AppRoutes.wishlistRoute,
-    AppRoutes.userProfile
+    AppRoutes.helpRoute,
   ];
 
   void _navigateTo(int index) {
@@ -174,20 +159,12 @@ class _NavigationHostState extends State<NavigationHost> {
         context.go(AppRoutes.homeRoute);
         break;
       case 1:
-        screenName = 'Cart';
-        context.go(AppRoutes.cartRoute);
-        break;
-      case 2:
         screenName = 'Orders';
         context.go(AppRoutes.ordersRoute);
         break;
-      case 3:
-        screenName = 'Wishlist';
-        context.go(AppRoutes.wishlistRoute);
-        break;
-      case 4:
-        screenName = 'Profile';
-        context.go(AppRoutes.userProfile);
+      case 2:
+        screenName = 'Help';
+        context.go(AppRoutes.helpRoute);
         break;
     }
     if (screenName.isNotEmpty) {
@@ -196,73 +173,3 @@ class _NavigationHostState extends State<NavigationHost> {
   }
 }
 
-// class _CartIconWithBadge extends StatelessWidget {
-//   const _CartIconWithBadge();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<CartBloc, CartState>(
-//       builder: (context, state) {
-//         final count = state is CartLoaded ? state.cart.items.length : 0;
-//         return Badge(
-//           label: count > 99 ? const Text('99+') : Text(count.toString()),
-//           backgroundColor: AppColors.primaryAmber,
-//           isLabelVisible: count > 0,
-//           child: Icon(context.watch<GoRouterState>().uri.toString().startsWith(AppRoutes.cartRoute) ? Icons.shopping_bag_rounded : Icons.shopping_bag_outlined),
-//         );
-//       },
-//     );
-//   }
-// }
-
-class _CartIconWithBadge extends StatelessWidget {
-  const _CartIconWithBadge();
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CartBloc, CartState>(
-      builder: (context, state) {
-        final count = state is CartLoaded ? state.cart.items.length : 0;
-
-        String location = '';
-        try {
-          location = GoRouterState.of(context).uri.toString();
-        } catch (_) {}
-
-        final isSelected = location.startsWith(AppRoutes.cartRoute);
-
-        return Badge(
-          label: count > 99 ? const Text('99+') : Text(count.toString()),
-          backgroundColor: AppColors.primaryAmber,
-          isLabelVisible: count > 0,
-          child: Icon(isSelected ? Icons.shopping_bag_rounded : Icons.shopping_bag_outlined),
-        );
-      },
-    );
-  }
-}
-
-class _WishlistIconWithBadge extends StatelessWidget {
-  const _WishlistIconWithBadge();
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<WishlistBloc, WishlistState>(
-      builder: (context, state) {
-        final count = state is WishlistLoaded ? state.items.length : 0;
-
-        String location = '';
-        try {
-          location = GoRouterState.of(context).uri.toString();
-        } catch (_) {}
-
-        final isSelected = location.startsWith(AppRoutes.wishlistRoute);
-
-        return Badge(
-          label: count > 99 ? const Text('99+') : Text(count.toString()),
-          backgroundColor: AppColors.primaryAmber,
-          isLabelVisible: count > 0,
-          child: Icon(isSelected ? Icons.favorite_rounded : Icons.favorite_outline),
-        );
-      },
-    );
-  }
-}

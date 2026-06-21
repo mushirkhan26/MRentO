@@ -10,6 +10,7 @@ class AppRoutes {
   static const String ordersRoute = '/orders';
   static const String wishlistRoute = '/wishlist';
   static const String userProfile = '/user-profile';
+  static const String helpRoute = '/help';
 
   // Product
   static const String searchRoute = '/search';

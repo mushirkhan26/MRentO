@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrento - IQ200 Product Plan</title>
+    <style>
+        :root {
+            --primary: #FFD700;
+            --secondary: #1A1A1A;
+            --accent: #27AE60;
+            --text: #333;
+            --bg: #F9F9F9;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: var(--secondary);
+            color: var(--primary);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            letter-spacing: 2px;
+        }
+        header p {
+            font-size: 1.2em;
+            color: #ccc;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        .section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .section h2 {
+            color: var(--secondary);
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+            margin-top: 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: var(--secondary);
+        }
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        .tag {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .iq-badge {
+            background: linear-gradient(45deg, #f3ec78, #af4261);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Mrento</h1>
+    <p>Machinery Rental Made Simple for Every Worker</p>
+</header>
+
+<div class="container">
+    <div class="iq-badge">IQ 200 STRATEGY</div>
+
+    <div class="section">
+        <h2>Target Audience Insight</h2>
+        <p>Our users are <strong>Workers, Laborers, and Thekedars (Contractors)</strong>. They are busy, practical people who value trust over fancy animations. Many may prefer visual cues and voice interaction over reading complex text.</p>
+    </div>
+
+    <div class="section">
+        <h2>1. Visual-First Interface (Deewaron Ke Liye)</h2>
+        <div class="grid">
+            <div class="card">
+                <span class="tag">UI/UX</span>
+                <h3>Iconography & Real Photos</h3>
+                <p>Instead of abstract icons, use <strong>real photos</strong> of machines (Drill machine, Concrete mixer, Scaffolding). Workers recognize tools by looking at them, not by reading names.</p>
+            </div>
+            <div class="card">
+                <span class="tag">NAV</span>
+                <h3>Bottom Navigation Simplified</h3>
+                <p>Only 3 major tabs: <strong>Home (Tools), My Orders, Help</strong>. Keep buttons big and tactile for "Mistry" hands.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>2. Voice & Vernacular (Aapki Bhasha)</h2>
+        <div class="grid">
+            <div class="card">
+                <span class="tag">VOICE</span>
+                <h3>"Bol Kar Search Karein"</h3>
+                <p>A big microphone button on the search bar. Workers should be able to say <i>"Mujhe drill machine chahiye"</i> in Hindi/Urdu and see results instantly.</p>
+            </div>
+            <div class="card">
+                <span class="tag">LANG</span>
+                <h3>Hinglish/Urdu Support</h3>
+                <p>The app should speak their language. Instead of "Delivery Status", use <span class="highlight">"Gadi Kahan Tak Pahunchi"</span>.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. Trust & Reliability (Bharosa)</h2>
+        <div class="grid">
+            <div class="card">
+                <span class="tag">TRUST</span>
+                <h3>Video Demos</h3>
+                <p>Every tool page should have a 15-30 second video showing:</p>
+                    <ul>
+                        <li>Machine working condition.</li>
+                        <li>How to turn it on/off.</li>
+                        <li>Safety tips.</li>
+                    </ul>
+            </div>
+            <div class="card">
+                <span class="tag">HELP</span>
+                <h3>WhatsApp Integration</h3>
+                <p>A direct button to WhatsApp chat. For them, "WhatsApp message = Official Order". It builds instant trust.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>4. Financial Simplicity (Hisaab-Kitaab)</h2>
+        <ul>
+            <li><strong>Clear Pricing:</strong> No hidden charges. Show <span class="highlight">Rent + Security Deposit + Delivery Fee</span> clearly.</li>
+            <li><strong>Refund Tracker:</strong> Show exactly when the security deposit will be returned.</li>
+            <li><strong>Easy Invoicing:</strong> A simple "download receipt" button that they can show to the main client for reimbursement.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Next Steps: Implementation</h2>
+        <ol>
+            <li>Setup <strong>Hindi/Urdu Localization</strong>.</li>
+            <li>Integrate <strong>Voice-to-Text</strong> for search.</li>
+            <li>Add <strong>WhatsApp Support API</strong>.</li>
+            <li>Optimize <strong>Image Loading</strong> for low-network areas (construction sites).</li>
+        </ol>
+    </div>
+
+    <div class="footer">
+        &copy; 2024 Mrento Project Plan. Empowering the building blocks of our nation.
+    </div>
+</div>
+
+</body>
+</html>
