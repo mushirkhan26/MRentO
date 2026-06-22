@@ -102,7 +102,7 @@ class _NavigationHostState extends State<NavigationHost> {
               items: [
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
-                    'assets/icons/home_3d.svg',
+                    'assets/icons/home.svg',
                     width: 24,
                     height: 24,
                   ),
@@ -110,7 +110,7 @@ class _NavigationHostState extends State<NavigationHost> {
                 ),
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
-                    'assets/icons/orders_3d.svg',
+                    'assets/icons/order.svg',
                     width: 24,
                     height: 24,
                   ),
@@ -118,7 +118,7 @@ class _NavigationHostState extends State<NavigationHost> {
                 ),
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
-                    'assets/icons/help_3d.svg',
+                    'assets/icons/help.svg',
                     width: 24,
                     height: 24,
                   ),

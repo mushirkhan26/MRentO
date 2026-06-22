@@ -164,11 +164,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           _HomeHeaderCartIcon(),
                           _buildHeaderIcon(
-                            'assets/icons/notifications_3d.svg',
+                            'assets/icons/notifications.svg',
                             () => context.push(AppRoutes.notifications),
                           ),
                           _buildHeaderIcon(
-                            'assets/icons/profile_3d.svg',
+                            'assets/icons/profile.svg',
                             () => context.push(AppRoutes.userProfile),
                             isProfile: true,
                           ),
@@ -204,7 +204,13 @@ class _HomeScreenState extends State<HomeScreen> {
           asset,
           width: 24,
           height: 24,
-        ),
+          colorFilter: isProfile
+              ? const ColorFilter.mode(
+            AppColors.primaryYellow,
+            BlendMode.srcIn,
+          )
+              : null,
+        )
       ),
     );
   }
@@ -944,7 +950,7 @@ class _HomeHeaderCartIcon extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: SvgPicture.asset(
-                'assets/icons/cart_3d.svg',
+                'assets/icons/cart.svg',
                 width: 24,
                 height: 24,
               ),
