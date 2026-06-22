@@ -6,6 +6,7 @@ import 'package:MRentO/core/utils/alert_utils.dart';
 import 'package:MRentO/config/theme/app_colors.dart';
 import 'package:MRentO/config/navigation/app_routes.dart';
 import 'package:MRentO/core/services/analytics_service.dart';
+import 'package:MRentO/widgets/navigation/animated_lottie_icon.dart';
 
 class NavigationHost extends StatefulWidget {
   final Widget child;
@@ -106,6 +107,12 @@ class _NavigationHostState extends State<NavigationHost> {
                     width: 24,
                     height: 24,
                   ),
+                  activeIcon: AnimatedLottieIcon(
+                    assetPath: 'assets/lottie/home.json',
+                    isSelected: _selectedIndex == 0,
+                    size: 28,
+                    color: AppColors.primaryDarkGreen,
+                  ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
@@ -114,6 +121,12 @@ class _NavigationHostState extends State<NavigationHost> {
                     width: 24,
                     height: 24,
                   ),
+                  activeIcon: AnimatedLottieIcon(
+                    assetPath: 'assets/lottie/order.json',
+                    isSelected: _selectedIndex == 1,
+                    size: 28,
+                    color: AppColors.primaryDarkGreen,
+                  ),
                   label: 'My Orders',
                 ),
                 BottomNavigationBarItem(
@@ -121,6 +134,12 @@ class _NavigationHostState extends State<NavigationHost> {
                     'assets/icons/help.svg',
                     width: 24,
                     height: 24,
+                  ),
+                  activeIcon: AnimatedLottieIcon(
+                    assetPath: 'assets/lottie/help.json',
+                    isSelected: _selectedIndex == 2,
+                    size: 28,
+                    color: AppColors.primaryDarkGreen,
                   ),
                   label: 'Help',
                 ),

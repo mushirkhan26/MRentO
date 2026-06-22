@@ -12,7 +12,6 @@ import 'config/theme/app_colors.dart';
 import 'core/api/network/auth_service.dart';
 import 'core/services/local_storage_service.dart';
 import 'core/services/location_service.dart';
-import 'core/utils/utils.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/auth/bloc/auth_state.dart';
 
@@ -26,13 +25,18 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _fadeController;
-  late AnimationController _pulseController;
   late Animation<double> _fadeAnimation;
-  late Animation<double> _pulseAnimation;
 
   final PageController _pageController = PageController();
-  int _currentPage = 0;
+  int _currentPage=0;
   bool _showOnboarding = false;
+
+  // Animation states from user snippet
+  bool isVisible = false;
+  bool showLogo = true;
+  bool isCircle = false;
+  bool showText = false;
+  double bgProgress = 0.0;
 
   bool _hasStartedLogicCheck = false;
   bool _isLoading = false;
@@ -56,22 +60,42 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeInOut,
     );
 
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-    _pulseAnimation = Tween<double>(begin: 0.92, end: 1.0).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
-
     _initSplash();
   }
 
   Future<void> _initSplash() async {
-    // Show simple splash for 2 seconds
-    await Future.delayed(const Duration(seconds: 2));
+    // Start animation sequence from user snippet
     if (!mounted) return;
 
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (!mounted) return;
+    setState(() {
+      bgProgress = 1.0;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    setState(() {
+      isVisible = true;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 2500));
+    if (!mounted) return;
+    setState(() {
+      showLogo = false;
+      isCircle = true;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    setState(() {
+      showText = true;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 2000));
+    if (!mounted) return;
+
+    // After animation, proceed with original logic
     final seen = await _storage.hasSeenOnboarding();
     if (seen) {
       _runGatekeeperLogic();
@@ -98,7 +122,6 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (mounted) {
       setState(() => _isLoading = true);
-      _pulseController.repeat(reverse: true);
       await _fadeController.forward();
     }
 
@@ -172,57 +195,67 @@ class _SplashScreenState extends State<SplashScreen>
     return true;
   }
 
-  void _showLocationDialog(String title, String message, {required bool isSettings}) {
+  void _showLocationDialog(String title, String message,
+      {required bool isSettings}) {
     if (!mounted) return;
     setState(() => _isLoading = false);
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.primaryBlack,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Center(
-          child: Column(
-            children: [
-              Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-        content: Text(message, style: const TextStyle(color: Colors.white60)),
-        actions: [
-          TextButton(
-            onPressed: () => SystemNavigator.pop(),
-            child: const Text("Cancel", style: TextStyle(color: Colors.white38)),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              if (isSettings) {
-                _waitingForSettingsReturn = true;
-                await LocationService.instance.openSettings();
-              } else {
-                _hasStartedLogicCheck = false;
-                _runGatekeeperLogic();
-              }
-            },
-            child: Text(
-              isSettings ? "Open Settings" : "Retry",
-              style: const TextStyle(
-                color: AppColors.primaryYellow,
-                fontWeight: FontWeight.bold,
+      builder: (ctx) =>
+          AlertDialog(
+            backgroundColor: AppColors.primaryBlack,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16)),
+            title: Center(
+              child: Column(
+                children: [
+                  Text(title, style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+                ],
               ),
             ),
+            content: Text(
+                message, style: const TextStyle(color: Colors.white60)),
+            actions: [
+              TextButton(
+                onPressed: () => SystemNavigator.pop(),
+                child: const Text(
+                    "Cancel", style: TextStyle(color: Colors.white38)),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(ctx);
+                  if (isSettings) {
+                    _waitingForSettingsReturn = true;
+                    await LocationService.instance.openSettings();
+                  } else {
+                    _hasStartedLogicCheck = false;
+                    _runGatekeeperLogic();
+                  }
+                },
+                child: Text(
+                  isSettings ? "Open Settings" : "Retry",
+                  style: const TextStyle(
+                    color: AppColors.primaryYellow,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   bool _isVersionOlder(String current, String min) {
     List<int> c = current.split('.').map((e) => int.tryParse(e) ?? 0).toList();
     List<int> m = min.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-    while (c.length < 3) c.add(0);
-    while (m.length < 3) m.add(0);
+    while (c.length < 3) {
+      c.add(0);
+    }
+    while (m.length < 3) {
+      m.add(0);
+    }
     for (int i = 0; i < 3; i++) {
       if (c[i] < m[i]) return true;
       if (c[i] > m[i]) return false;
@@ -256,25 +289,30 @@ class _SplashScreenState extends State<SplashScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.primaryBlack,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        content: Text(message, style: const TextStyle(color: Colors.white60)),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              _hasStartedLogicCheck = false;
-              _runGatekeeperLogic();
-            },
-            child: const Text(
-              "Retry",
-              style: TextStyle(color: AppColors.primaryYellow, fontWeight: FontWeight.bold),
-            ),
+      builder: (ctx) =>
+          AlertDialog(
+            backgroundColor: AppColors.primaryBlack,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16)),
+            title: Text(title, style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+            content: Text(
+                message, style: const TextStyle(color: Colors.white60)),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(ctx);
+                  _hasStartedLogicCheck = false;
+                  _runGatekeeperLogic();
+                },
+                child: const Text(
+                  "Retry",
+                  style: TextStyle(color: AppColors.primaryYellow,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -283,38 +321,44 @@ class _SplashScreenState extends State<SplashScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.primaryBlack,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          "Update Required",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        content: const Text(
-          "MRentO ka naya version available hai.",
-          style: TextStyle(color: Colors.white60),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => SystemNavigator.pop(),
-            child: const Text("Exit App", style: TextStyle(color: Colors.white38)),
-          ),
-          TextButton(
-            onPressed: () async {
-              if (url != null) {
-                final uri = Uri.parse(url);
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                }
-              }
-            },
-            child: const Text(
-              "Update Now",
-              style: TextStyle(color: AppColors.primaryYellow, fontWeight: FontWeight.bold),
+      builder: (context) =>
+          AlertDialog(
+            backgroundColor: AppColors.primaryBlack,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16)),
+            title: const Text(
+              "Update Required",
+              style: TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
+            content: const Text(
+              "MRentO ka naya version available hai.",
+              style: TextStyle(color: Colors.white60),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => SystemNavigator.pop(),
+                child: const Text(
+                    "Exit App", style: TextStyle(color: Colors.white38)),
+              ),
+              TextButton(
+                onPressed: () async {
+                  if (url != null) {
+                    final uri = Uri.parse(url);
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(
+                          uri, mode: LaunchMode.externalApplication);
+                    }
+                  }
+                },
+                child: const Text(
+                  "Update Now",
+                  style: TextStyle(color: AppColors.primaryYellow,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -322,15 +366,12 @@ class _SplashScreenState extends State<SplashScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _fadeController.dispose();
-    _pulseController.dispose();
     _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = Utils().width(context);
-
     // Onboarding pages
     if (_showOnboarding) {
       return Scaffold(
@@ -341,36 +382,42 @@ class _SplashScreenState extends State<SplashScreen>
           onPageChanged: (i) => setState(() => _currentPage = i),
           children: [
             WelcomePage(
-              onGetStarted: () => _pageController.nextPage(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-              ),
+              onGetStarted: () =>
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  ),
             ),
             StatsPage(
-              onBack: () => _pageController.previousPage(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-              ),
-              onNext: () => _pageController.nextPage(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-              ),
+              onBack: () =>
+                  _pageController.previousPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  ),
+              onNext: () =>
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  ),
             ),
             FeaturesPage(
-              onBack: () => _pageController.previousPage(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-              ),
-              onNext: () => _pageController.nextPage(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-              ),
+              onBack: () =>
+                  _pageController.previousPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  ),
+              onNext: () =>
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  ),
             ),
             CityPage(
-              onBack: () => _pageController.previousPage(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-              ),
+              onBack: () =>
+                  _pageController.previousPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  ),
               onCitySelected: (city) => _runGatekeeperLogic(),
             ),
           ],
@@ -378,63 +425,99 @@ class _SplashScreenState extends State<SplashScreen>
       );
     }
 
-    // Simple Splash (Logo + Name)
+    // Animated Splash (Logo morphing into dot + Name)
     return Scaffold(
-      backgroundColor: AppColors.primaryBlack,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Logo Container
-                Container(
-                  width: width * 0.35,
-                  height: width * 0.35,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryYellow,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryYellow.withValues(alpha: 0.3),
-                        blurRadius: 30,
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.0, end: bgProgress),
+            duration: const Duration(milliseconds: 700),
+            builder: (context, value, child) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 1000),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.lerp(Colors.white, Colors.white, value)!,
+                      Color.lerp(Colors.white, Colors.white, value)!,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 800),
+                        curve: Curves.easeInOutExpo,
+                        child: showText
+                            ? RichText(
+                                text: const TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: "MRent",
+                                      style: TextStyle(
+                                          color: AppColors.primaryBlack),
+                                    ),
+                                    TextSpan(
+                                      text: "O",
+                                      style: TextStyle(
+                                          color: AppColors.primaryYellow),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const Text(""),
+                      ),
+                      if (showText) const SizedBox(width: 8),
+                      AnimatedOpacity(
+                        opacity: isVisible ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 2500),
+                        child: AnimatedPadding(
+                          duration: const Duration(milliseconds: 1000),
+                          curve: Curves.elasticOut,
+                          padding: EdgeInsets.only(top: isVisible ? 20 : 300),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeOutExpo,
+                            transform: Matrix4.rotationZ(
+                              isCircle ? 3.14159 / 7 : 0.0,
+                            ),
+                            width: isCircle ? 12 : 120,
+                            height: isCircle ? 12 : 120,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryBlack,
+                              borderRadius: BorderRadius.circular(
+                                isCircle ? 60 : 10,
+                              ),
+                            ),
+                            child: Center(
+                              child: AnimatedOpacity(
+                                opacity: showLogo ? 1.0 : 0.0,
+                                duration: const Duration(milliseconds: 500),
+                                child: Image.asset(
+                                  'assets/images/logo.png',
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
                 ),
-                const SizedBox(height: 24),
-                // App Name
-                const Text(
-                  'MRentO',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // Loading indicator or pulse text
-                ScaleTransition(
-                  scale: _pulseAnimation,
-                  child: const Text(
-                    "Machinery Renting Simplified",
-                    style: TextStyle(
-                      color: AppColors.primaryYellow,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
 
           // Loading overlay (gatekeeper logic ke waqt)
