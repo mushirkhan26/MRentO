@@ -2,19 +2,43 @@ import 'package:equatable/equatable.dart';
 import '../../../core/models/rental_product_model.dart';
 
 abstract class SearchState extends Equatable {
-  const SearchState();
+  final bool isListening;
+  final String currentQuery;
+  final String? error;
+  final List<RentalProductModel> recentlyViewed;
+
+  const SearchState({
+    this.isListening = false,
+    this.currentQuery = '',
+    this.error,
+    this.recentlyViewed = const [],
+  });
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [isListening, currentQuery, error, recentlyViewed];
 }
 
 class SearchInitial extends SearchState {
   final List<String> recentSearches;
-  const SearchInitial({this.recentSearches = const []});
+  const SearchInitial({
+    this.recentSearches = const [],
+    super.isListening,
+    super.currentQuery,
+    super.error,
+    super.recentlyViewed,
+  });
   @override
-  List<Object?> get props => [recentSearches];
+  List<Object?> get props => [recentSearches, isListening, currentQuery, error, recentlyViewed];
 }
 
-class SearchLoading extends SearchState {}
+class SearchLoading extends SearchState {
+  const SearchLoading({
+    super.isListening,
+    super.currentQuery,
+    super.error,
+    super.recentlyViewed,
+  });
+}
 
 class SearchLoaded extends SearchState {
   final List<RentalProductModel> results;
@@ -29,15 +53,35 @@ class SearchLoaded extends SearchState {
     this.minPrice,
     this.maxPrice,
     this.sortBy,
+    super.isListening,
+    super.currentQuery,
+    super.error,
+    super.recentlyViewed,
   });
 
   @override
-  List<Object?> get props => [results, originalResults, minPrice, maxPrice, sortBy];
+  List<Object?> get props => [
+        results,
+        originalResults,
+        minPrice,
+        maxPrice,
+        sortBy,
+        isListening,
+        currentQuery,
+        error,
+        recentlyViewed,
+      ];
 }
 
 class SearchError extends SearchState {
   final String message;
-  const SearchError(this.message);
+  const SearchError(
+    this.message, {
+    super.isListening,
+    super.currentQuery,
+    super.error,
+    super.recentlyViewed,
+  });
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, isListening, currentQuery, error, recentlyViewed];
 }

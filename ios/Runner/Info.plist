@@ -55,6 +55,10 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>App ko aapki awaaz sunne ke liye permission chahiye taaki aap search kar sakein.</string>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>Microphone ka access chahiye voice search ke liye.</string>
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>https</string>

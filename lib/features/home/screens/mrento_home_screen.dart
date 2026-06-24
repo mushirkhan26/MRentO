@@ -246,7 +246,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            const Icon(Icons.mic_none_rounded, color: AppColors.grey400, size: 22),
+            IconButton(
+              icon: const Icon(Icons.mic_none_rounded, color: AppColors.grey400, size: 22),
+              onPressed: () {
+                context.read<SearchBloc>().add(const StartVoiceSearch());
+                context.push(AppRoutes.searchRoute);
+              },
+            ),
             const SizedBox(width: 12),
             Container(
               height: 24,

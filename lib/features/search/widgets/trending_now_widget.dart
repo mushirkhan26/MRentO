@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/search_bloc.dart';
+import '../bloc/search_event.dart';
 
 class TrendingNowWidget extends StatelessWidget {
-  const TrendingNowWidget({super.key});
+  final TextEditingController? controller;
+  const TrendingNowWidget({super.key, this.controller});
 
   // ✅ Rental trending — fashion terms hata diye
   static const List<String> _trending = [
@@ -47,37 +51,46 @@ class TrendingNowWidget extends StatelessWidget {
             ),
             itemCount: _trending.length,
             itemBuilder: (context, index) =>
-                _buildItem(_trending[index]),
+                _buildItem(context, _trending[index]),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildItem(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+  Widget _buildItem(BuildContext context, String label) {
+    return InkWell(
+      onTap: () {
+        if (controller != null) {
+          controller!.text = label;
+        }
+        context.read<SearchBloc>().add(SearchQueryChanged(label));
+      },
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          Icon(Icons.north_east, size: 13, color: Colors.grey.shade400),
-        ],
+            Icon(Icons.north_east, size: 13, color: Colors.grey.shade400),
+          ],
+        ),
       ),
     );
   }

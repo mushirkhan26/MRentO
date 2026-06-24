@@ -29,7 +29,7 @@ class SearchFilterBar extends StatelessWidget {
                 context,
                 'Sort',
                 isSelected: state.sortBy != null,
-                onTap: () => _showSortBottomSheet(context),
+                onTap: () => _showSortBottomSheet(context, state),
               ),
               _filterChip(
                 context,
@@ -37,8 +37,6 @@ class SearchFilterBar extends StatelessWidget {
                 isSelected: state.minPrice != null || state.maxPrice != null,
                 onTap: () => _showPriceBottomSheet(context, state),
               ),
-              _filterChip(context, 'Availability'),
-              _filterChip(context, 'Category'),
             ],
           ),
         );
@@ -72,7 +70,7 @@ class SearchFilterBar extends StatelessWidget {
     );
   }
 
-  void _showSortBottomSheet(BuildContext context) {
+  void _showSortBottomSheet(BuildContext context, SearchLoaded state) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -86,18 +84,22 @@ class SearchFilterBar extends StatelessWidget {
           ListTile(
             title: const Text('Price: Low to High'),
             onTap: () {
-              context
-                  .read<SearchBloc>()
-                  .add(const ApplyFilters(sortBy: 'price_low_high'));
+              context.read<SearchBloc>().add(ApplyFilters(
+                    sortBy: 'price_low_high',
+                    minPrice: state.minPrice,
+                    maxPrice: state.maxPrice,
+                  ));
               Navigator.pop(context);
             },
           ),
           ListTile(
             title: const Text('Price: High to Low'),
             onTap: () {
-              context
-                  .read<SearchBloc>()
-                  .add(const ApplyFilters(sortBy: 'price_high_low'));
+              context.read<SearchBloc>().add(ApplyFilters(
+                    sortBy: 'price_high_low',
+                    minPrice: state.minPrice,
+                    maxPrice: state.maxPrice,
+                  ));
               Navigator.pop(context);
             },
           ),

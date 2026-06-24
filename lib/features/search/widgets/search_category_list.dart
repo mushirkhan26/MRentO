@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../config/theme/app_colors.dart';
+import '../bloc/search_bloc.dart';
+import '../bloc/search_event.dart';
 
 class SearchCategoryList extends StatelessWidget {
-  const SearchCategoryList({super.key});
+  final TextEditingController? controller;
+  const SearchCategoryList({super.key, this.controller});
 
   // ✅ Hardware categories — fashion categories hata di
   static const List<Map<String, dynamic>> _categories = [
@@ -39,21 +43,31 @@ class SearchCategoryList extends StatelessWidget {
               final cat = _categories[index];
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: cat['color'] as Color,
-                      child: Icon(cat['icon'] as IconData,
-                          color: cat['textColor'] as Color, size: 26),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      cat['name'] as String,
-                      style: const TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.w500),
-                    ),
-                  ],
+                child: InkWell(
+                  onTap: () {
+                    final categoryName = cat['name'] as String;
+                    if (controller != null) {
+                      controller!.text = categoryName;
+                    }
+                    context.read<SearchBloc>().add(SearchQueryChanged(categoryName));
+                  },
+                  borderRadius: BorderRadius.circular(30),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: cat['color'] as Color,
+                        child: Icon(cat['icon'] as IconData,
+                            color: cat['textColor'] as Color, size: 26),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        cat['name'] as String,
+                        style: const TextStyle(
+                            fontSize: 11, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

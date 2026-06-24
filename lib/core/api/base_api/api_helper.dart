@@ -137,16 +137,16 @@ class ApiHelper {
       return result;
     } on TimeoutException catch (e, s) {
       _logger.error('TIMEOUT', 'Connection Timeout', error: e, stackTrace: s);
-      return ApiResponse.error('Connection Timeout. Please check your server.');
+      return ApiResponse.error('Connection Timeout. Server check karein.');
     } on SocketException catch (e, s) {
       _logger.error('NETWORK', 'No Internet Connection', error: e, stackTrace: s);
-      return ApiResponse.error('No Internet Connection');
+      return ApiResponse.error('Internet nahi chal raha hai.');
     } on AppException catch (e, s) {
       _logger.error('API_EXCEPTION', e.message, error: e, stackTrace: s);
       return ApiResponse.error(e.message);
     } catch (e, s) {
       _logger.error('UNEXPECTED', 'Unexpected error: $e', error: e, stackTrace: s);
-      return ApiResponse.error('Something went wrong. Please try again later.');
+      return ApiResponse.error('Kuch gadbad ho gayi. Phir se try karein.');
     }
   }
 
@@ -216,7 +216,7 @@ class ApiHelper {
     }
 
     // ✅ SAFE error message extraction
-    String message = 'Something went wrong';
+    String message = 'Kuch gadbad ho gayi';
 
     if (body is Map<String, dynamic>) {
       message = body['message']?.toString() ?? message;
@@ -236,7 +236,7 @@ class ApiHelper {
       case 500:
         throw ServerException(message);
       default:
-        throw FetchDataException('Error occurred with StatusCode: $statusCode');
+        throw FetchDataException('Error: $statusCode');
     }
   }
 }

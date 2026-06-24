@@ -35,7 +35,7 @@ class ErrorScreen extends StatelessWidget {
               const SizedBox(height: AppConstants.spacingLarge),
 
               // Error Title
-              Text(title ?? 'Oops! Something went wrong', textAlign: TextAlign.center),
+              Text(title ?? 'Arre! Kuch gadbad ho gayi', textAlign: TextAlign.center),
 
               const SizedBox(height: AppConstants.spacingMedium),
 
@@ -64,7 +64,7 @@ class ErrorScreen extends StatelessWidget {
                   // Retry Button (if onRetry is provided)
                   if (onRetry != null) ...[
                     CustomButton(
-                      text: 'Try Again',
+                      text: 'Phir se try karein',
                       onPressed: onRetry!,
                       icon: Icons.refresh_rounded,
                     ),
@@ -73,7 +73,7 @@ class ErrorScreen extends StatelessWidget {
                   ],
 
                   // Go Home Button
-                  CustomButton(text: 'Go to Home', onPressed: () => {}, icon: Icons.home_rounded),
+                  CustomButton(text: 'Home par jayein', onPressed: () => {}, icon: Icons.home_rounded),
                 ],
               ),
 
@@ -83,7 +83,7 @@ class ErrorScreen extends StatelessWidget {
               TextButton.icon(
                 onPressed: () => {},
                 icon: Icon(Icons.support_agent_rounded, size: 18, color: AppColors.primaryDarkGreen),
-                label: Text('Contact Support'),
+                label: Text('Support se baat karein'),
               ),
             ],
           ),
@@ -97,27 +97,27 @@ class ErrorScreen extends StatelessWidget {
     final lowerError = error.toLowerCase();
 
     if (lowerError.contains('network') || lowerError.contains('connection')) {
-      return 'Please check your internet connection and try again.';
+      return 'Internet nahi chal raha hai. Connection check karke phir se try karein.';
     }
 
     if (lowerError.contains('timeout')) {
-      return 'The request took too long to complete. Please try again.';
+      return 'Request mein zyada time lag raha hai. Network check karein.';
     }
 
     if (lowerError.contains('not found') || lowerError.contains('404')) {
-      return 'The page you\'re looking for could not be found.';
+      return 'Maaf kijiye, humein yeh nahi mila.';
     }
 
     if (lowerError.contains('unauthorized') || lowerError.contains('401')) {
-      return 'You need to log in to access this page.';
+      return 'Aapko login karna padega.';
     }
 
     if (lowerError.contains('forbidden') || lowerError.contains('403')) {
-      return 'You don\'t have permission to access this page.';
+      return 'Aapko yahan jaane ki permission nahi hai.';
     }
 
     if (lowerError.contains('server') || lowerError.contains('500')) {
-      return 'Our servers are experiencing issues. Please try again later.';
+      return 'Humare server mein kuch dikkat hai. Thodi der baad try karein.';
     }
 
     // Return original error if no specific formatting applies
@@ -129,25 +129,25 @@ class ErrorScreen extends StatelessWidget {
 class NetworkErrorScreen extends ErrorScreen {
   const NetworkErrorScreen({super.key, super.onRetry})
     : super(
-        error: 'Please check your internet connection and try again.',
-        title: 'No Internet Connection',
+        error: 'Internet nahi chal raha hai. Connection check karke phir se try karein.',
+        title: 'Network nahi mil raha',
       );
 }
 
 class NotFoundErrorScreen extends ErrorScreen {
   const NotFoundErrorScreen({super.key})
-    : super(error: 'The page you\'re looking for could not be found.', title: 'Page Not Found');
+    : super(error: 'Maaf kijiye, humein yeh nahi mila.', title: 'Nahi mila');
 }
 
 class ServerErrorScreen extends ErrorScreen {
   const ServerErrorScreen({super.key, super.onRetry})
     : super(
-        error: 'Our servers are experiencing issues. Please try again later.',
-        title: 'Server Error',
+        error: 'Humare server mein kuch dikkat hai. Thodi der baad try karein.',
+        title: 'Server ki dikat',
       );
 }
 
 class UnauthorizedErrorScreen extends ErrorScreen {
   const UnauthorizedErrorScreen({super.key})
-    : super(error: 'You need to log in to access this page.', title: 'Authentication Required');
+    : super(error: 'Aapko login karna padega.', title: 'Login zaroori hai');
 }

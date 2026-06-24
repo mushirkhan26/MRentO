@@ -1,3 +1,4 @@
+import 'package:MRentO/features/search/bloc/search_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,25 +38,39 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            SearchHeader(controller: _searchController),
-            Expanded(
-              child: BlocBuilder<SearchBloc, SearchState>(
-                builder: (context, state) {
-                  return Column(
-                    children: [
-                      if (state is SearchLoaded || state is SearchLoading)
-                        const SearchFilterBar(),
-                      Expanded(
-                        child: _buildBodyContent(state),
-                      ),
-                    ],
-                  );
-                },
+        body: BlocListener<SearchBloc, SearchState>(
+          listenWhen: (previous, current) => previous.error != current.error,
+          listener: (context, state) {
+            if (state.error != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error!),
+                  backgroundColor: Colors.redAccent,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
+          child: Column(
+            children: [
+              SearchHeader(controller: _searchController),
+              Expanded(
+                child: BlocBuilder<SearchBloc, SearchState>(
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        if (state is SearchLoaded || state is SearchLoading)
+                          const SearchFilterBar(),
+                        Expanded(
+                          child: _buildBodyContent(state),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -69,7 +84,31 @@ class _SearchScreenState extends State<SearchScreen> {
       return SearchResultsGrid(state: state, controller: _searchController);
     }
     if (state is SearchError) {
-      return Center(child: Text(state.message));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+            const SizedBox(height: 16),
+            Text(
+              state.message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.grey, fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                context.read<SearchBloc>().add(SearchQueryChanged(state.currentQuery));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryYellow,
+                foregroundColor: AppColors.primaryBlack,
+              ),
+              child: const Text('Try Again'),
+            ),
+          ],
+        ),
+      );
     }
 
     final List<String> recentSearches = state is SearchInitial ? state.recentSearches : [];
@@ -79,14 +118,14 @@ class _SearchScreenState extends State<SearchScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           RecentSearchesWidget(searches: recentSearches, controller: _searchController),
-          const SearchCategoryList(),
+          SearchCategoryList(controller: _searchController),
           const SizedBox(height: 24),
-          const TrendingNowWidget(),
+          TrendingNowWidget(controller: _searchController),
           const SizedBox(height: 24),
           const RecentlyViewedWidget(),
           const SizedBox(height: 24),
           const Divider(thickness: 8, color: Color(0xFFF5F5F5)),
-          const SuggestedProductsWidget(),
+          SuggestedProductsWidget(controller: _searchController),
         ],
       ),
     );

@@ -40,6 +40,7 @@ class AppConstants {
   static const String logCategoryStorage = 'STORAGE';
   static const String logCategoryNetwork = 'NETWORK';
   static const String logCategoryGeneral = 'GENERAL';
+  static const String logCategoryDatabase = 'DATABASE';
   static const bool showTimestamp = true;
   static const bool showLogLevel = true;
   static const bool showSourceInfo = true;

@@ -1,3 +1,4 @@
+import 'package:MRentO/features/search/bloc/search_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -42,28 +43,51 @@ class SearchHeader extends StatelessWidget {
               },
             ),
             Expanded(
-              child: TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  // ✅ Rental-appropriate hint text
-                  hintText: 'Search drills, mixers, scaffolding...',
-                  hintStyle: TextStyle(
-                      color: Colors.grey.shade500, fontSize: 15),
-                  border: InputBorder.none,
-                  contentPadding:
-                  const EdgeInsets.symmetric(vertical: 12),
+              child: BlocListener<SearchBloc, SearchState>(
+                listenWhen: (previous, current) =>
+                    previous.currentQuery != current.currentQuery,
+                listener: (context, state) {
+                  if (controller.text != state.currentQuery) {
+                    controller.text = state.currentQuery;
+                    // Move cursor to the end
+                    controller.selection = TextSelection.fromPosition(
+                      TextPosition(offset: controller.text.length),
+                    );
+                  }
+                },
+                child: TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    // ✅ Rental-appropriate hint text
+                    hintText: 'Search drills, mixers, scaffolding...',
+                    hintStyle: TextStyle(
+                        color: Colors.grey.shade500, fontSize: 15),
+                    border: InputBorder.none,
+                    contentPadding:
+                    const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  onChanged: (query) {
+                    context
+                        .read<SearchBloc>()
+                        .add(SearchQueryChanged(query));
+                  },
                 ),
-                onChanged: (query) {
-                  context
-                      .read<SearchBloc>()
-                      .add(SearchQueryChanged(query));
+              ),
+            ),IconButton(
+              icon: BlocBuilder<SearchBloc, SearchState>(
+                builder: (context, state) {
+                  return Icon(
+                    state.isListening ? Icons.mic : Icons.mic_none,
+                    color: state.isListening
+                        ? AppColors.primaryYellow
+                        : AppColors.primaryBlack,
+                    size: 24,
+                  );
                 },
               ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.mic,
-                  color: AppColors.primaryBlack, size: 24),
-              onPressed: () {},
+              onPressed: () {
+                context.read<SearchBloc>().add(const StartVoiceSearch());
+              },
             ),
           ],
         ),

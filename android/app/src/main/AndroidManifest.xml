@@ -12,6 +12,12 @@
     <!-- Permissions for image_picker and file_picker -->
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- Permissions for voice search -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
     <application
         android:label="MRentO"
         android:name="${applicationName}"
@@ -20,7 +26,7 @@
         <!-- Move Google Maps API Key here (Inside application, but outside activity) -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE"/>
+            android:value="AIzaSyD3uryMXI2-iJqW9BH5AWOKtRwRa3nk_nk"/>
 
         <activity
             android:name=".MainActivity"

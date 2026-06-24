@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/notification_model.dart';
 import '../models/user_model.dart';
+import '../models/rental_product_model.dart';
 import 'logger_service.dart';
 
 class LocalStorageService {
@@ -19,6 +20,8 @@ class LocalStorageService {
   static const String _keyUserListTimestamp = 'user_list_timestamp';
   static const String _keyUserRole = 'user_role';
   static const String _keySeenOnboarding = 'seen_onboarding';
+  static const String _keyRecentSearches = 'recent_searches';
+  static const String _keyRecentlyViewed = 'recently_viewed';
 
   // Notification caching keys
   static const String keyNotifications = 'notifications_list';
@@ -216,5 +219,36 @@ class LocalStorageService {
 
   Future<bool> hasSeenOnboarding() async {
     return getBool(_keySeenOnboarding);
+  }
+
+  // --------------------------------------------------------------------------
+  // Recent Searches and Recently Viewed
+  // --------------------------------------------------------------------------
+
+  Future<void> saveRecentSearches(List<String> searches) async {
+    await prefs.setStringList(_keyRecentSearches, searches);
+    _logger.logStorage('Saved ${searches.length} recent searches');
+  }
+
+  Future<List<String>> getRecentSearches() async {
+    return prefs.getStringList(_keyRecentSearches) ?? [];
+  }
+
+  Future<void> saveRecentlyViewed(List<RentalProductModel> items) async {
+    final jsonList = items.map((e) => e.toJson()).toList();
+    await prefs.setString(_keyRecentlyViewed, jsonEncode(jsonList));
+    _logger.logStorage('Saved ${items.length} recently viewed items');
+  }
+
+  Future<List<RentalProductModel>> getRecentlyViewed() async {
+    final jsonString = prefs.getString(_keyRecentlyViewed);
+    if (jsonString == null) return [];
+    try {
+      final List<dynamic> list = jsonDecode(jsonString);
+      return list.map((json) => RentalProductModel.fromJson(json)).toList();
+    } catch (e) {
+      _logger.error('LOCAL_STORAGE', 'Failed to parse recently viewed', error: e);
+      return [];
+    }
   }
 }

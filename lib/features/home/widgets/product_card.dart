@@ -1,20 +1,27 @@
-import 'package:flutter/material.dart';
+  import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../search/bloc/search_bloc.dart';
+import '../../search/bloc/search_event.dart';
 import '../../../config/theme/app_colors.dart';
-import '../../../core/models/rental_product_model.dart'; // ← updated
+import '../../../core/models/rental_product_model.dart';
 
 class ProductCard extends StatelessWidget {
-  final RentalProductModel product; // ← updated
+  final RentalProductModel product;
 
   const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push('/product-details', extra: product),
+      onTap: () {
+        // Record as recently viewed
+        context.read<SearchBloc>().add(AddToRecentlyViewed(product));
+        context.push('/product-details', extra: product);
+      },
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        width: 160,
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -28,6 +35,7 @@ class ProductCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             // Image + badges
             Stack(
@@ -38,7 +46,7 @@ class ProductCard extends StatelessWidget {
                   child: product.images.isNotEmpty
                       ? Image.network(
                     product.images[0],
-                    height: 160,
+                    height: 130, // Reduced from 150
                     width: double.infinity,
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => _placeholder(),
@@ -89,7 +97,7 @@ class ProductCard extends StatelessWidget {
             ),
             // Info
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -101,45 +109,51 @@ class ProductCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 1),
                   // Machine name
-                  Text(
-                    product.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600),
+                  SizedBox(
+                    height: 30, // Slightly reduced from 32
+                    child: Text(
+                      product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w600, height: 1.2),
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Rent per day
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: product.rentPerDay != null
-                                  ? '₹${product.rentPerDay!.toInt()}'
-                                  : '₹${product.effectiveDailyRate.toInt()}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primaryBlack,
+                      Expanded(
+                        child: RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: product.rentPerDay != null
+                                    ? '₹${product.rentPerDay!.toInt()}'
+                                    : '₹${product.effectiveDailyRate.toInt()}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primaryBlack,
+                                ),
                               ),
-                            ),
-                            const TextSpan(
-                              text: '/din',
-                              style: TextStyle(
-                                  fontSize: 10,
-                                  color: AppColors.grey707070),
-                            ),
-                          ],
+                              const TextSpan(
+                                text: '/din',
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: AppColors.grey707070),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       // Add button
                       Container(
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(4),
                         decoration: const BoxDecoration(
                           color: AppColors.primaryYellow,
                           shape: BoxShape.circle,
@@ -160,7 +174,7 @@ class ProductCard extends StatelessWidget {
 
   Widget _placeholder() {
     return Container(
-      height: 160,
+      height: 130, // Reduced from 150
       width: double.infinity,
       color: AppColors.categoryPowerBg,
       child: const Center(

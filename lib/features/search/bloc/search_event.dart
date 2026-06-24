@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../core/models/rental_product_model.dart';
 
 abstract class SearchEvent extends Equatable {
   const SearchEvent();
@@ -38,4 +39,36 @@ class ApplyFilters extends SearchEvent {
 
   @override
   List<Object?> get props => [minPrice, maxPrice, sortBy];
+}
+
+class StartVoiceSearch extends SearchEvent {
+  const StartVoiceSearch();
+}
+
+class VoiceSearchStatusChanged extends SearchEvent {
+  final bool isListening;
+  final String? result;
+  final String? error;
+
+  const VoiceSearchStatusChanged({
+    required this.isListening,
+    this.result,
+    this.error,
+  });
+
+  @override
+  List<Object?> get props => [isListening, result, error];
+}
+
+class LoadSearchHistory extends SearchEvent {
+  const LoadSearchHistory();
+}
+
+class AddToRecentlyViewed extends SearchEvent {
+  final RentalProductModel product;
+
+  const AddToRecentlyViewed(this.product);
+
+  @override
+  List<Object?> get props => [product];
 }
