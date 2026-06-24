@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../core/models/rental_product_model.dart';
 import '../../../core/models/category_model.dart';
 import '../../../core/models/review_model.dart';
+import '../../../core/constants/app_constants.dart';
 import '../api/base_api/api_response.dart';
+import 'logger_service.dart';
 
 class FirestoreProductService {
   static final FirestoreProductService _instance =
@@ -27,7 +29,13 @@ class FirestoreProductService {
           .toList();
 
       return ApiResponse.success(categories);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      LoggingService.instance.error(
+        AppConstants.logCategoryDatabase,
+        'Failed to get categories',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return ApiResponse.error('Categories load nahi hui: $e');
     }
   }
@@ -61,7 +69,13 @@ class FirestoreProductService {
           .toList();
 
       return ApiResponse.success(products);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      LoggingService.instance.error(
+        AppConstants.logCategoryDatabase,
+        'Failed to get products by category: $categoryId',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return ApiResponse.error('Products load nahi hue: $e');
     }
   }
@@ -86,7 +100,13 @@ class FirestoreProductService {
       });
 
       return ApiResponse.success(product);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      LoggingService.instance.error(
+        AppConstants.logCategoryDatabase,
+        'Failed to get product by id: $productId',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return ApiResponse.error('Product load nahi hua: $e');
     }
   }
@@ -115,7 +135,13 @@ class FirestoreProductService {
           .toList();
 
       return ApiResponse.success(products);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      LoggingService.instance.error(
+        AppConstants.logCategoryDatabase,
+        'Search fail hua for query: $query',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return ApiResponse.error('Search fail hua: $e');
     }
   }
@@ -131,7 +157,13 @@ class FirestoreProductService {
           .collection('reviews')
           .add(review.toJson());
       return ApiResponse.success(null);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      LoggingService.instance.error(
+        AppConstants.logCategoryDatabase,
+        'Failed to add review for product: ${review.productId}',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return ApiResponse.error('Review add nahi ho paya: $e');
     }
   }
