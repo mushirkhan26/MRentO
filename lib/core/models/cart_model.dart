@@ -4,6 +4,8 @@ class CartModel {
   final double deliveryFee;
   final double tax;
   final double discount;
+  final String? couponCode;
+  final double couponDiscount;
 
   CartModel({
     required this.items,
@@ -11,11 +13,15 @@ class CartModel {
     required this.deliveryFee,
     required this.tax,
     double? discount,
-  }) : discount = discount ?? 0.0;
+    this.couponCode,
+    double? couponDiscount,
+  }) : discount = discount ?? 0.0,
+       couponDiscount = couponDiscount ?? 0.0;
 
-  double get total => subtotal + deliveryFee + tax - discount;
+  double get total => subtotal + deliveryFee + tax - discount - couponDiscount;
   double get mrpTotal => items.fold(0, (sum, item) => sum + (item.originalPrice ?? item.price) * item.quantity);
   double get productDiscount => mrpTotal - subtotal;
+  double get totalDiscount => discount + couponDiscount;
 
   /// Total refundable security deposit across all rental items
   double get totalSecurityDeposit =>
@@ -31,6 +37,7 @@ class CartModel {
       deliveryFee: 0.0,
       tax: 0.0,
       discount: 0.0,
+      couponDiscount: 0.0,
     );
   }
 
@@ -44,6 +51,8 @@ class CartModel {
       deliveryFee: (json['deliveryFee'] as num?)?.toDouble() ?? 0.0,
       tax: (json['tax'] as num?)?.toDouble() ?? 0.0,
       discount: (json['discount'] as num?)?.toDouble() ?? 0.0,
+      couponCode: json['couponCode'],
+      couponDiscount: (json['couponDiscount'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -54,6 +63,8 @@ class CartModel {
       'deliveryFee': deliveryFee,
       'tax': tax,
       'discount': discount,
+      'couponCode': couponCode,
+      'couponDiscount': couponDiscount,
     };
   }
 }
@@ -61,15 +72,7 @@ class CartModel {
 class CartItem {
   final String productId;
   final String productName;
-
-  // ── Legacy (fashion) fields ──
-  // size/color/brand ab bhi rakhe hain taaki abhi compile na toote.
-  // Phase 3 me product_details + cart widgets update hone ke baad
-  // inhe vendorName/rentalDurationLabel se replace karke hata sakte ho.
   final String? brand;
-  final String? size;
-  final String? color;
-
   final String? productImage;
   final int quantity;
   final double price; // rental rate for the selected duration
@@ -88,8 +91,6 @@ class CartItem {
     required this.productId,
     required this.productName,
     this.brand,
-    this.size,
-    this.color,
     this.productImage,
     required this.quantity,
     required this.price,
@@ -108,13 +109,45 @@ class CartItem {
   /// Total refundable security deposit for this line item
   double get totalSecurityDeposit => securityDeposit * quantity;
 
+  CartItem copyWith({
+    String? productId,
+    String? productName,
+    String? brand,
+    String? productImage,
+    int? quantity,
+    double? price,
+    double? originalPrice,
+    List<String>? badges,
+    String? vendorName,
+    String? rentalDurationLabel,
+    int? rentalDays,
+    DateTime? startDate,
+    DateTime? endDate,
+    double? securityDeposit,
+  }) {
+    return CartItem(
+      productId: productId ?? this.productId,
+      productName: productName ?? this.productName,
+      brand: brand ?? this.brand,
+      productImage: productImage ?? this.productImage,
+      quantity: quantity ?? this.quantity,
+      price: price ?? this.price,
+      originalPrice: originalPrice ?? this.originalPrice,
+      badges: badges ?? this.badges,
+      vendorName: vendorName ?? this.vendorName,
+      rentalDurationLabel: rentalDurationLabel ?? this.rentalDurationLabel,
+      rentalDays: rentalDays ?? this.rentalDays,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      securityDeposit: securityDeposit ?? this.securityDeposit,
+    );
+  }
+
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
       productId: json['productId'] ?? '',
       productName: json['productName'] ?? '',
       brand: json['brand'],
-      size: json['size'],
-      color: json['color'],
       productImage: json['productImage'],
       quantity: json['quantity'] ?? 0,
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
@@ -138,8 +171,6 @@ class CartItem {
       'productId': productId,
       'productName': productName,
       'brand': brand,
-      'size': size,
-      'color': color,
       'productImage': productImage,
       'quantity': quantity,
       'price': price,

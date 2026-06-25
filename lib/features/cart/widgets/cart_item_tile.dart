@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../core/models/cart_model.dart';
+import '../../../core/constants/app_constants.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
 
@@ -18,34 +20,43 @@ class CartItemTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: AppColors.greyE5E7EB),
+        border: Border.all(color: AppColors.greyE5E7EB),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Product image
-          Container(
-            width: 85,
-            height: 95,
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                  color: AppColors.greyOutline.withValues(alpha: 0.5)),
-              image: item.productImage != null
-                  ? DecorationImage(
-                image: NetworkImage(item.productImage!),
-                fit: BoxFit.contain,
-              )
+          // Product image with Hero animation
+          Hero(
+            tag: 'cart_item_${item.productId}',
+            child: Container(
+              width: 85,
+              height: 95,
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                    color: AppColors.greyOutline.withValues(alpha: 0.5)),
+                image: item.productImage != null
+                    ? DecorationImage(
+                        image: NetworkImage(item.productImage!),
+                        fit: BoxFit.contain,
+                      )
+                    : null,
+              ),
+              child: item.productImage == null
+                  ? const Center(
+                      child: Icon(Icons.image_not_supported_outlined,
+                          color: AppColors.grey707070, size: 28),
+                    )
                   : null,
             ),
-            child: item.productImage == null
-                ? const Center(
-              child: Icon(Icons.image_not_supported_outlined,
-                  color: AppColors.grey707070, size: 28),
-            )
-                : null,
           ),
           const SizedBox(width: 12),
 
@@ -54,21 +65,17 @@ class CartItemTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Vendor name
                 if (item.vendorName != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
-                    child: Text(
-                      'Sold by: ${item.vendorName!}',
-                      style: TextStyle(
-                          fontSize: 10,
-                          color: AppColors.grey707070.withValues(alpha: 0.8)),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  Text(
+                    'Sold by: ${item.vendorName!}',
+                    style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.grey707070.withValues(alpha: 0.8),
+                        fontWeight: FontWeight.w500),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-
-                // Product name
+                const SizedBox(height: 2),
                 Text(
                   item.productName,
                   style: const TextStyle(
@@ -79,12 +86,10 @@ class CartItemTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 6),
-
-                // Rental duration info
                 if (item.rentalDurationLabel != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: AppColors.primaryYellow.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4),
@@ -92,14 +97,12 @@ class CartItemTile extends StatelessWidget {
                     child: Text(
                       '${item.rentalDurationLabel} Plan',
                       style: const TextStyle(
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: FontWeight.w900,
                           color: AppColors.primaryBlack),
                     ),
                   ),
                 const SizedBox(height: 10),
-
-                // Price
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
@@ -111,12 +114,16 @@ class CartItemTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     if (item.securityDeposit > 0)
-                      Text(
-                        '+ ₹${item.securityDeposit.toInt()} deposit',
-                        style: const TextStyle(
-                            fontSize: 11,
-                            color: AppColors.grey707070,
-                            fontWeight: FontWeight.w500),
+                      Flexible(
+                        child: Text(
+                          '+ ₹${item.securityDeposit.toInt()} deposit',
+                          style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.grey707070,
+                              fontWeight: FontWeight.w500),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                   ],
                 ),
@@ -129,23 +136,16 @@ class CartItemTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              GestureDetector(
-                onTap: () =>
-                    context
-                        .read<CartBloc>()
-                        .add(RemoveFromCart(item.productId)),
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.close,
-                      size: 14, color: AppColors.grey707070),
-                ),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(Icons.delete_outline,
+                    size: 20, color: AppColors.errorColor),
+                onPressed: () => _handleRemove(context),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 28),
               Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   color: AppColors.primaryBlack,
                   borderRadius: BorderRadius.circular(8),
@@ -154,10 +154,10 @@ class CartItemTile extends StatelessWidget {
                   children: [
                     _qtyBtn(Icons.remove, Colors.white, () {
                       if (item.quantity > 1) {
+                        HapticFeedback.lightImpact();
                         context.read<CartBloc>().add(
-                          UpdateQuantity(
-                              item.productId, item.quantity - 1),
-                        );
+                              UpdateQuantity(item.productId, item.quantity - 1),
+                            );
                       }
                     }),
                     Text(
@@ -168,10 +168,20 @@ class CartItemTile extends StatelessWidget {
                           fontSize: 14),
                     ),
                     _qtyBtn(Icons.add, Colors.white, () {
-                      context.read<CartBloc>().add(
-                        UpdateQuantity(
-                            item.productId, item.quantity + 1),
-                      );
+                      if (item.quantity < AppConstants.maxCartItemQuantity) {
+                        HapticFeedback.lightImpact();
+                        context.read<CartBloc>().add(
+                              UpdateQuantity(item.productId, item.quantity + 1),
+                            );
+                      } else {
+                        HapticFeedback.vibrate();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Max limit reached for this item'),
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                      }
                     }),
                   ],
                 ),
@@ -183,12 +193,33 @@ class CartItemTile extends StatelessWidget {
     );
   }
 
+  void _handleRemove(BuildContext context) {
+    HapticFeedback.mediumImpact();
+    final cartBloc = context.read<CartBloc>();
+    cartBloc.add(RemoveFromCart(item.productId));
+
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${item.productName} removed'),
+        action: SnackBarAction(
+          label: 'UNDO',
+          textColor: AppColors.primaryYellow,
+          onPressed: () {
+            cartBloc.add(UndoRemove(item));
+          },
+        ),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
   Widget _qtyBtn(IconData icon, Color color, VoidCallback onPressed) {
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(8),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Icon(icon, size: 14, color: color),
       ),
     );

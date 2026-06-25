@@ -15,7 +15,8 @@ import '../widgets/suggested_products_widget.dart';
 import '../widgets/search_results_grid.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  final String? initialQuery;
+  const SearchScreen({super.key, this.initialQuery});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -23,6 +24,18 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialQuery != null) {
+      _searchController.text = widget.initialQuery!;
+      // Trigger search if initial query is provided
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<SearchBloc>().add(SearchQueryChanged(widget.initialQuery!));
+      });
+    }
+  }
 
   @override
   void dispose() {

@@ -84,7 +84,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.searchRoute,
       name: 'search',
-      builder: (context, state) => const SearchScreen(),
+      builder: (context, state) {
+        final query = state.extra as String?;
+        return SearchScreen(initialQuery: query);
+      },
     ),
     GoRoute(
       path: '/product-details',

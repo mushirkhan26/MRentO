@@ -29,6 +29,9 @@ class CartPriceBreakdown extends StatelessWidget {
           else
             _priceRow('Delivery fee', '₹${cart.deliveryFee.toInt()}'),
           _priceRow('GST (18%)', '₹${cart.tax.toInt()}'),
+          if (cart.couponDiscount > 0)
+            _priceRow('Coupon discount', '-₹${cart.couponDiscount.toInt()}',
+                color: AppColors.successColor),
           if (cart.discount > 0)
             _priceRow('Discount', '-₹${cart.discount.toInt()}',
                 color: AppColors.successColor),
@@ -36,6 +39,25 @@ class CartPriceBreakdown extends StatelessWidget {
           _priceRow('Rental total', '₹${cart.total.toInt()}',
               isBold: true),
           const SizedBox(height: 8),
+          if (cart.totalDiscount > 0)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              decoration: BoxDecoration(
+                color: AppColors.successColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                'Yay! You saved ₹${cart.totalDiscount.toInt()} on this order',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.primaryDarkGreen,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          const SizedBox(height: 12),
           // ✅ Security deposit — separate refundable line
           if (cart.totalSecurityDeposit > 0)
             Container(

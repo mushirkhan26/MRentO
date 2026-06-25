@@ -12,6 +12,8 @@ class AppConstants {
   static const double baseDeliveryFee = 49.0;
   static const double freeDeliveryThreshold = 999.0;
   static const double defaultSecurityDeposit = 500.0;
+  static const double gstRate = 0.18;
+  static const int maxCartItemQuantity = 10;
 
   // URLs
   static String get socketBaseUrl =>

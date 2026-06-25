@@ -39,3 +39,23 @@ class UpdateQuantity extends CartEvent {
 }
 
 class ClearCart extends CartEvent {}
+
+class ApplyCoupon extends CartEvent {
+  final String couponCode;
+
+  const ApplyCoupon(this.couponCode);
+
+  @override
+  List<Object?> get props => [couponCode];
+}
+
+class RemoveCoupon extends CartEvent {}
+
+class UndoRemove extends CartEvent {
+  final CartItem item;
+
+  const UndoRemove(this.item);
+
+  @override
+  List<Object?> get props => [item];
+}

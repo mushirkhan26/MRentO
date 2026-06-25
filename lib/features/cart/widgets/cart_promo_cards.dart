@@ -1,41 +1,69 @@
 import 'package:flutter/material.dart';
-import '../../../config/theme/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/cart_bloc.dart';
+import '../bloc/cart_state.dart';
 
 class FreeDeliveryPromo extends StatelessWidget {
   const FreeDeliveryPromo({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF3E0),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.local_shipping_outlined,
-                  size: 16, color: Colors.orange),
-              SizedBox(width: 8),
-              Text(
-                'Free delivery on orders above ₹999',
-                style: TextStyle(fontSize: 12, color: Colors.brown),
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        if (state is CartLoaded) {
+          final bool isFree = state.cart.deliveryFee == 0;
+          
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isFree ? const Color(0xFFF0FDF4) : const Color(0xFFFFF3E0),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isFree ? const Color(0xFFDCFCE7) : const Color(0xFFFFE0B2),
               ),
-            ],
-          ),
-          Text(
-            'Applied ✓',
-            style: TextStyle(
-                fontSize: 12,
-                color: Colors.green,
-                fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.local_shipping_outlined,
+                        size: 16,
+                        color: isFree ? Colors.green : Colors.orange,
+                      ),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: Text(
+                          'Free delivery on orders above ₹999',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.brown,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  isFree ? 'Applied ✓' : 'Add more',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isFree ? Colors.green : Colors.orange.shade800,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 }
