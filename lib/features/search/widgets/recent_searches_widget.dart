@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../config/theme/app_colors.dart';
 import '../bloc/search_bloc.dart';
 import '../bloc/search_event.dart';
 
@@ -58,22 +59,27 @@ class RecentSearchesWidget extends StatelessWidget {
         context.read<SearchBloc>().add(SearchQueryChanged(label));
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
+          color: const Color(0xFFF8F9FA),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFEEEEEE)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.access_time, size: 16, color: Colors.grey.shade400),
-            const SizedBox(width: 8),
-            Text(label, style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w500)),
+            Icon(Icons.history, size: 14, color: Colors.grey.shade500),
             const SizedBox(width: 6),
+            Text(label,
+                style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.primaryBlack,
+                    fontWeight: FontWeight.w500)),
+            const SizedBox(width: 8),
             GestureDetector(
-              onTap: () => context.read<SearchBloc>().add(RemoveRecentSearch(label)),
-              child: Icon(Icons.close, size: 16, color: Colors.grey.shade400),
+              onTap: () =>
+                  context.read<SearchBloc>().add(RemoveRecentSearch(label)),
+              child: Icon(Icons.close, size: 14, color: Colors.grey.shade400),
             ),
           ],
         ),

@@ -40,7 +40,7 @@ class FreeDeliveryPromo extends StatelessWidget {
   }
 }
 
-// ✅ Security deposit banner — Try & Return ki jagah
+// ✅ Trust Banner for Security Deposit
 class SecurityDepositBanner extends StatelessWidget {
   const SecurityDepositBanner({super.key});
 
@@ -50,27 +50,37 @@ class SecurityDepositBanner extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFF0FDF4), // Very light green for trust/safety
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.greyE5E7EB),
+        border: Border.all(color: const Color(0xFFDCFCE7)),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
-              Icon(Icons.security_outlined, size: 16, color: Colors.grey),
+              Icon(Icons.verified_user_outlined, size: 20, color: Colors.green),
               SizedBox(width: 8),
               Text(
-                'Security Deposit',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                '100% Refundable Deposit',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.green),
               ),
             ],
           ),
-          SizedBox(height: 8),
-          Text(
-            'Aapki security deposit 100% refundable hai — machine wapas karte hi refund ho jaati hai. Zero tension.',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
+
+          const SizedBox(height: 8),
+          RichText(
+            text: const TextSpan(
+              style: TextStyle(fontSize: 13, color: Color(0xFF166534), height: 1.4),
+              children: [
+                TextSpan(text: 'Aapki security deposit safe hai. '),
+                TextSpan(
+                  text: 'Machine wapas milte hi turant refund ho jayegi.',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                TextSpan(text: ' Zero tension!'),
+              ],
+            ),
           ),
         ],
       ),

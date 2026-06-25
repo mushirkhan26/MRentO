@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../config/theme/app_colors.dart';
 import '../bloc/search_bloc.dart';
 import '../bloc/search_event.dart';
 
@@ -66,13 +67,13 @@ class TrendingNowWidget extends StatelessWidget {
         }
         context.read<SearchBloc>().add(SearchQueryChanged(label));
       },
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey.shade200),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFEEEEEE)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -81,14 +82,14 @@ class TrendingNowWidget extends StatelessWidget {
               child: Text(
                 label,
                 style: const TextStyle(
-                    color: Colors.black87,
+                    color: AppColors.primaryBlack,
                     fontWeight: FontWeight.w500,
                     fontSize: 13),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Icon(Icons.north_east, size: 13, color: Colors.grey.shade400),
+            Icon(Icons.north_east, size: 12, color: Colors.grey.shade400),
           ],
         ),
       ),

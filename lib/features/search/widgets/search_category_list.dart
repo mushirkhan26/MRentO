@@ -34,7 +34,7 @@ class SearchCategoryList extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 92,
+          height: 100,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -54,17 +54,25 @@ class SearchCategoryList extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                   child: Column(
                     children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: cat['color'] as Color,
-                        child: Icon(cat['icon'] as IconData,
-                            color: cat['textColor'] as Color, size: 26),
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          color: cat['color'] as Color,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(cat['icon'] as IconData,
+                              color: cat['textColor'] as Color, size: 28),
+                        ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       Text(
                         cat['name'] as String,
                         style: const TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w500),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87),
                       ),
                     ],
                   ),

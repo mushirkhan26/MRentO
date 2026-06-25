@@ -57,10 +57,10 @@ class _SearchScreenState extends State<SearchScreen> {
               Expanded(
                 child: BlocBuilder<SearchBloc, SearchState>(
                   builder: (context, state) {
+                    final bool showFilter = (state is SearchLoaded && state.results.isNotEmpty);
                     return Column(
                       children: [
-                        if (state is SearchLoaded || state is SearchLoading)
-                          const SearchFilterBar(),
+                        if (showFilter) const SearchFilterBar(),
                         Expanded(
                           child: _buildBodyContent(state),
                         ),

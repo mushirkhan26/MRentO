@@ -42,37 +42,8 @@ class CartScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          BlocBuilder<CartBloc, CartState>(
-            builder: (context, state) {
-              if (state is CartLoaded && state.cart.totalSecurityDeposit > 0) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 16),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryYellow.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.security_outlined,
-                          size: 14, color: AppColors.primaryYellow),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Deposit ₹${state.cart.totalSecurityDeposit.toInt()}',
-                        style: const TextStyle(
-                            color: AppColors.primaryYellow,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return const SizedBox();
-            },
-          ),
+        actions: const [
+          // Removed Deposit badge for a cleaner look as per feedback
         ],
       ),
       body: BlocBuilder<CartBloc, CartState>(
@@ -115,14 +86,14 @@ class CartScreen extends StatelessWidget {
 
   Widget _buildStickyFooter(BuildContext context, CartModel cart) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 10,
-              offset: const Offset(0, -5))
+              offset: const Offset(0, -4))
         ],
       ),
       child: ElevatedButton(
@@ -131,7 +102,8 @@ class CartScreen extends StatelessWidget {
           backgroundColor: AppColors.primaryYellow,
           foregroundColor: AppColors.primaryBlack,
           padding:
-          const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+          elevation: 0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12)),
         ),
@@ -142,20 +114,20 @@ class CartScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${cart.items.length} items',
-                    style: const TextStyle(fontSize: 10)),
-                Text('₹${cart.grandTotal.toInt()}',
+                Text('Total: ₹${cart.grandTotal.toInt()}',
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
+                        fontSize: 16, fontWeight: FontWeight.w900)),
+                Text('${cart.items.length} item${cart.items.length > 1 ? 's' : ''} select kiye',
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
               ],
             ),
             const Row(
               children: [
-                Text('Checkout',
+                Text('Checkout Karein',
                     style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(width: 8),
-                Icon(Icons.arrow_forward_ios, size: 14),
+                        fontSize: 15, fontWeight: FontWeight.w900)),
+                SizedBox(width: 4),
+                Icon(Icons.chevron_right, size: 20),
               ],
             ),
           ],

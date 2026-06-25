@@ -15,25 +15,27 @@ class SearchHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.primaryBlack,
-      padding: const EdgeInsets.fromLTRB(16, 40, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 20),
       child: Container(
-        height: 55,
+        height: 52,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Row(
           children: [
+            const SizedBox(width: 8),
             IconButton(
               icon: const Icon(Icons.arrow_back_ios_new,
-                  color: AppColors.primaryBlack, size: 20),
+                  color: AppColors.primaryBlack, size: 18),
               onPressed: () {
                 if (Navigator.of(context).canPop()) {
                   Navigator.pop(context);
@@ -57,12 +59,18 @@ class SearchHeader extends StatelessWidget {
                 },
                 child: TextField(
                   controller: controller,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: AppColors.primaryBlack,
+                    fontWeight: FontWeight.w500,
+                  ),
                   decoration: InputDecoration(
                     // ✅ Rental-appropriate hint text
                     hintText: 'Search drills, mixers, scaffolding...',
                     hintStyle: TextStyle(
-                        color: Colors.grey.shade500, fontSize: 15),
+                        color: Colors.grey.shade400, fontSize: 14),
                     border: InputBorder.none,
+                    isDense: true,
                     contentPadding:
                     const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -73,15 +81,16 @@ class SearchHeader extends StatelessWidget {
                   },
                 ),
               ),
-            ),IconButton(
+            ),
+            IconButton(
               icon: BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
                   return Icon(
                     state.isListening ? Icons.mic : Icons.mic_none,
                     color: state.isListening
                         ? AppColors.primaryYellow
-                        : AppColors.primaryBlack,
-                    size: 24,
+                        : Colors.grey.shade600,
+                    size: 22,
                   );
                 },
               ),
@@ -89,6 +98,7 @@ class SearchHeader extends StatelessWidget {
                 context.read<SearchBloc>().add(const StartVoiceSearch());
               },
             ),
+            const SizedBox(width: 4),
           ],
         ),
       ),

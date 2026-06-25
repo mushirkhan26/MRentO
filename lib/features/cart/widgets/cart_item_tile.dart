@@ -7,6 +7,7 @@ import '../bloc/cart_event.dart';
 
 class CartItemTile extends StatelessWidget {
   final CartItem item;
+
   const CartItemTile({super.key, required this.item});
 
   @override
@@ -17,29 +18,32 @@ class CartItemTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.greyE5E7EB),
+        border: Border.all(
+            color: AppColors.greyE5E7EB),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Product image
           Container(
-            width: 80,
-            height: 90,
+            width: 85,
+            height: 95,
             decoration: BoxDecoration(
-              color: AppColors.categoryPowerBg,
-              borderRadius: BorderRadius.circular(8),
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                  color: AppColors.greyOutline.withValues(alpha: 0.5)),
               image: item.productImage != null
                   ? DecorationImage(
                 image: NetworkImage(item.productImage!),
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               )
                   : null,
             ),
             child: item.productImage == null
                 ? const Center(
-              child: Icon(Icons.construction_outlined,
-                  color: AppColors.categoryPowerText, size: 32),
+              child: Icon(Icons.image_not_supported_outlined,
+                  color: AppColors.grey707070, size: 28),
             )
                 : null,
           ),
@@ -50,113 +54,120 @@ class CartItemTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Vendor name + remove button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (item.vendorName != null)
-                      Row(
-                        children: [
-                          const Icon(Icons.storefront_outlined,
-                              size: 11, color: AppColors.grey707070),
-                          const SizedBox(width: 3),
-                          Text(
-                            item.vendorName!,
-                            style: const TextStyle(
-                                fontSize: 10, color: AppColors.grey707070),
-                          ),
-                        ],
-                      )
-                    else
-                      const SizedBox.shrink(),
-                    GestureDetector(
-                      onTap: () => context
-                          .read<CartBloc>()
-                          .add(RemoveFromCart(item.productId)),
-                      child: const Icon(Icons.close,
-                          size: 16, color: AppColors.grey707070),
+                // Vendor name
+                if (item.vendorName != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Text(
+                      'Sold by: ${item.vendorName!}',
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: AppColors.grey707070.withValues(alpha: 0.8)),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 4),
+                  ),
 
                 // Product name
                 Text(
                   item.productName,
                   style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.bold),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
 
                 // Rental duration info
                 if (item.rentalDurationLabel != null)
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
+                        horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryYellow.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(6),
+                      color: AppColors.primaryYellow.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      '${item.rentalDurationLabel} rental',
+                      '${item.rentalDurationLabel} Plan',
                       style: const TextStyle(
                           fontSize: 11,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w900,
                           color: AppColors.primaryBlack),
                     ),
                   ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
 
                 // Price
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
                       '₹${item.price.toInt()}',
                       style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold),
+                          fontSize: 18, fontWeight: FontWeight.w900),
                     ),
-                    if (item.securityDeposit > 0) ...[
-                      const SizedBox(width: 8),
+                    const SizedBox(width: 4),
+                    if (item.securityDeposit > 0)
                       Text(
                         '+ ₹${item.securityDeposit.toInt()} deposit',
                         style: const TextStyle(
-                            fontSize: 10, color: AppColors.grey707070),
+                            fontSize: 11,
+                            color: AppColors.grey707070,
+                            fontWeight: FontWeight.w500),
                       ),
-                    ],
                   ],
                 ),
               ],
             ),
           ),
 
-          // Quantity controls
+          // Side controls: Remove & Quantity
           Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const SizedBox(height: 50),
+              GestureDetector(
+                onTap: () =>
+                    context
+                        .read<CartBloc>()
+                        .add(RemoveFromCart(item.productId)),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.close,
+                      size: 14, color: AppColors.grey707070),
+                ),
+              ),
+              const SizedBox(height: 32),
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.greyOutline),
-                  borderRadius: BorderRadius.circular(6),
+                  color: AppColors.primaryBlack,
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   children: [
-                    _qtyBtn(Icons.remove, () {
-                      context.read<CartBloc>().add(
-                        UpdateQuantity(
-                            item.productId, item.quantity - 1),
-                      );
+                    _qtyBtn(Icons.remove, Colors.white, () {
+                      if (item.quantity > 1) {
+                        context.read<CartBloc>().add(
+                          UpdateQuantity(
+                              item.productId, item.quantity - 1),
+                        );
+                      }
                     }),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        '${item.quantity}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                    Text(
+                      '${item.quantity}',
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14),
                     ),
-                    _qtyBtn(Icons.add, () {
+                    _qtyBtn(Icons.add, Colors.white, () {
                       context.read<CartBloc>().add(
                         UpdateQuantity(
                             item.productId, item.quantity + 1),
@@ -172,12 +183,13 @@ class CartItemTile extends StatelessWidget {
     );
   }
 
-  Widget _qtyBtn(IconData icon, VoidCallback onPressed) {
+  Widget _qtyBtn(IconData icon, Color color, VoidCallback onPressed) {
     return InkWell(
       onTap: onPressed,
+      borderRadius: BorderRadius.circular(8),
       child: Padding(
-        padding: const EdgeInsets.all(6),
-        child: Icon(icon, size: 16, color: AppColors.grey707070),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: Icon(icon, size: 14, color: color),
       ),
     );
   }

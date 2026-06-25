@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import '../../../config/theme/app_colors.dart';
 
 class EmptyCartView extends StatelessWidget {
@@ -18,46 +19,39 @@ class EmptyCartView extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox(height: 40),
-          // Empty state icon
+          const SizedBox(height: 32),
+          // Empty state Lottie Animation
           Center(
-            child: Container(
-              width: 140,
-              height: 140,
-              decoration: const BoxDecoration(
-                  color: AppColors.background, shape: BoxShape.circle),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(Icons.shopping_bag_outlined,
+            child: Lottie.asset(
+              'assets/lottie/cartEmpty.json',
+              width: 170,
+              height: 170,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback icon if Lottie fails
+                return Container(
+                  width: 140,
+                  height: 140,
+                  decoration: const BoxDecoration(
+                      color: AppColors.background, shape: BoxShape.circle),
+                  child: const Icon(Icons.shopping_bag_outlined,
                       size: 60, color: AppColors.primaryBlack),
-                  Positioned(
-                    right: 35,
-                    bottom: 35,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                          color: Colors.white, shape: BoxShape.circle),
-                      child: const Icon(Icons.close,
-                          size: 12, color: AppColors.grey707070),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
           const SizedBox(height: 24),
           const Text(
-            'Cart Khali Hai!',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            'Aapka Cart Khali Hai!',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 40),
             child: Text(
-              'Abhi tak koi machine select nahi ki.\nSahi equipment dhundho aur kaam shuru karo!',
+              'Sahi machine dhundhein aur apna kaam\naaj hi shuru karein!',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: AppColors.grey707070),
+              style: TextStyle(fontSize: 15, color: AppColors.grey707070, height: 1.4),
             ),
           ),
           const SizedBox(height: 24),
