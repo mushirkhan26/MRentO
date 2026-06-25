@@ -116,7 +116,7 @@ class ReviewSection extends StatelessWidget {
                   onPressed: () {},
                   child: Text('Sab ${reviews.length} reviews dekho',
                       style: const TextStyle(
-                          color: AppColors.primaryDarkGreen,
+                          color: AppColors.primaryBlack,
                           fontWeight: FontWeight.bold,
                           fontSize: 14)),
                 ),

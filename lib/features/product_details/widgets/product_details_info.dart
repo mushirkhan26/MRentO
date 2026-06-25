@@ -96,19 +96,19 @@ class ProductDetailsInfo extends StatelessWidget {
 
         // ── What's included ─────────────────────────────────────
         if (product.includes.isNotEmpty) ...[
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           const Text(
-            "Saath mein milega",
+            "What's in the box?",
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: 16,
               color: AppColors.primaryBlack,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: 10,
+            runSpacing: 10,
             children: product.includes.map((item) => _chip(item)).toList(),
           ),
         ],

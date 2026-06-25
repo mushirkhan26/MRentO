@@ -47,63 +47,97 @@ class ProductHeaderSection extends StatelessWidget {
         Text(
           product.name,
           style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+            fontSize: 26,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
             color: AppColors.primaryBlack,
           ),
         ),
-        const SizedBox(height: 10),
+
+
+        const SizedBox(height: 12),
 
         // Rental pricing row
         Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           children: [
             if (product.rentPerDay != null) ...[
+              const Text(
+                '₹',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.primaryBlack,
+                ),
+              ),
               Text(
-                '₹${product.rentPerDay!.toInt()}',
+                '${product.rentPerDay!.toInt()}',
                 style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
                   color: AppColors.primaryBlack,
                 ),
               ),
               const Text(
-                '/din',
+                ' /day',
                 style: TextStyle(
                   fontSize: 14,
-                  color: AppColors.grey707070,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey500,
                 ),
-              ),
-            ],
-            if (product.rentFor3Days != null) ...[
-              const SizedBox(width: 12),
-              ProductBadge(
-                label: '3 din: ₹${product.rentFor3Days!.toInt()}',
-                bgColor: AppColors.primaryYellow.withValues(alpha: 0.15),
-                textColor: AppColors.primaryBlack,
               ),
             ],
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
 
-        // Security deposit info
-        Row(
-          children: [
-            const Icon(
-              Icons.security_outlined,
-              size: 14,
-              color: AppColors.grey707070,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              'Security deposit: ₹${product.securityDeposit.toInt()} (refundable)',
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppColors.grey707070,
+        // Security deposit info - Highlighted
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF0F7FF), // Light blue tint for security/trust
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.infoColor.withValues(alpha: 0.1)),
+          ),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.shield_outlined,
+                size: 20,
+                color: AppColors.infoColor,
               ),
-            ),
-          ],
+
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        style: const TextStyle(fontSize: 13, color: AppColors.primaryBlack),
+                        children: [
+                          const TextSpan(text: 'Security Deposit: '),
+                          TextSpan(
+                            text: '₹${product.securityDeposit.toInt()}',
+                            style: const TextStyle(fontWeight: FontWeight.w900),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Text(
+                      '100% Refundable instantly after return',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.infoColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

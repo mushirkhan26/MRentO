@@ -24,20 +24,17 @@ import 'package:MRentO/features/home/bloc/product_bloc.dart';
 import 'package:MRentO/features/search/bloc/search_bloc.dart';
 import 'package:MRentO/features/wishlist/bloc/wishlist_bloc.dart';
 import 'package:MRentO/features/wishlist/bloc/wishlist_event.dart';
-import 'package:MRentO/features/wishlist/bloc/wishlist_state.dart';
 import 'package:MRentO/features/auth/bloc/auth_state.dart';
 import 'package:MRentO/features/tracking/bloc/tracking_bloc.dart';
 import 'package:MRentO/features/orders/bloc/orders_bloc.dart';
 import 'package:MRentO/features/settings/bloc/address_bloc.dart';
 import 'package:MRentO/firebase_options.dart';
-
 import 'features/home/bloc/category_bloc.dart';
 import 'features/home/bloc/banner_bloc.dart';
 import 'features/home/bloc/banner_event.dart';
 import 'features/home/bloc/location_bloc.dart';
 import 'features/home/bloc/location_event.dart';
 import 'features/notification/bloc/notification_bloc.dart';
-import 'features/notification/bloc/notification_event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

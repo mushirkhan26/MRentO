@@ -69,6 +69,14 @@ class RentalProductModel {
     return 0.0;
   }
 
+  /// Calculate savings percentage compared to daily rate
+  int calculateSavingsPercentage(double durationPrice, int days) {
+    if (rentPerDay == null || days <= 1) return 0;
+    final double standardPrice = rentPerDay! * days;
+    if (standardPrice <= durationPrice) return 0;
+    return (((standardPrice - durationPrice) / standardPrice) * 100).round();
+  }
+
   factory RentalProductModel.fromJson(Map<String, dynamic> json) {
     return RentalProductModel(
       id: json['_id']?.toString() ?? json['id']?.toString() ?? '',

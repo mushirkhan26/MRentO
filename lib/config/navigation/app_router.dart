@@ -93,8 +93,11 @@ final GoRouter appRouter = GoRouter(
       path: '/product-details',
       name: 'product-details',
       builder: (context, state) {
-        final product = state.extra as RentalProductModel; // ✅ fixed
-        return ProductDetailsScreen(product: product);
+        final product = state.extra as RentalProductModel;
+        return ProductDetailsScreen(
+          productId: product.id,
+          initialProduct: product,
+        );
       },
     ),
     GoRoute(

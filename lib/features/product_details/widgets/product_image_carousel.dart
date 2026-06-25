@@ -115,17 +115,38 @@ class ProductImageCarousel extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 imageCount,
-                    (index) => AnimatedContainer(
+                (index) => AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
-                  width: index == selectedIndex ? 20 : 6,
-                  height: 6,
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: index == selectedIndex ? 18 : 6,
+                  height: 4,
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
+                    borderRadius: BorderRadius.circular(2),
                     color: index == selectedIndex
-                        ? AppColors.primaryYellow
-                        : AppColors.primaryYellow.withValues(alpha: 0.3),
+                        ? AppColors.primaryBlack
+                        : AppColors.primaryBlack.withValues(alpha: 0.2),
                   ),
+                ),
+              ),
+            ),
+          ),
+        // Image count badge (Blinkit style)
+        if (imageCount > 1)
+          Positioned(
+            bottom: 25,
+            right: 35,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '${selectedIndex + 1}/$imageCount',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
